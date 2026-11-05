@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gatherwise by Datapointe — Prototype v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F4EF; --surface:#FFFFFF; --surface-2:#F0EDE6; --ink:#16141D; --ink-2:#4A4756; --muted:#6E6A7A;
+  --line:#E4E0D8; --brand:#5B3DF5; --brand-2:#7C63FF; --brand-soft:#ECE8FF; --accent:#FF6B3D; --accent-soft:#FFE9E1;
+  --ok:#11845B; --ok-soft:#DDF5EA; --warn:#B57A00; --warn-soft:#FFF3D6; --danger:#D9363E; --danger-soft:#FDE3E4;
+  --radius:18px; --radius-sm:12px; --shadow:0 1px 2px rgba(22,20,29,.06),0 8px 24px rgba(22,20,29,.06);
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif; --display:'Fraunces',Georgia,serif;
+  --fs:16px;
+}
+html.hc{ --bg:#000; --surface:#000; --surface-2:#111; --ink:#fff; --ink-2:#fff; --muted:#E6E6E6; --line:#fff;
+  --brand:#FFE600; --brand-2:#FFE600; --brand-soft:#222; --accent:#00E5FF; --accent-soft:#111; --ok:#4DFF9A; --ok-soft:#002611;
+  --warn:#FFD24D; --warn-soft:#261C00; --danger:#FF6B6B; --danger-soft:#2A0000; --shadow:none; }
+html.hc .btn-primary{color:#000}
+html.hc .card, html.hc .btn, html.hc .chip, html.hc input, html.hc select, html.hc textarea{border-color:#fff !important}
+html.lg{ --fs:19px; }
+html.rm *, html.rm *::before, html.rm *::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);font-size:var(--fs);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;z-index:99}
+.skip:focus{left:8px}
+
+/* Layout */
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;background:#15131C;color:#EDEBF5;padding:22px 16px;display:flex;flex-direction:column;gap:6px}
+html.hc .side{background:#000;border-right:2px solid #fff}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 8px 18px;font-weight:800;font-size:1.15em;letter-spacing:-.01em;color:inherit;text-decoration:none}
+.logo small{display:block;font-weight:500;font-size:.62em;opacity:.65;letter-spacing:.04em}
+.mark{width:36px;height:36px;border-radius:11px;background:conic-gradient(from 200deg,#FF6B3D,#5B3DF5,#18C9A8,#FF6B3D);display:grid;place-items:center;flex:none}
+.mark i{width:14px;height:14px;border-radius:50%;background:#15131C;display:block}
+.nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:#CFCBE0;text-decoration:none;font-weight:600;font-size:.93em;min-height:44px}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav a[aria-current="page"]{background:rgba(124,99,255,.22);color:#fff}
+html.hc .nav a[aria-current="page"]{background:#FFE600;color:#000}
+.nav svg{width:20px;height:20px;flex:none}
+.side .sep{height:1px;background:rgba(255,255,255,.1);margin:10px 4px}
+.side .foot{margin-top:auto;font-size:.78em;opacity:.6;padding:8px}
+main{min-width:0;padding:0 0 40px}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:14px 28px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .mlogo{display:none}
+.top .spacer{flex:1}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{white-space:nowrap;border:0;background:transparent;color:var(--ink-2);font:inherit;font-weight:700;font-size:.82em;padding:7px 12px;border-radius:999px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+html.hc .seg button[aria-pressed="true"]{background:#FFE600;color:#000}
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:.82em;border:0;cursor:pointer;font-family:inherit;min-height:36px}
+.iconbtn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--ink);font:inherit;font-weight:800}
+.wrap{padding:26px 28px;max-width:1240px}
+.bnav{display:none}
+
+@media (max-width:880px){
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .top{padding:10px 14px}
+  .top .mlogo{display:flex}
+  .wrap{padding:18px 14px}
+  main{padding-bottom:96px}
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom))}
+  .bnav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68em;font-weight:700;color:var(--muted);text-decoration:none;padding:6px 0;min-height:48px;border-radius:12px}
+  .bnav a svg{width:22px;height:22px}
+  .bnav a[aria-current="page"]{color:var(--brand)}
+  .bnav a.plus span.fab{width:48px;height:48px;border-radius:16px;background:var(--brand);color:#fff;display:grid;place-items:center;margin-top:-22px;box-shadow:0 8px 20px rgba(91,61,245,.35)}
+  html.hc .bnav a.plus span.fab{color:#000}
+  .hide-m{display:none !important}
+  .top{gap:6px}
+  .seg button{padding:6px 9px;font-size:.76em}
+  .pill{padding:6px 10px;font-size:.76em}
+  .alertbar{flex-wrap:wrap}
+  .alertbar .grow{flex-basis:calc(100% - 50px)}
+}
+
+/* Typography */
+h1{font-size:1.75em;line-height:1.15;margin:0 0 6px;letter-spacing:-.02em;font-weight:800}
+h2{font-size:1.2em;margin:0 0 12px;letter-spacing:-.01em}
+h3{font-size:1em;margin:0 0 6px}
+.lead{color:var(--ink-2);margin:0 0 22px;max-width:70ch}
+.muted{color:var(--muted)}
+.small{font-size:.85em}
+.eyebrow{font-size:.74em;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--brand)}
+
+/* Components */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1080px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.g2,.g3{grid-template-columns:minmax(0,1fr)}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.stack>*+*{margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:.92em;cursor:pointer;text-decoration:none;transition:transform .12s, background .12s}
+.btn:hover{background:var(--surface-2)}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-2)}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-ghost{background:transparent;border-color:transparent}
+.btn-danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn-sm{min-height:36px;padding:6px 12px;font-size:.84em;border-radius:10px}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:.84em;font-weight:600;color:var(--ink-2);cursor:pointer;min-height:38px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+html.hc .chip[aria-pressed="true"]{background:#FFE600;color:#000}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:.74em;font-weight:800;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.b-ok{background:var(--ok-soft);color:var(--ok)}.b-warn{background:var(--warn-soft);color:var(--warn)}.b-danger{background:var(--danger-soft);color:var(--danger)}.b-brand{background:var(--brand-soft);color:var(--brand)}.b-accent{background:var(--accent-soft);color:var(--accent)}
+label.f{display:block;font-weight:700;font-size:.86em;margin:0 0 6px}
+.hint{font-size:.8em;color:var(--muted);margin-top:4px}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=search],select,textarea{width:100%;min-height:46px;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.95em}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:3px solid color-mix(in srgb,var(--brand) 35%,transparent);border-color:var(--brand)}
+.switch{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.switch:last-child{border-bottom:0}
+.switch input{appearance:none;width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0;transition:background .15s}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
+.switch input:checked{background:var(--brand)}
+.switch input:checked::after{left:21px}
+.switch b{display:block;font-size:.93em}
+.switch span{font-size:.82em;color:var(--muted)}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:0 0 18px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:transparent;font:inherit;font-weight:700;font-size:.9em;color:var(--muted);padding:12px 14px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;min-height:46px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.stat .v{font-size:1.7em;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.stat .l{font-size:.8em;color:var(--muted);font-weight:600}
+.stat .d{font-size:.78em;font-weight:700;color:var(--ok)}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.82em;color:#fff;flex:none}
+.grow{flex:1;min-width:0}
+.trunc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evcard{display:flex;flex-direction:column;overflow:hidden;padding:0;text-decoration:none;color:inherit;cursor:pointer;transition:transform .15s}
+.evcard:hover{transform:translateY(-2px)}
+.evcard .cov{aspect-ratio:16/9;overflow:hidden;background:var(--surface-2)}
+.evcard .cov svg{width:100%;height:100%;display:block}
+.evcard .body{padding:14px 16px 16px}
+.bar{height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:999px}
+.hero{background:linear-gradient(135deg,#1B1630 0%,#3A2A8C 55%,#FF6B3D 140%);color:#fff;border-radius:24px;padding:26px;position:relative;overflow:hidden;border:0}
+html.hc .hero{background:#000;border:2px solid #fff}
+.hero h1{font-size:1.9em}
+.hero p{opacity:.85;max-width:52ch}
+.hero .btn{border-color:rgba(255,255,255,.3)}
+.hero .orb{position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),transparent 60%);pointer-events:none}
+.toastbox{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(92vw,440px)}
+@media (max-width:880px){.toastbox{bottom:100px}}
+.toast{background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:14px;font-weight:600;font-size:.9em;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .25s ease;pointer-events:auto;width:100%}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.modal-bg{position:fixed;inset:0;background:rgba(10,8,20,.55);z-index:80;display:grid;place-items:center;padding:16px;animation:tin .2s}
+.modal{background:var(--surface);color:var(--ink);border-radius:22px;padding:22px;width:min(520px,100%);max-height:90vh;overflow:auto;border:1px solid var(--line)}
+@media (max-width:560px){.modal-bg{place-items:end center;padding:0}.modal{border-radius:22px 22px 0 0;width:100%}}
+.callout{border-radius:14px;padding:12px 14px;background:var(--brand-soft);color:var(--ink);font-size:.88em}
+.callout.warn{background:var(--warn-soft)}
+.callout.ok{background:var(--ok-soft)}
+.callout.danger{background:var(--danger-soft)}
+.proto{font-size:.72em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+table.t{width:100%;border-collapse:collapse;font-size:.9em}
+table.t th,table.t td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.78em;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.tablewrap{overflow-x:auto}
+.kbd{font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.06em}
+
+/* Studio */
+.drafts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.drafts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.draft{border-radius:14px;overflow:hidden;border:3px solid transparent;cursor:pointer;background:var(--surface-2);padding:0;aspect-ratio:4/5;display:block;width:100%}
+.draft svg{width:100%;height:100%;display:block}
+.draft[aria-pressed="true"]{border-color:var(--brand)}
+.shimmer{background:linear-gradient(100deg,var(--surface-2) 30%,var(--surface) 50%,var(--surface-2) 70%);background-size:300% 100%;animation:sh 1.1s linear infinite}
+@keyframes sh{from{background-position:100% 0}to{background-position:0 0}}
+.vid{position:relative;aspect-ratio:9/16;max-height:520px;border-radius:18px;overflow:hidden;background:#000;margin:0 auto;width:100%;max-width:300px}
+.vid .bgimg{position:absolute;inset:-6%;animation:kb 7s ease-in-out infinite alternate}
+.vid .bgimg svg{width:100%;height:100%}
+@keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.12) translate(-2%,-2%)}}
+.vid .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.65));display:flex;flex-direction:column;justify-content:flex-end;padding:18px;color:#fff}
+.vid .scene{font-family:var(--display);font-size:1.6em;line-height:1.1;animation:tin .4s}
+.vid .cap{margin-top:10px;background:rgba(0,0,0,.78);padding:6px 10px;border-radius:8px;font-size:.85em;font-weight:600;align-self:flex-start}
+.vid .prog{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:4px}
+.vid .prog i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.35)}
+.vid .prog i.on{background:#fff}
+.lock{display:grid;place-items:center;text-align:center;padding:30px}
+
+/* Phone */
+.phone{max-width:420px;margin:0 auto;background:var(--surface);border-radius:34px;border:1px solid var(--line);overflow:hidden;box-shadow:0 20px 60px rgba(22,20,29,.14)}
+@media (max-width:560px){.phone{border-radius:20px;box-shadow:none}}
+.phone .cov svg{width:100%;display:block}
+.phone .pad{padding:20px}
+.rsvpbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rsvpbtns button{min-height:54px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font:inherit;font-weight:800;cursor:pointer;color:var(--ink)}
+.rsvpbtns button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.stepper button{width:44px;height:44px;border:0;background:var(--surface-2);font-size:1.2em;font-weight:800;cursor:pointer;color:var(--ink)}
+.stepper output{min-width:44px;text-align:center;font-weight:800}
+.paybtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font:inherit;cursor:pointer;color:var(--ink);min-height:56px}
+.paybtn[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.paybtn .lg{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:.75em;color:#fff;flex:none}
+.ticket{border-radius:20px;background:linear-gradient(160deg,#1B1630,#3A2A8C);color:#fff;padding:20px;text-align:center}
+.ticket .qrw{background:#fff;border-radius:14px;padding:12px;display:inline-block;margin:12px 0}
+
+/* Check-in */
+.viewfinder{position:relative;aspect-ratio:1/1;max-width:340px;margin:0 auto;border-radius:24px;background:radial-gradient(circle at 50% 40%,#2c2840,#0f0d16);overflow:hidden;display:grid;place-items:center}
+.viewfinder .corners{position:absolute;inset:18%;border-radius:18px;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
+.viewfinder .corners::before,.viewfinder .corners::after{content:"";position:absolute;inset:0;border:4px solid #fff;border-radius:18px;clip-path:polygon(0 0,25% 0,25% 4px,4px 4px,4px 25%,0 25%,0 75%,4px 75%,4px calc(100% - 4px),25% calc(100% - 4px),25% 100%,75% 100%,75% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 75%,100% 75%,100% 25%,calc(100% - 4px) 25%,calc(100% - 4px) 4px,75% 4px,75% 0,100% 0,100% 100%,0 100%)}
+.viewfinder .laser{position:absolute;left:20%;right:20%;height:2px;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:las 2s ease-in-out infinite}
+@keyframes las{0%,100%{top:22%}50%{top:76%}}
+.result{border-radius:18px;padding:18px;text-align:center;font-weight:700}
+.result.ok{background:var(--ok-soft);color:var(--ok)}
+.result.bad{background:var(--danger-soft);color:var(--danger)}
+.result.warn{background:var(--warn-soft);color:var(--warn)}
+.result .big{font-size:1.4em;font-weight:800}
+.nfcring{width:150px;height:150px;border-radius:50%;margin:10px auto;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);position:relative}
+.nfcring::before,.nfcring::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:2px solid var(--brand);opacity:.0;animation:ring 2s ease-out infinite}
+.nfcring::after{animation-delay:1s}
+@keyframes ring{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.3);opacity:0}}
+
+/* Safeguarding */
+.alertbar{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:16px;background:var(--danger);color:#fff;margin-bottom:16px;animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(217,54,62,.6)}to{box-shadow:0 0 0 10px rgba(217,54,62,0)}}
+.alertbar .btn{background:#fff;color:var(--danger);border-color:#fff}
+.tracking-on{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:.82em;color:var(--ok)}
+.tracking-on::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--ok);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.map svg{width:100%;height:auto;display:block;border-radius:14px;background:var(--surface-2)}
+.kid{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);cursor:pointer;width:100%;text-align:left;font:inherit;color:var(--ink)}
+.kid[aria-pressed="true"]{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-soft)}
+.kid.alarm{border-color:var(--danger);background:var(--danger-soft)}
+.table-viz{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+.tbl{aspect-ratio:1;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;text-align:center;background:var(--surface);cursor:pointer;font:inherit;color:var(--ink);padding:6px}
+.tbl[aria-pressed="true"]{border-style:solid;border-color:var(--brand);background:var(--brand-soft)}
+.tbl b{font-size:1.1em;display:block}
+.plan{position:relative;display:flex;flex-direction:column}
+.plan.pop{border:2px solid var(--brand)}
+.plan .price{font-size:2em;font-weight:800;letter-spacing:-.02em}
+.plan ul{padding-left:18px;margin:10px 0 16px;font-size:.88em;color:var(--ink-2)}
+.plan ul li{margin:4px 0}
+.plan .btn{margin-top:auto}
+.fees td.us{font-weight:800;color:var(--ok)}
+.typing::after{content:"▍";animation:blink 1s infinite;color:var(--brand)}
+
+.tplgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.tplgrid{grid-template-columns:1fr}}
+.tpl{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font:inherit;color:var(--ink);cursor:pointer;min-height:64px}
+.tpl[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.tpl .em{font-size:1.6em;line-height:1}
+.jroute svg{width:100%;height:auto;display:block;border-radius:12px;background:var(--surface-2)}
+.wx{display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface-2)}
+.wx .ico{font-size:2em}
+.songcard{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:#121212;color:#fff;text-decoration:none;min-height:56px}
+html.hc .songcard{border:2px solid #fff}
+.songcard .disc{width:40px;height:40px;border-radius:50%;background:conic-gradient(#1ED760,#121212,#1ED760);display:grid;place-items:center;flex:none}
+.songcard .disc i{width:10px;height:10px;border-radius:50%;background:#121212;display:block}
+.bubble{background:#DCF8C6;color:#111;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:.88em;box-shadow:var(--shadow)}
+html.hc .bubble{background:#000;color:#fff;border:2px solid #fff}
+.bubble .pin{display:flex;gap:8px;padding:4px 0}
+.stars{display:flex;gap:6px;flex-wrap:wrap}
+.stars button{width:48px;height:48px;border-radius:12px;border:2px solid var(--line);background:var(--surface);font-size:1.2em;cursor:pointer;color:var(--ink)}
+.stars button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.sticker{width:130px;height:130px;border-radius:24px;margin:8px auto;background:linear-gradient(135deg,#5B3DF5,#FF6B3D);display:grid;place-items:center;color:#fff;font-weight:800;text-align:center;font-size:.8em;box-shadow:0 10px 30px rgba(91,61,245,.3)}
+.qrow{border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.morelinks a{display:flex;gap:12px;align-items:center;padding:16px;text-decoration:none;color:var(--ink)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" id="skiplink">Skip to content</a>
+<div class="app">
+  <aside class="side" aria-label="Main navigation">
+    <a class="logo" href="#home"><span class="mark" aria-hidden="true"><i></i></span><span>Gatherwise<small>BY DATAPOINTE · PROTOTYPE v2</small></span></a>
+    <nav class="nav" id="sidenav"></nav>
+    <div class="foot">Working name. Prototype only — data is simulated.<br>© 2026 Datapointe Limited</div>
+  </aside>
+  <main id="main" tabindex="-1">
+    <header class="top">
+      <a class="logo mlogo" href="#home" style="color:var(--ink);padding:0"><span class="mark" aria-hidden="true"><i></i></span><span class="sr">Gatherwise home</span></a>
+      <div class="spacer"></div>
+      <div class="seg" role="group" aria-label="Market and currency">
+        <button data-act="region" data-v="UK" id="rg-UK">🇬🇧 UK £</button>
+        <button data-act="region" data-v="NG" id="rg-NG">🇳🇬 NG ₦</button>
+      </div>
+      <button class="pill" data-act="go" data-v="pricing" id="creditpill" aria-label="AI credits"></button>
+      <button class="iconbtn" data-act="a11y" aria-label="Accessibility settings" title="Accessibility settings">Aa</button>
+    </header>
+    <div class="wrap" id="view"></div>
+  </main>
+</div>
+<nav class="bnav" id="bnav" aria-label="Main navigation (mobile)"></nav>
+<div class="toastbox" id="toasts" aria-live="polite" aria-atomic="false"></div>
+<div class="sr" id="announcer" aria-live="assertive"></div>
+<div id="modalroot"></div>
+
+<script>
+/* =========================================================
+   Gatherwise by Datapointe — clickable prototype v1
+   All data is simulated in memory. No backend.
+   ========================================================= */
+const ICONS = {
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  event:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+  spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',
+  scan:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/>',
+  shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
+  tag:'<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  chat:'<path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  access:'<circle cx="12" cy="4.5" r="2"/><path d="M5 8l7 1.5L19 8M12 9.5V14l-3 7M12 14l3 7"/>'
+};
+const ic = (n,s=20)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = s => document.querySelector(s);
+const hash = s => { let h=2166136261; for(const c of String(s)){h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; };
+const pick = (a,r=Math.random) => a[Math.floor(r()*a.length)];
+const rng = seed => { let h=seed||1; return ()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return ((h>>>0)%100000)/100000;}; };
+const CODECH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const code = (n=4,r=Math.random)=>Array.from({length:n},()=>CODECH[Math.floor(r()*CODECH.length)]).join('');
+const now = ()=>new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+/* ---------- Sample data ---------- */
+const FIRST = ['Tolu','Chidi','Amaka','Emeka','Funke','Ngozi','Bayo','Kemi','Ifeoma','Segun','Hannah','James','Olivia','Tom','Priya','Grace','Daniel','Zainab','Musa','Aisha','Yemi','Chloe','Ben','Ruth','Kola','Efe','Osas','Lara','Sam','Joy'];
+const LAST = ['Adeyemi','Okafor','Bello','Eze','Smith','Johnson','Okonkwo','Williams','Balogun','Patel','Ibrahim','Ogunleye','Brown','Nwosu','Taylor','Asikhia','Danjuma','Edo','Lawal','Clarke'];
+const NEEDS = ['Wheelchair access','Step-free route','BSL/NSL interpreter','Live captions','Large print','Quiet room','Assistance dog','Vegetarian','Halal','Nut allergy','Companion ticket'];
+const COLORS = ['#5B3DF5','#FF6B3D','#11845B','#C2410C','#0E7490','#9333EA','#BE185D','#4D7C0F'];
+function makeGuests(n, seed, opts={}){
+  const r = rng(seed); const out=[];
+  for(let i=0;i<n;i++){
+    const name = pick(FIRST,r)+' '+pick(LAST,r);
+    const st = r()<.62?'yes':r()<.5?'maybe':r()<.5?'no':'pending';
+    const needs = r()<.28?[pick(NEEDS,r)]:[];
+    out.push({id:'g'+seed+'_'+i,name,status:st,plus:r()<.3?1:0,needs,table:st==='yes'&&r()<.7?1+Math.floor(r()*6):0,
+      code:code(6,r),checked:st==='yes'&&r()<.25,group:pick(opts.groups||['Family','Friends','Colleagues'],r),color:pick(COLORS,r)});
+  }
+  return out;
+}
+const S = {
+  region:'UK', plan:'Mini', credits:30,
+  a11y:{hc:false,lg:false,rm:false,cap:true},
+  cur:'ev1', tab:'overview',
+  events:[
+    {id:'ev1',title:"Tolu & David's Wedding",type:'Wedding',date:'Sat 12 Dec 2026',time:'11:00',venue:'Eko Hotel Convention Centre',city:'Lagos',region:'NG',hue:338,style:'Elegant',
+     mode:'rsvp',parts:['Traditional engagement','Church service','Reception'],tickets:[],safeguard:true,
+     desc:'Join our families as we celebrate the union of Tolu and David. Colour of the day: emerald & gold. Aso-ebi available to order in the RSVP form.',
+     guests:makeGuests(28,11,{groups:["Bride's family","Groom's family",'Friends','Church']})},
+    {id:'ev2',title:'Datapointe Tech Breakfast',type:'Corporate',date:'Thu 26 Nov 2026',time:'08:00',venue:'The Ridgeway Centre',city:'Milton Keynes',region:'UK',hue:248,style:'Minimal',
+     mode:'tickets',parts:[],safeguard:false,
+     tickets:[{name:'Early bird',price:15,sold:60,cap:60},{name:'General admission',price:25,sold:71,cap:120},{name:'VIP + networking',price:60,sold:14,cap:20}],
+     desc:'A breakfast briefing for UK SMEs on AI, data protection and smart offices. Coffee, talks and networking.',
+     guests:makeGuests(22,23,{groups:['Speakers','Attendees','Sponsors']})},
+    {id:'ev3',title:"Ada's 7th Birthday Party",type:'Kids party',date:'Sun 6 Dec 2026',time:'14:00',venue:'Bletchley Community Hall',city:'Milton Keynes',region:'UK',hue:24,style:'Vibrant',
+     mode:'rsvp',parts:[],tickets:[],safeguard:true,
+     desc:'Bouncy castle, face painting and cake! Children will get a wristband at the door. Parents, please bring your pickup label.',
+     guests:makeGuests(18,37,{groups:['Class 2B','Family','Neighbours']})},
+    {id:'ev4',title:'Owambe Night Live',type:'Concert',date:'Fri 18 Dec 2026',time:'19:00',venue:'Landmark Event Centre',city:'Lagos',region:'NG',hue:12,style:'Afro-pop',
+     mode:'tickets',parts:[],safeguard:false,
+     tickets:[{name:'Regular',price:15000,sold:420,cap:800},{name:'VIP',price:50000,sold:96,cap:150},{name:'Table for 8',price:600000,sold:11,cap:20}],
+     desc:'Live band, highlife, Afrobeats and the best jollof in Lagos. Dress code: owambe.',
+     guests:makeGuests(20,53,{groups:['Regular','VIP','Table']})},
+    {id:'ev5',title:'Tom Associates Leadership Seminar',type:'Seminar',date:'Mon 23 – Wed 25 Nov 2026',time:'09:00',venue:'Venue to be confirmed, Victoria Island',city:'Lagos',region:'NG',hue:205,style:'Minimal',
+     mode:'rsvp',multi:true,parts:['Day 1 · Mon 23 Nov','Day 2 · Tue 24 Nov','Day 3 · Wed 25 Nov'],tickets:[],safeguard:false,template:'seminar',
+     desc:'A three-day leadership seminar for Tom Associates managers. Tap your phone on the door sticker each morning, and rate every session in 30 seconds. Sample agenda: to be replaced with the real one.',
+     guests:makeGuests(40,71,{groups:['Finance','Operations','Sales','HR']})},
+    {id:'ev6',title:'Sunday Celebration Service',type:'Church',date:'Every Sunday · next Sun 8 Nov 2026',time:'10:00',venue:'Grace Chapel, Bletchley',city:'Milton Keynes',region:'UK',hue:265,style:'Elegant',
+     mode:'rsvp',recur:'Weekly',parts:[],tickets:[],safeguard:true,
+     desc:'Join us every Sunday. Children’s church runs during the service with Safe Pickup. One link and QR poster always shows the next service.',
+     guests:makeGuests(30,89,{groups:['Members','First-timers','Choir','Ushers']})}
+  ],
+  studio:{prompt:'',style:'Elegant',drafts:[],sel:-1,alt:'',busy:false,gen:null,vscene:0,vplaying:false,upload:null},
+  ck:{mode:'tag',count:0,queue:0,offline:false,log:[],last:null,day:0,welcome:null},
+  codes:[], codeSel:0, codeOpts:{prefix:'PARTY',count:10,use:'single',tier:'Any'},
+  sg:{kids:[],alerts:[],audit:[],timer:null,wanderAt:0,focus:null,verify:null,ack:true},
+  rsvp:{resp:'yes',plus:0,parts:{},needs:[],tier:0,qty:1,pay:null,done:false,size:'M'},
+  seatSel:1,
+  fb:{session:'0-0',qs:[],busy:false,anon:true,ans:{},sentTo:{}},
+  sem:[
+    {d:'Day 1 · Mon 23 Nov',s:[['09:30','Strategic leadership in uncertain markets','Dr A. Bello'],['11:30','Financial literacy for non-finance managers','Mrs K. Okafor'],['14:00','Team dynamics workshop','Mr T. Adeyemi']]},
+    {d:'Day 2 · Tue 24 Nov',s:[['09:30','Negotiation and influence','Ms R. Clarke'],['11:30','Data-driven decisions','Dr C. Eze'],['14:00','Managing performance conversations','Mrs F. Balogun']]},
+    {d:'Day 3 · Wed 25 Nov',s:[['09:30','Leading change','Prof. S. Ogunleye'],['11:30','Customer experience leadership','Mr D. Smith'],['14:00','Action planning and close','Tom Associates team']]}
+  ],
+  create:{title:'',type:'Wedding',date:'',venue:'',mode:'rsvp',safeguard:false,desc:'',agenda:'',busy:false,tpl:'',days:1,recur:'none'}
+};
+S.events[0].song='Wedding first dance'; S.events[2].song='Kids party hits';
+S.studio.music='Afrobeats celebration';
+const ev = ()=>S.events.find(e=>e.id===S.cur)||S.events[0];
+const money = (v,region)=>{ region=region||S.region; return region==='NG' ? '₦'+Math.round(v).toLocaleString('en-NG') : '£'+(Math.round(v*100)/100).toLocaleString('en-GB',{minimumFractionDigits:(Math.round(v*100)%100)?2:0,maximumFractionDigits:2}); };
+const sym = r=>(r||S.region)==='NG'?'₦':'£';
+
+/* ---------- Flyer generator (stand-in for AI image output) ---------- */
+function wrapText(t, max){ const w=String(t).split(/\s+/); const lines=[]; let l=''; for(const x of w){ if((l+' '+x).trim().length>max){ if(l) lines.push(l); l=x; } else l=(l+' '+x).trim(); } if(l) lines.push(l); return lines.slice(0,4); }
+function flyer(title, sub, seed, style, ratio='portrait'){
+  const W=300, H = ratio==='wide'?169:375; const r=rng(seed+7); const h0=seed%360, h1=(h0+35+Math.floor(r()*90))%360;
+  const lines = wrapText(title, ratio==='wide'?20:13); const fsz = ratio==='wide'?20:(lines.length>2?30:36);
+  let bg='', deco='', tc='#fff', font="Fraunces, Georgia, serif", sc='rgba(255,255,255,.85)';
+  if(style==='Elegant'){
+    bg=`<defs><linearGradient id="g${seed}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${h0} 45% 18%)"/><stop offset="1" stop-color="hsl(${h0} 55% 9%)"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#g${seed})"/>`;
+    deco=`<rect x="14" y="14" width="${W-28}" height="${H-28}" fill="none" stroke="#D9B45A" stroke-width="1.2"/><rect x="20" y="20" width="${W-40}" height="${H-40}" fill="none" stroke="#D9B45A" stroke-width=".5"/>`+
+      Array.from({length:6},(_,i)=>`<circle cx="${W/2}" cy="${H*0.2}" r="${10+i*7}" fill="none" stroke="#D9B45A" stroke-opacity="${.5-i*.07}"/>`).join('');
+    tc='#F5E6C0'; sc='#D9B45A';
+  } else if(style==='Vibrant'){
+    bg=`<defs><linearGradient id="g${seed}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h0} 92% 58%)"/><stop offset="1" stop-color="hsl(${h1} 90% 52%)"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#g${seed})"/>`;
+    deco=Array.from({length:9},()=>`<circle cx="${Math.floor(r()*W)}" cy="${Math.floor(r()*H)}" r="${8+Math.floor(r()*46)}" fill="hsl(${(h1+Math.floor(r()*120))%360} 95% 70%)" fill-opacity=".55"/>`).join('')+
+      Array.from({length:14},()=>`<rect x="${Math.floor(r()*W)}" y="${Math.floor(r()*H*0.5)}" width="6" height="12" rx="2" transform="rotate(${Math.floor(r()*180)} ${Math.floor(r()*W)} ${Math.floor(r()*H)})" fill="#fff" fill-opacity=".8"/>`).join('');
+    font="'Plus Jakarta Sans', sans-serif";
+  } else if(style==='Minimal'){
+    bg=`<rect width="${W}" height="${H}" fill="#F6F3EC"/>`;
+    deco=`<rect x="0" y="0" width="${W}" height="${H*0.42}" fill="hsl(${h0} 70% 52%)"/><circle cx="${W*0.84}" cy="${H*0.16}" r="${ratio==='wide'?14:24}" fill="#16141D"/>`;
+    tc='#16141D'; sc='#4A4756'; font="'Plus Jakarta Sans', sans-serif";
+  } else { // Afro-pop
+    bg=`<rect width="${W}" height="${H}" fill="hsl(${h0} 80% 40%)"/>`;
+    const bands=[`hsl(${h1} 90% 55%)`,'#FFC93C','#16141D','#FFFFFF'];
+    deco=Array.from({length:6},(_,i)=>{const y=i*(H/6); const c=bands[i%4]; return `<path d="M0 ${y} `+Array.from({length:11},(_,k)=>`L${k*30+15} ${y+(k%2?18:0)}`).join(' ')+` L${W} ${y} L${W} ${y+10} L0 ${y+10}Z" fill="${c}" fill-opacity=".55"/>`;}).join('')+
+      Array.from({length:7},()=>{const x=Math.floor(r()*W),y=Math.floor(r()*H);return `<polygon points="${x},${y} ${x+18},${y+30} ${x-18},${y+30}" fill="#FFC93C" fill-opacity=".7"/>`;}).join('');
+    font="'Plus Jakarta Sans', sans-serif";
+  }
+  const ty = ratio==='wide'? H*0.42 : H*0.5;
+  const text = lines.map((l,i)=>`<text x="${W/2}" y="${ty+i*(fsz+4)}" text-anchor="middle" font-family="${font}" font-weight="800" font-size="${fsz}" fill="${tc}" ${style==='Minimal'?'':'style="paint-order:stroke" stroke="rgba(0,0,0,.18)" stroke-width="2"'}>${esc(l)}</text>`).join('');
+  const subY = ty + lines.length*(fsz+4) + 10;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(title)} flyer">${bg}${deco}${text}<text x="${W/2}" y="${subY}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" font-size="${ratio==='wide'?10:12}" letter-spacing="2" fill="${sc}">${esc(String(sub).toUpperCase())}</text></svg>`;
+}
+
+/* ---------- Illustrative QR (not a scannable code in this prototype) ---------- */
+function qr(text,size=150){
+  const n=25, r=rng(hash(text)); let d='';
+  const inF=(x,y)=>(x<8&&y<8)||(x>16&&y<8)||(x<8&&y>16);
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){ if(!inF(x,y) && r()>.52) d+=`M${x} ${y}h1v1h-1z`; }
+  const f=(x,y)=>`<path d="M${x} ${y}h7v7h-7zM${x+1} ${y+1}v5h5v-5z" fill-rule="evenodd"/><path d="M${x+2} ${y+2}h3v3h-3z"/>`;
+  return `<svg viewBox="-1 -1 27 27" width="${size}" height="${size}" role="img" aria-label="QR code, reference ${esc(text)}"><rect x="-1" y="-1" width="27" height="27" fill="#fff"/><g fill="#16141D"><path d="${d}"/>${f(0,0)}${f(18,0)}${f(0,18)}</g></svg>`;
+}
+
+/* ---------- Toasts, modal, speech ---------- */
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; $('#toasts').appendChild(t); setTimeout(()=>t.remove(),3600); }
+function announce(msg){ const a=$('#announcer'); a.textContent=''; setTimeout(()=>a.textContent=msg,50); }
+let lastFocus=null;
+function modal(html){ lastFocus=document.activeElement; $('#modalroot').innerHTML=`<div class="modal-bg" data-act="closemodal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle">${html}</div></div>`; const f=$('#modalroot .modal button, #modalroot .modal input'); f&&f.focus(); }
+function closeModal(){ $('#modalroot').innerHTML=''; lastFocus&&lastFocus.focus&&lastFocus.focus(); }
+function speak(text){
+  try{ if(!('speechSynthesis' in window)) throw 0; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='en-GB'; u.rate=.98; speechSynthesis.speak(u); toast('🔊 Reading aloud…'); }
+  catch(e){ toast('Audio playback isn’t available in this viewer. The live product uses neural voices (e.g. ElevenLabs).'); }
+}
+function buzz(){ try{ navigator.vibrate && navigator.vibrate([200,100,200]); }catch(e){} }
+
+/* ---------- v2: journey, weather, music ---------- */
+function wx(e){
+  if(e.region==='NG'){ if(/Dec/.test(e.date)) return {t:33,lo:23,rain:10,wind:14,cond:'Harmattan haze, dry',ico:'🌫️'}; return {t:31,lo:25,rain:45,wind:12,cond:'Humid, afternoon showers',ico:'🌦️'}; }
+  if(/Dec/.test(e.date)) return {t:6,lo:1,rain:55,wind:32,cond:'Cold, windy, light rain',ico:'🌧️'};
+  return {t:9,lo:4,rain:40,wind:18,cond:'Cloudy with drizzle',ico:'☁️'};
+}
+function advice(w,e){ const a=[]; const gentle=e.type==='Funeral / remembrance';
+  if(w.rain>=40) a.push(gentle?'Rain is possible: an umbrella may help at the graveside.':'Rain likely: bring an umbrella.');
+  if(w.t>=30) a.push('Hot: light clothing, and keep water close.');
+  if(w.t<=8) a.push('Cold: wear a warm coat. A cloakroom is available.');
+  if(w.wind>=30) a.push('Windy: hats and gele may need securing.');
+  if(/Harmattan/.test(w.cond)) a.push('Dusty haze: sunglasses and lip balm help, and allow extra driving time.');
+  return a; }
+function orgTip(w){ return w.rain>=40?'Organiser tip: confirm canopies or an indoor backup.':w.t>=30?'Organiser tip: add water stations and fans.':w.wind>=30?'Organiser tip: secure outdoor decor and signage.':'No weather action needed.'; }
+function routeWatch(e){ return e.region==='NG'?{from:'Lekki Phase 1',km:14.2,min:38,delay:20,inc:'Slow traffic on Ozumba Mbadiwe Avenue'}:{from:'Central Milton Keynes',km:6.1,min:14,delay:6,inc:'Roadworks on the A5 near the H8 junction'}; }
+function leaveBy(e,r){ const m=/(\d\d):(\d\d)/.exec(e.time)||[0,'18','00']; let t=(+m[1])*60+(+m[2])-(r.min+r.delay+15); t=(t+1440)%1440; return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0'); }
+function journeyCard(e,compact){
+  const w=wx(e), r=routeWatch(e), dest=encodeURIComponent(e.venue+', '+e.city);
+  const adv=advice(w,e);
+  return `<div class="card stack">
+   <div class="row between"><h2 style="margin:0">Get me there</h2><span class="proto">Simulated live data</span></div>
+   <div class="jroute"><svg viewBox="0 0 320 110" role="img" aria-label="Route from ${esc(r.from)} to ${esc(e.venue)}, ${r.km} kilometres">
+     <path d="M20 85 C 80 85, 90 30, 150 40 S 240 90, 300 25" fill="none" stroke="var(--brand)" stroke-width="5" stroke-linecap="round"/>
+     <path d="M150 40 C 175 44, 190 58, 205 66" fill="none" stroke="var(--danger)" stroke-width="5" stroke-linecap="round"/>
+     <circle cx="20" cy="85" r="7" fill="var(--ok)" stroke="#fff" stroke-width="2"/><circle cx="300" cy="25" r="8" fill="var(--accent)" stroke="#fff" stroke-width="2"/>
+     <text x="30" y="103" font-size="10" font-weight="700" fill="var(--ink-2)" font-family="Plus Jakarta Sans,sans-serif">You · ${esc(r.from)}</text>
+     <text x="300" y="50" text-anchor="end" font-size="10" font-weight="700" fill="var(--ink-2)" font-family="Plus Jakarta Sans,sans-serif">Venue</text>
+     <text x="178" y="38" font-size="9" font-weight="700" fill="var(--danger)" font-family="Plus Jakarta Sans,sans-serif">+${r.delay} min</text></svg></div>
+   <div class="grid g3" style="gap:8px">
+     <div class="stat"><div class="l">Distance</div><div class="v" style="font-size:1.2em">${r.km} km</div></div>
+     <div class="stat"><div class="l">Drive now</div><div class="v" style="font-size:1.2em">${r.min+r.delay} min</div></div>
+     <div class="stat"><div class="l">Leave by</div><div class="v" style="font-size:1.2em;color:var(--accent)">${leaveBy(e,r)}</div></div>
+   </div>
+   <div class="callout warn small">⚠ <b>Route watch:</b> ${esc(r.inc)}, adding about ${r.delay} min. We’ll message you again 45 minutes before you need to leave.</div>
+   <div class="row" style="gap:6px">
+     <a class="btn btn-sm" href="https://www.google.com/maps/dir/?api=1&destination=${dest}" target="_blank" rel="noopener">Google Maps ↗</a>
+     <a class="btn btn-sm" href="https://maps.apple.com/?daddr=${dest}" target="_blank" rel="noopener">Apple Maps ↗</a>
+     <a class="btn btn-sm" href="https://waze.com/ul?q=${dest}&navigate=yes" target="_blank" rel="noopener">Waze ↗</a>
+     <button class="btn btn-sm" data-act="geo">📍 Use my location</button>
+   </div>
+   <div class="wx"><span class="ico" aria-hidden="true">${w.ico}</span><div class="grow"><b>${esc(e.date.replace(/^Every Sunday · next /,''))}: ${w.t}°C</b> <span class="small muted">(low ${w.lo}°C) · ${esc(w.cond)} · rain ${w.rain}% · wind ${w.wind} km/h</span>
+     ${adv.length?`<ul class="small" style="margin:6px 0 0;padding-left:18px">${adv.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+     ${compact?'':`<div class="small" style="margin-top:6px;color:var(--brand);font-weight:700">${esc(orgTip(w))}</div>`}</div></div>
+  </div>`; }
+function songCard(e){ if(!e.song) return ''; return `<a class="songcard" href="https://open.spotify.com/search/${encodeURIComponent(e.song)}" target="_blank" rel="noopener" aria-label="Play ${esc(e.song)} on Spotify"><span class="disc" aria-hidden="true"><i></i></span><span class="grow"><b>${esc(e.song)}</b><div class="small" style="opacity:.75">Tap to play on Spotify ↗</div></span><span style="color:#1ED760;font-weight:800">♫</span></a>`; }
+
+/* ---------- Navigation ---------- */
+const NAV = [
+  ['home','Home','home'],['create','Create event','plus'],['event','Manage event','event'],['studio','AI Studio','spark'],
+  ['rsvp','Guest view','phone'],['checkin','Check-in & wristbands','scan'],['feedback','Questionnaires','chat'],['insights','Insights','chart'],['safeguard','Safeguarding','shield'],['pricing','Plans & fees','tag']
+];
+const BNAV = [['home','Home','home'],['checkin','Check-in','scan'],['create','Create','plus'],['insights','Insights','chart'],['more','More','more']];
+function renderNav(route){
+  $('#sidenav').innerHTML = NAV.map(([r,l,i])=>`<a href="#${r}" ${r===route?'aria-current="page"':''}>${ic(i)}<span>${l}</span></a>`).join('') + `<div class="sep"></div><a href="#" data-act="a11y">${ic('access')}<span>Accessibility</span></a>`;
+  $('#bnav').innerHTML = BNAV.map(([r,l,i])=>`<a href="#${r}" ${r===route?'aria-current="page"':''} class="${r==='create'?'plus':''}">${r==='create'?`<span class="fab">${ic(i,24)}</span>`:ic(i)}<span>${l}</span></a>`).join('');
+  ['UK','NG'].forEach(r=>$('#rg-'+r).setAttribute('aria-pressed', S.region===r));
+  $('#creditpill').innerHTML = `${ic('spark',16)} ${S.plan==='Free'?'AI locked':S.credits+' credits'}`;
+}
+const VIEWS = {};
+function route(){ const r=(location.hash||'#home').slice(1); return VIEWS[r]?r:'home'; }
+function render(focus){
+  const r=route(); stopSafeguard(); stopVideo();
+  renderNav(r);
+  $('#view').innerHTML = VIEWS[r]();
+  if(r==='safeguard') startSafeguard();
+  if(focus){ const h=$('#view h1'); if(h){h.setAttribute('tabindex','-1'); h.focus({preventScroll:true});} window.scrollTo(0,0); announce((NAV.find(n=>n[0]===r)||[0,'Page'])[1]+' page'); }
+}
+window.addEventListener('hashchange',()=>render(true));
+function rerender(){ const y=window.scrollY; render(false); window.scrollTo(0,y); }
+
+/* =========================================================
+   VIEWS
+   ========================================================= */
+VIEWS.home = ()=>{
+  const evs = S.events;
+  const allG = evs.flatMap(e=>e.guests);
+  const yes = allG.filter(g=>g.status==='yes').length;
+  const regEv = evs.filter(e=>e.region===S.region && e.mode==='tickets');
+  const rev = regEv.reduce((a,e)=>a+e.tickets.reduce((b,t)=>b+t.sold*t.price,0),0);
+  const sold = regEv.reduce((a,e)=>a+e.tickets.reduce((b,t)=>b+t.sold,0),0);
+  const bars=[3,8,15,26,41,58,49,33,20,12,7,4];
+  return `
+  <section class="card hero">
+    <div class="orb"></div>
+    <div class="eyebrow" style="color:#FFC6B3">Good evening, Enahoro</div>
+    <h1>Plan it. Invite them. Keep everyone safe.</h1>
+    <p>You have ${evs.length} upcoming events, including the Tom Associates seminar (Day 3 today). Create a new one in about 60 seconds. AI drafts the page, the invitation and the flyer for you.</p>
+    <div class="row" style="margin-top:14px">
+      <a class="btn btn-accent" href="#create">${ic('plus')} Create event</a>
+      <a class="btn" style="background:rgba(255,255,255,.12);color:#fff" href="#studio">${ic('spark')} Open AI Studio</a>
+    </div>
+  </section>
+  <div class="grid g4" style="margin:16px 0">
+    <div class="card stat"><div class="l">RSVP yes (all events)</div><div class="v">${yes}</div><div class="d">▲ 12 this week</div></div>
+    <div class="card stat"><div class="l">Tickets sold (${S.region})</div><div class="v">${sold.toLocaleString()}</div><div class="d">▲ 8%</div></div>
+    <div class="card stat"><div class="l">Ticket revenue (${S.region})</div><div class="v">${money(rev)}</div><div class="d">Payouts via ${S.region==='UK'?'Stripe':'Paystack · A1Pay'}</div></div>
+    <div class="card stat"><div class="l">Children safeguarded</div><div class="v">${S.events.filter(e=>e.safeguard).length*8}</div><div class="d" style="color:var(--brand)">2 events in Safeguarding Mode</div></div>
+  </div>
+  <div class="split">
+    <section>
+      <div class="row between" style="margin-bottom:10px"><h2 style="margin:0">Your events</h2><a class="btn btn-sm" href="#create">${ic('plus',16)} New</a></div>
+      <div class="grid g2">
+        ${evs.map(e=>{const y=e.guests.filter(g=>g.status==='yes').length; const cap=e.mode==='tickets'?e.tickets.reduce((a,t)=>a+t.cap,0):e.guests.length; const got=e.mode==='tickets'?e.tickets.reduce((a,t)=>a+t.sold,0):y;
+          return `<article class="card evcard" data-act="openev" data-v="${e.id}" tabindex="0" role="link" aria-label="Manage ${esc(e.title)}">
+            <div class="cov">${flyer(e.title,e.date,e.hue,e.style,'wide')}</div>
+            <div class="body">
+              <div class="row" style="gap:6px;margin-bottom:6px"><span class="badge b-brand">${esc(e.type)}</span><span class="badge">${e.region==='UK'?'🇬🇧':'🇳🇬'} ${esc(e.city)}</span>${e.safeguard?'<span class="badge b-ok">🛡 Safeguarding</span>':''}${e.multi?'<span class="badge b-accent">'+e.parts.length+' days</span>':''}${e.recur?'<span class="badge b-accent">↻ '+e.recur+'</span>':''}</div>
+              <h3 class="trunc">${esc(e.title)}</h3>
+              <div class="small muted">${esc(e.date)} · ${esc(e.venue)}</div>
+              <div class="row between small" style="margin-top:10px"><span>${e.mode==='tickets'?'Tickets sold':'Attending'}</span><b>${got} / ${cap}</b></div>
+              <div class="bar" style="margin-top:4px"><i style="width:${Math.min(100,Math.round(got/cap*100))}%"></i></div>
+            </div></article>`;}).join('')}
+      </div>
+    </section>
+    <aside class="stack">
+      <div class="card">
+        <h2>Check-in flow — Tech Breakfast (rehearsal)</h2>
+        <svg viewBox="0 0 300 120" width="100%" role="img" aria-label="Bar chart of arrivals per 10 minutes, peaking at 58 around 08:50">
+          ${bars.map((b,i)=>`<rect x="${i*25+4}" y="${110-b*1.6}" width="17" height="${b*1.6}" rx="4" fill="${i===5?'var(--accent)':'var(--brand)'}" opacity="${i===5?1:.75}"/>`).join('')}
+          <line x1="0" y1="110" x2="300" y2="110" stroke="var(--line)"/>
+        </svg>
+        <div class="row between small muted"><span>08:00</span><span>Peak 08:50 (58)</span><span>10:00</span></div>
+      </div>
+      <div class="card">
+        <h2>Needs your attention</h2>
+        <ul class="list small">
+          <li><span class="badge b-warn">Access</span><span class="grow">3 guests requested a <b>BSL/NSL interpreter</b> for the wedding</span><button class="btn btn-sm" data-act="openev" data-v="ev1" data-tab="access">Plan</button></li>
+          <li><span class="badge b-brand">RSVP</span><span class="grow">9 wedding guests haven’t replied</span><button class="btn btn-sm" data-act="remind" data-v="WhatsApp">Nudge</button></li>
+          <li><span class="badge b-accent">Tickets</span><span class="grow">VIP for Tech Breakfast is 70% sold</span><button class="btn btn-sm" data-act="openev" data-v="ev2" data-tab="tickets">View</button></li>
+        </ul>
+      </div>
+    </aside>
+  </div>`;
+};
+
+VIEWS.create = ()=>{
+  const c=S.create; const types=['Wedding','Birthday','Kids party','Seminar','Inaugural lecture','Corporate','Conference','Church','Launch','Concert','Funeral / remembrance','Community'];
+  return `
+  <div class="eyebrow">Create · about 60 seconds</div>
+  <h1>New event</h1>
+  <p class="lead">Give us a title, a date and a place. AI fills in the rest: description, agenda, ticket tiers and RSVP questions. You can edit everything.</p>
+  <div class="split">
+    <form class="card stack" id="createform" novalidate>
+      <div><label class="f" for="c-title">Event title</label><input type="text" id="c-title" data-bind="create.title" value="${esc(c.title)}" placeholder="e.g. Kemi’s 40th Birthday Owambe" autocomplete="off"></div>
+      <div><span style="display:block;font-weight:700;font-size:.86em;margin-bottom:6px" id="tpllbl">Start from a template</span>
+        <div class="tplgrid" role="group" aria-labelledby="tpllbl">${Object.entries(TPL).map(([k,t])=>`<button type="button" class="tpl" data-act="ctpl" data-v="${k}" aria-pressed="${c.tpl===k}"><span class="em" aria-hidden="true">${t.icon}</span><span><b>${esc(t.name)}</b><div class="small muted">${esc(t.problem)}</div></span></button>`).join('')}</div>
+        ${c.tpl?`<div class="callout small" style="margin-top:10px"><b>Switched on for ${esc(TPL[c.tpl].name)}:</b> ${TPL[c.tpl].on.map(esc).join(' · ')}<div class="muted" style="margin-top:4px">Tone of voice: ${TPL[c.tpl].tone}</div></div>`:''}</div>
+      <div><span class="f" style="display:block;font-weight:700;font-size:.86em;margin-bottom:6px" id="typelbl">Type of event</span>
+        <div class="row" role="group" aria-labelledby="typelbl" style="gap:6px">${types.map(t=>`<button type="button" class="chip" data-act="ctype" data-v="${t}" aria-pressed="${c.type===t}">${t}</button>`).join('')}</div></div>
+      <div class="grid g2">
+        <div><label class="f" for="c-date">Date</label><input type="date" id="c-date" data-bind="create.date" value="${esc(c.date)}"></div>
+        <div><label class="f" for="c-venue">Venue and city</label><input type="text" id="c-venue" data-bind="create.venue" value="${esc(c.venue)}" placeholder="e.g. Harbour Point, Lagos"></div>
+        <div><label class="f" for="c-days">How many days?</label><input type="number" id="c-days" min="1" max="14" data-bind="create.days" value="${c.days}"><div class="hint">Multi-day: one registration, tap-in each day</div></div>
+        <div><label class="f" for="c-recur">Repeats</label><select id="c-recur" data-bind="create.recur">${[['none','Does not repeat'],['Weekly','Weekly (e.g. church service)'],['Fortnightly','Every 2 weeks'],['Monthly','Monthly (e.g. first Sunday)']].map(([v,l])=>`<option value="${v}" ${c.recur===v?'selected':''}>${l}</option>`).join('')}</select><div class="hint">One link always shows the next date</div></div>
+      </div>
+      <div><span style="display:block;font-weight:700;font-size:.86em;margin-bottom:6px">How will guests join?</span>
+        <div class="seg" role="group" aria-label="Guest entry mode">
+          <button type="button" data-act="cmode" data-v="rsvp" aria-pressed="${c.mode==='rsvp'}">Free RSVP</button>
+          <button type="button" data-act="cmode" data-v="tickets" aria-pressed="${c.mode==='tickets'}">Paid tickets</button>
+          <button type="button" data-act="cmode" data-v="both" aria-pressed="${c.mode==='both'}">Both</button>
+        </div></div>
+      <div class="row between"><b>Details</b><button type="button" class="btn btn-sm" data-act="autofill" ${c.busy?'disabled':''}>${ic('spark',16)} ${c.busy?'Writing…':'Auto-fill with AI'}</button></div>
+      <div><label class="f" for="c-desc">Description</label><textarea id="c-desc" data-bind="create.desc" class="${c.busy?'typing':''}">${esc(c.desc)}</textarea></div>
+      <div><label class="f" for="c-agenda">Agenda</label><textarea id="c-agenda" data-bind="create.agenda">${esc(c.agenda)}</textarea></div>
+      <label class="switch"><input type="checkbox" data-act="csafe" ${c.safeguard?'checked':''}><div><b>Safeguarding Mode</b><span>Child check-in/out with matching pickup codes. Add NFC (Near Field Communication) or BLE (Bluetooth Low Energy) wristbands later. Off by default. Guardians are asked for consent.</span></div></label>
+      <label class="switch"><input type="checkbox" checked disabled><div><b>Accessibility questions on the RSVP form</b><span>Always on: step-free access, interpreters, captions, large print, quiet room, dietary needs.</span></div></label>
+      <button type="submit" class="btn btn-primary btn-block">Create event &amp; open dashboard</button>
+    </form>
+    <aside class="card">
+      <div class="proto">Live preview</div>
+      <div style="border-radius:14px;overflow:hidden;margin:10px 0">${flyer(c.title||'Your event title', c.date?new Date(c.date).toDateString():'Pick a date', hash(c.title||'x')%360, (c.type==='Wedding'||c.type==='Funeral / remembrance'||c.type==='Church')?'Elegant':['Corporate','Conference','Seminar','Inaugural lecture'].includes(c.type)?'Minimal':(c.type==='Concert'||c.type==='Launch')?'Afro-pop':'Vibrant','wide')}</div>
+      <h3>${esc(c.title||'Your event title')}</h3>
+      <div class="small muted">${esc(c.venue||'Venue')} · ${esc(c.type)}</div>
+      <p class="small">${esc(c.desc||'AI will write a friendly description here.')}</p>
+      <div class="callout small">Share links work on WhatsApp, SMS and email. Guests RSVP in one screen with no account needed.</div>
+    </aside>
+  </div>`;
+};
+
+VIEWS.event = ()=>{
+  const e=ev(); const tabs=[['overview','Overview'],['schedule',e.multi?'Days & sessions':e.recur?'Series':'Schedule'],['guests','Guests'],['tickets',e.mode==='tickets'?'Tickets & codes':'Codes'],['seating','Seating'],['access','Access plan'],['safety','Safeguarding']];
+  return `
+  <div class="row between" style="margin-bottom:12px">
+    <div class="grow">
+      <label class="sr" for="evpick">Choose event</label>
+      <select id="evpick" data-act-change="pickev" style="max-width:360px">${S.events.map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select>
+    </div>
+    <div class="row"><a class="btn btn-sm" href="#rsvp">${ic('phone',16)} Guest view</a><a class="btn btn-sm btn-primary" href="#checkin">${ic('scan',16)} Check-in</a></div>
+  </div>
+  <h1>${esc(e.title)}</h1>
+  <p class="muted" style="margin:0 0 14px">${esc(e.date)} · ${esc(e.time)} · ${esc(e.venue)}, ${esc(e.city)}</p>
+  <div class="tabs" role="tablist" aria-label="Event sections">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${S.tab===k}" data-act="tab" data-v="${k}">${l}</button>`).join('')}</div>
+  <div role="tabpanel">${EVTABS[S.tab](e)}</div>`;
+};
+const EVTABS = {};
+EVTABS.overview = e=>{
+  const y=e.guests.filter(g=>g.status==='yes'), ck=e.guests.filter(g=>g.checked).length;
+  const link=`gatherwise.app/e/${e.id}-${hash(e.title).toString(36).slice(0,4)}`;
+  const shareTxt=encodeURIComponent(`You're invited: ${e.title} — ${e.date}. RSVP here: https://${link}`);
+  return `<div class="split">
+   <div class="stack">
+    <div class="grid g4">
+      <div class="card stat"><div class="l">Invited</div><div class="v">${e.guests.length}</div></div>
+      <div class="card stat"><div class="l">Attending</div><div class="v">${y.length + y.reduce((a,g)=>a+g.plus,0)}</div><div class="d">incl. plus-ones</div></div>
+      <div class="card stat"><div class="l">Awaiting reply</div><div class="v">${e.guests.filter(g=>g.status==='pending'||g.status==='maybe').length}</div></div>
+      <div class="card stat"><div class="l">Checked in</div><div class="v">${ck}</div></div>
+    </div>
+    <div class="card">
+      <h2>Share your invitation</h2>
+      <div class="row"><input type="text" readonly value="https://${link}" aria-label="Event link" style="flex:1;min-width:200px"><button class="btn" data-act="copy" data-v="https://${link}">Copy link</button></div>
+      <div class="row" style="margin-top:10px">
+        <a class="btn btn-sm" href="https://wa.me/?text=${shareTxt}" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="btn btn-sm" data-act="remind" data-v="SMS">SMS blast</button>
+        <button class="btn btn-sm" data-act="remind" data-v="Email">Email invite</button>
+        <button class="btn btn-sm" data-act="speak" data-v="${esc(`You're invited to ${e.title}, on ${e.date} at ${e.time}, at ${e.venue}, ${e.city}. ${e.desc}`)}">🔊 Listen to invitation</button>
+      </div>
+      <p class="hint">Each invitation includes an audio version for blind and partially sighted guests, and a captioned video for Deaf and hard-of-hearing guests.</p>
+    </div>
+    ${journeyCard(e)}
+    <div class="card"><h2>About</h2><p style="margin:0">${esc(e.desc)}</p>
+      ${e.parts.length?`<div class="row" style="margin-top:12px;gap:6px">${e.parts.map(p=>`<span class="badge b-brand">${esc(p)}</span>`).join('')}</div><p class="hint">Multi-ceremony RSVP: guests choose which parts they’ll attend.</p>`:''}</div>
+   </div>
+   <aside class="card"><div class="proto">Event flyer</div><div style="border-radius:14px;overflow:hidden;margin:10px 0">${flyer(e.title,e.date,e.hue,e.style)}</div>
+     <a class="btn btn-block" href="#studio">${ic('spark',16)} Redesign with AI</a>
+     <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+     <h3>Event song</h3>${songCard(e)}
+     <div class="row" style="margin-top:8px"><label class="sr" for="songin">Song or playlist name</label><input type="text" id="songin" placeholder="Song, artist or playlist" value="${esc(e.song||'')}" style="flex:1;min-width:140px"><button class="btn btn-sm" data-act="setsong">Save</button></div>
+     <p class="hint">Guests tap to play it on Spotify. AI videos use licensed royalty-free music, because Spotify’s terms don’t allow its songs behind video.</p></aside>
+  </div>`;
+};
+EVTABS.schedule = e=>{
+  if(e.id==='ev5'){ const att=[112,108,0];
+    return `<div class="stack">${S.sem.map((d,i)=>`<div class="card"><div class="row between"><h2 style="margin:0">${esc(d.d)}</h2><span class="badge ${i<2?'b-ok':'b-brand'}">${i<2?att[i]+' of 120 tapped in':'Today · in progress'}</span></div>
+      <div class="tablewrap"><table class="t" style="margin-top:8px"><thead><tr><th>Time</th><th>Session</th><th>Speaker</th><th>Questionnaire</th></tr></thead><tbody>
+      ${d.s.map((s,j)=>`<tr><td class="kbd">${s[0]}</td><td><b>${esc(s[1])}</b></td><td>${esc(s[2])}</td><td>${i<2||j===0?'<span class="badge b-ok">Sent · '+(70+((i*3+j)*7)%25)+'% replied</span>':'<span class="badge">Sends when session ends</span>'}</td></tr>`).join('')}</tbody></table></div></div>`).join('')}
+      <p class="hint">Sample agenda for the pilot. Replace it with Tom Associates’ real sessions, and AI rebuilds the questionnaires.</p></div>`; }
+  if(e.recur){ const r=rng(hash(e.id)); const dates=['Sun 8 Nov','Sun 15 Nov','Sun 22 Nov','Sun 29 Nov','Sun 6 Dec','Sun 13 Dec']; const past=[['Sun 11 Oct',142],['Sun 18 Oct',151],['Sun 25 Oct',138],['Sun 1 Nov',163]];
+    return `<div class="split"><div class="card"><h2>Next dates · ${esc(e.recur)} at ${esc(e.time)}</h2><ul class="list">${dates.map((d,i)=>`<li><span class="kbd" style="min-width:90px">${d}</span><span class="grow">${i===3?'<span class="badge b-warn">Moved to 11:00 · joint service</span>':i===5?'<span class="badge b-brand">Carol service</span>':'Regular service'}</span><span class="small muted">${i===0?Math.round(150+r()*10)+' expected':''}</span></li>`).join('')}</ul>
+      <div class="row" style="margin-top:10px"><button class="btn btn-sm" data-act="toast" data-v="Exception added: this date is skipped and followers are told">+ Skip a date</button><button class="btn btn-sm" data-act="toast" data-v="Calendar feed copied: followers get every date in Google, Apple or Outlook calendar">Copy calendar feed</button></div></div>
+      <aside class="card"><h2>Attendance trend</h2><svg viewBox="0 0 280 130" width="100%" role="img" aria-label="Attendance for the last four Sundays: ${past.map(p=>p[1]).join(', ')}">${past.map((p,i)=>`<rect x="${i*68+14}" y="${118-p[1]*0.6}" width="44" height="${p[1]*0.6}" rx="6" fill="var(--brand)" opacity="${i===3?1:.6}"/><text x="${i*68+36}" y="${112-p[1]*0.6}" text-anchor="middle" font-size="11" font-weight="800" fill="var(--ink)" font-family="Plus Jakarta Sans,sans-serif">${p[1]}</text>`).join('')}</svg>
+       <div class="row between small muted">${past.map(p=>`<span>${p[0].slice(4)}</span>`).join('')}</div>
+       <ul class="list small" style="margin-top:8px"><li><span class="badge b-brand">12</span><span class="grow">first-timers this month (follow-up sent)</span></li><li><span class="badge b-warn">9</span><span class="grow">regulars missed 3 weeks (gentle “we missed you” nudge, opt-in)</span></li></ul></aside></div>`; }
+  return `<div class="card"><h2>${esc(e.date)} · ${esc(e.time)}</h2><p class="muted">A single-date event.</p><div class="row"><button class="btn btn-sm" data-act="toast" data-v="Day 2 added: guests can choose which days to attend">+ Add another day</button><button class="btn btn-sm" data-act="toast" data-v="Made recurring: weekly on the same day">Make it recurring</button></div></div>`;
+};
+EVTABS.guests = e=>{
+  const st={yes:['Attending','b-ok'],no:['Declined','b-danger'],maybe:['Maybe','b-warn'],pending:['No reply','']};
+  return `<div class="card">
+    <div class="row between" style="margin-bottom:8px"><h2 style="margin:0">Guest list (${e.guests.length})</h2>
+     <div class="row"><button class="btn btn-sm" data-act="addguest">+ Add guest</button><button class="btn btn-sm" data-act="toast" data-v="CSV import: map columns, merge duplicates, tag groups (prototype)">Import CSV / contacts</button><button class="btn btn-sm btn-primary" data-act="remind" data-v="WhatsApp">Remind non-responders</button></div></div>
+    <label class="sr" for="gsearch">Search guests</label><input type="search" id="gsearch" data-act-input="gsearch" placeholder="Search by name, group or need…" style="margin-bottom:6px">
+    <ul class="list" id="glist">${e.guests.map(g=>`<li data-q="${esc((g.name+' '+g.group+' '+g.needs.join(' ')).toLowerCase())}">
+      <span class="av" style="background:${g.color}" aria-hidden="true">${esc(g.name.split(' ').map(x=>x[0]).join(''))}</span>
+      <div class="grow"><div class="trunc"><b>${esc(g.name)}</b>${g.plus?` <span class="muted small">+${g.plus}</span>`:''}</div>
+        <div class="small muted trunc">${esc(g.group)}${g.table?' · Table '+g.table:''}${g.needs.length?' · ♿ '+esc(g.needs.join(', ')):''}</div></div>
+      ${g.checked?'<span class="badge b-brand">Checked in</span>':''}<span class="badge ${st[g.status][1]}">${st[g.status][0]}</span></li>`).join('')}</ul>
+  </div>`;
+};
+EVTABS.tickets = e=>{
+  const o=S.codeOpts; const sel=S.codes[S.codeSel];
+  const tiers = e.mode==='tickets'?`<div class="card"><h2>Ticket tiers</h2><div class="tablewrap"><table class="t"><thead><tr><th>Tier</th><th>Price</th><th>Sold</th><th>Progress</th></tr></thead><tbody>
+    ${e.tickets.map(t=>`<tr><td><b>${esc(t.name)}</b></td><td>${money(t.price,e.region)}</td><td>${t.sold}/${t.cap}</td><td style="min-width:120px"><div class="bar"><i style="width:${Math.round(t.sold/t.cap*100)}%;${t.sold>=t.cap?'background:var(--accent)':''}"></i></div>${t.sold>=t.cap?'<span class="small" style="color:var(--accent)">Sold out · waitlist on</span>':''}</td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="row" style="margin-top:12px"><button class="btn btn-sm" data-act="toast" data-v="Rule added: switch to next tier when sold out or on a set date">+ Price switch rule</button><button class="btn btn-sm" data-act="toast" data-v="Promo code PROMO10 created (10% off, 50 uses)">+ Promo code</button><span class="small muted">Payouts: ${e.region==='UK'?'Stripe Connect, held until the event date':'Paystack sub-account or A1Pay, held until the event date'}</span></div></div>`:'';
+  return `<div class="stack">${tiers}
+  <div class="split">
+    <div class="card">
+      <h2>Generate access codes</h2>
+      <p class="small muted" style="margin-top:-6px">For party gates, VIP unlocks, secret tickets or wristband encoding. Codes avoid look-alike characters (0/O, 1/I).</p>
+      <div class="grid g2">
+        <div><label class="f" for="co-p">Prefix</label><input type="text" id="co-p" data-bind="codeOpts.prefix" value="${esc(o.prefix)}" maxlength="10"></div>
+        <div><label class="f" for="co-n">How many</label><input type="number" id="co-n" data-bind="codeOpts.count" value="${o.count}" min="1" max="500"></div>
+        <div><label class="f" for="co-u">Usage</label><select id="co-u" data-bind="codeOpts.use"><option value="single" ${o.use==='single'?'selected':''}>Single-use (one person)</option><option value="multi" ${o.use==='multi'?'selected':''}>Multi-use (a table or family)</option></select></div>
+        <div><label class="f" for="co-t">Unlocks</label><select id="co-t" data-bind="codeOpts.tier">${['Any',...(e.tickets.map(t=>t.name)),'VIP area','Kids zone','Backstage'].map(t=>`<option ${o.tier===t?'selected':''}>${esc(t)}</option>`).join('')}</select></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn btn-primary" data-act="gencodes">Generate codes</button>${S.codes.length?`<button class="btn" data-act="copycodes">Copy all (${S.codes.length})</button><button class="btn" data-act="go" data-v="checkin">Encode to wristbands →</button>`:''}</div>
+      ${S.codes.length?`<div class="row" style="margin-top:14px;gap:6px">${S.codes.slice(0,40).map((c,i)=>`<button class="chip kbd" data-act="selcode" data-v="${i}" aria-pressed="${i===S.codeSel}">${c}</button>`).join('')}</div>`:''}
+    </div>
+    <aside class="card" style="text-align:center">
+      <div class="proto">Code preview</div>
+      ${sel?`<div style="margin:12px auto;display:inline-block;padding:10px;background:#fff;border-radius:12px">${qr(sel,170)}</div><div class="kbd" style="font-size:1.3em">${sel}</div><div class="small muted">${o.use==='single'?'Single-use':'Multi-use'} · ${esc(o.tier)}</div>
+        <button class="btn btn-sm" style="margin-top:10px" data-act="speak" data-v="Your code is ${sel.split('').join(' ')}">🔊 Speak code</button>
+        <p class="hint">Live tickets use signed QR codes that change every 30 seconds, so a screenshot can’t be reused. Wristbands use NTAG 424 DNA chips that can’t be cloned.</p>`
+        :`<p class="muted small" style="margin-top:20px">Generate codes to preview the QR code and printable label.</p>`}
+    </aside>
+  </div></div>`;
+};
+EVTABS.seating = e=>{
+  const yes=e.guests.filter(g=>g.status==='yes'); const un=yes.filter(g=>!g.table); const t=S.seatSel;
+  const at=yes.filter(g=>g.table===t);
+  return `<div class="split">
+   <div class="card"><div class="row between"><h2 style="margin:0">Tables</h2><button class="btn btn-sm" data-act="autoseat">${ic('spark',16)} Auto-seat by group</button></div>
+    <p class="hint" style="margin-bottom:12px">Select a table, then seat guests with the menu. No dragging needed, so it works with a keyboard and screen reader (WCAG 2.2 “Dragging Movements”).</p>
+    <div class="table-viz">${[1,2,3,4,5,6].map(n=>{const c=yes.filter(g=>g.table===n).length;return `<button class="tbl" data-act="seatsel" data-v="${n}" aria-pressed="${n===t}" aria-label="Table ${n}, ${c} of 10 seats filled"><span><b>T${n}</b><span class="small muted">${c}/10</span></span></button>`;}).join('')}</div></div>
+   <aside class="card"><h2>Table ${t}</h2>
+    <ul class="list small">${at.map(g=>`<li><span class="grow">${esc(g.name)} <span class="muted">· ${esc(g.group)}</span></span><button class="btn btn-sm btn-ghost" data-act="unseat" data-v="${g.id}" aria-label="Remove ${esc(g.name)} from table">✕</button></li>`).join('')||'<li class="muted">Empty table</li>'}</ul>
+    <label class="f" for="seatadd" style="margin-top:12px">Seat a guest here (${un.length} unseated)</label>
+    <div class="row"><select id="seatadd" style="flex:1">${un.map(g=>`<option value="${g.id}">${esc(g.name)} — ${esc(g.group)}</option>`).join('')||'<option>Everyone is seated</option>'}</select><button class="btn btn-primary" data-act="seat" ${un.length?'':'disabled'}>Seat</button></div>
+    <button class="btn btn-sm" style="margin-top:12px" data-act="toast" data-v="Place cards and table plan exported to PDF (prototype)">Print place cards</button>
+   </aside></div>`;
+};
+EVTABS.access = e=>{
+  const counts={}; e.guests.forEach(g=>g.needs.forEach(n=>counts[n]=(counts[n]||0)+1));
+  const acts={'Wheelchair access':'Confirm ramp and accessible toilet with the venue','Step-free route':'Add a step-free route to the venue map and signage','BSL/NSL interpreter':'Book a BSL (British Sign Language) or NSL (Nigerian Sign Language) interpreter from Vendors','Live captions':'Turn on live captions for speeches and the livestream','Large print':'Print large-print agenda and menus','Quiet room':'Set aside a quiet room and show it on the map','Assistance dog':'Tell the venue and plan a water and relief area','Vegetarian':'Send dietary counts to the caterer','Halal':'Send dietary counts to the caterer','Nut allergy':'Flag allergens to the caterer and on table cards','Companion ticket':'Issue free companion tickets'};
+  const ks=Object.keys(counts);
+  return `<div class="split"><div class="card"><h2>Access plan</h2><p class="small muted" style="margin-top:-6px">Built automatically from what guests told you in their RSVP. Tick items off as you arrange them.</p>
+   <ul class="list">${ks.length?ks.map((k,i)=>`<li><input type="checkbox" id="ac${i}" style="width:22px;height:22px"><label for="ac${i}" class="grow"><b>${esc(k)}</b> <span class="badge">${counts[k]} guest${counts[k]>1?'s':''}</span><div class="small muted">${esc(acts[k]||'Review request')}</div></label></li>`).join(''):'<li class="muted">No access requests yet.</li>'}</ul></div>
+   <aside class="card stack"><h2>Built-in for every guest</h2>
+    <ul class="small" style="padding-left:18px;margin:0">
+     <li>Screen-reader-friendly pages (tested with VoiceOver, TalkBack and NVDA)</li><li>“Listen to this invitation” audio on every invite</li><li>Captions on every video announcement</li><li>High-contrast and large-text modes</li><li>Visual and vibration alerts in the app</li><li>Spoken ticket codes, with large-print and tactile ticket options</li><li>Magic-link sign-in, so there are no puzzles or passwords</li></ul>
+    <button class="btn" data-act="a11y">Try accessibility settings</button></aside></div>`;
+};
+EVTABS.safety = e=>`<div class="split"><div class="card">
+   <h2>Safeguarding Mode</h2>
+   <label class="switch"><input type="checkbox" data-act="evsafe" ${e.safeguard?'checked':''}><div><b>Enable for this event</b><span>Off by default (ICO Children’s Code, standard 10). Guardians give consent at registration.</span></div></label>
+   <div class="grid g2" style="margin-top:12px">
+    ${[['Tier 0 · Safe Pickup','QR codes plus matching child and guardian pickup labels, an authorised-pickup list and allergy flags','Free'],['Tier 1 · Tap Zones','NFC wristbands. Tap in and out at zone doors and see where each child was last seen','Planner'],['Tier 2 · Live Location','BLE wristbands with an SOS button and gateways in each zone, for a live hall map and geofence alerts','Hire add-on'],['Tier 3 · Exit Guard','UHF RFID (Ultra-High Frequency Radio Frequency Identification) gates at exits that alert if a child leaves without their guardian','Hire add-on']]
+     .map(([t,d,p],i)=>`<div class="card" style="padding:14px;box-shadow:none"><div class="row between"><b class="small">${t}</b><span class="badge ${i?'b-brand':'b-ok'}">${p}</span></div><p class="small muted" style="margin:6px 0 0">${d}</p></div>`).join('')}
+   </div></div>
+   <aside class="card stack"><h2>Privacy controls</h2>
+    <ul class="small" style="padding-left:18px;margin:0"><li>Only guardians and named safeguarding officers can see a child’s location</li><li>Every view is recorded in an audit log</li><li>Location trails are deleted automatically 48 hours after the event. Incident records are kept</li><li>Children’s data is held in a separate encrypted store, in the UK or Nigeria</li><li>Signs and band colours show on site when tracking is active</li></ul>
+    <a class="btn btn-primary" href="#safeguard">Open safeguarding console</a></aside></div>`;
+
+VIEWS.studio = ()=>{
+  const st=S.studio, e=ev(); const locked=S.plan==='Free';
+  const styles=['Elegant','Vibrant','Minimal','Afro-pop'];
+  if(locked) return `<h1>AI Studio</h1><div class="card lock"><div style="font-size:2.4em">✨</div><h2>AI starts on the Mini plan</h2><p class="muted" style="max-width:44ch">Free plans get beautiful templates. Upgrade to Mini (${S.region==='UK'?'£3.99':'₦2,500'}/month, 30 credits) to generate flyers, invitations and video announcements in seconds.</p><a class="btn btn-primary" href="#pricing">See plans</a></div>`;
+  const sel=st.sel>=0?st.drafts[st.sel]:null;
+  return `
+  <div class="eyebrow">AI Studio · ${esc(e.title)}</div>
+  <h1>Create flyers and video announcements</h1>
+  <p class="lead">Describe the mood. You get 4 drafts in seconds. Pick one, then turn it into a captioned video announcement with a voice-over.</p>
+  <div class="split">
+   <div class="stack">
+    <div class="card stack">
+      <div><label class="f" for="st-p">What should it look like?</label>
+        <textarea id="st-p" data-bind="studio.prompt" placeholder="e.g. Emerald and gold, Yoruba wedding, gele, elegant lettering, warm evening light">${esc(st.prompt)}</textarea></div>
+      <div class="row" role="group" aria-label="Style" style="gap:6px">${styles.map(s=>`<button class="chip" data-act="stylepick" data-v="${s}" aria-pressed="${st.style===s}">${s}</button>`).join('')}</div>
+      <div class="row between"><span class="small muted">4 drafts = 4 credits · you have <b>${S.credits}</b></span>
+        <div class="row"><label class="btn btn-sm" style="cursor:pointer">📎 Upload photo/video<input type="file" accept="image/*,video/*" data-act-change="upload" class="sr"></label>
+        <button class="btn btn-primary" data-act="generate" ${st.busy?'disabled':''}>${ic('spark',16)} ${st.busy?'Generating…':'Generate 4 drafts'}</button></div></div>
+    </div>
+    ${st.upload?`<div class="card"><div class="row between"><h2 style="margin:0">Your upload</h2><button class="btn btn-sm" data-act="clearupload">Remove</button></div><div style="margin-top:10px;max-width:320px">${st.upload.type.startsWith('video')?`<video src="${st.upload.url}" controls style="width:100%;border-radius:12px"></video>`:`<img src="${st.upload.url}" alt="Uploaded image for the event" style="width:100%;border-radius:12px">`}</div><p class="hint">Uploads are added to the event gallery and can be used in announcements. Short videos get captions added automatically.</p></div>`:''}
+    <div class="card">
+      <div class="row between"><h2 style="margin:0">Drafts</h2><span class="proto">Prototype: stand-in art · live uses image models</span></div>
+      <div class="drafts" style="margin-top:12px">
+        ${st.busy?[0,1,2,3].map(()=>'<div class="draft shimmer" aria-hidden="true"></div>').join('')
+          : st.drafts.length? st.drafts.map((d,i)=>`<button class="draft" data-act="seldraft" data-v="${i}" aria-pressed="${i===st.sel}" aria-label="Draft ${i+1}, ${esc(d.style)} style">${flyer(e.title,e.date,d.seed,d.style)}</button>`).join('')
+          : `<p class="muted small" style="grid-column:1/-1">Your drafts will appear here.</p>`}
+      </div>
+    </div>
+   </div>
+   <aside class="stack">
+    <div class="card">
+      <h2>Alt text</h2>
+      <p class="small muted" style="margin-top:-6px">Written automatically for screen-reader users. You can edit it.</p>
+      <label class="sr" for="alt">Alt text</label><textarea id="alt" data-bind="studio.alt" ${sel?'':'disabled'}>${esc(st.alt)}</textarea>
+    </div>
+    <div class="card">
+      <div class="row between"><h2 style="margin:0">Video announcement</h2><span class="badge b-brand">2 credits</span></div>
+      ${sel?`<div class="vid" style="margin-top:12px" id="vid" aria-label="Video announcement preview">${videoFrame()}</div>
+       <div class="row" style="margin-top:12px;justify-content:center">
+         <button class="btn btn-primary" data-act="vplay">${st.vplaying?'⏸ Pause':'▶ Play with voice-over'}</button>
+         <label class="chip" style="cursor:pointer"><input type="checkbox" data-act="capt" ${S.a11y.cap?'checked':''}> Captions</label></div>
+       <div style="margin-top:10px"><label class="f" for="vmusic">Background music (licensed, royalty-free)</label><select id="vmusic" data-bind="studio.music">${['Afrobeats celebration','Highlife groove','Gentle hymn','Corporate upbeat','Kids party','Calm piano'].map(m=>`<option ${S.studio.music===m?'selected':''}>${m}</option>`).join('')}</select><div class="hint">Safe to share on WhatsApp, Instagram and TikTok without being muted.</div></div>
+       <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+       <div class="row between"><div><b class="small">Full AI video (8 seconds)</b><div class="hint">Generative video takes about 30–90 seconds. We’ll notify you when it’s ready.</div></div><button class="btn btn-sm" data-act="genvideo" ${st.gen!=null?'disabled':''}>15 credits</button></div>
+       ${st.gen!=null?`<div class="bar" style="margin-top:10px" role="progressbar" aria-valuenow="${st.gen}" aria-valuemin="0" aria-valuemax="100" aria-label="Video generation progress"><i style="width:${st.gen}%"></i></div><div class="hint">${st.gen<100?'Rendering… '+st.gen+'%':'Ready: added to the event gallery'}</div>`:''}
+       <button class="btn btn-block" style="margin-top:12px" data-act="usedraft">Use as event cover</button>`
+      :`<p class="small muted">Pick a draft to make a 10-second captioned announcement with music and a voice-over.</p>`}
+    </div>
+   </aside>
+  </div>`;
+};
+function scenes(){ const e=ev(); return [
+  {t:e.title, c:`You're invited to ${e.title}.`},
+  {t:e.date+' · '+e.time, c:`Join us on ${e.date} at ${e.time}.`},
+  {t:e.venue, c:`At ${e.venue}, ${e.city}.`},
+  {t:'RSVP on Gatherwise', c:`Tap the link to RSVP. We can't wait to see you.`}]; }
+function videoFrame(){ const st=S.studio, e=ev(), d=st.drafts[st.sel]; const sc=scenes(); const i=st.vscene%sc.length;
+  return `<div class="bgimg">${flyer(e.title,'',d.seed,d.style)}</div><div class="prog">${sc.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</div><div style="position:absolute;top:18px;right:12px;color:#fff;font-size:.72em;font-weight:700;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">♪ ${esc(S.studio.music)}</div>
+   <div class="ov"><div class="scene" aria-live="polite">${esc(sc[i].t)}</div>${S.a11y.cap?`<div class="cap">${esc(sc[i].c)}</div>`:''}</div>`; }
+let vtimer=null;
+function stopVideo(){ if(vtimer){clearInterval(vtimer);vtimer=null;} S.studio.vplaying=false; try{speechSynthesis.cancel()}catch(e){} }
+
+VIEWS.rsvp = ()=>{
+  const e=ev(), R=S.rsvp; const isT=e.mode==='tickets';
+  const t=isT?e.tickets[R.tier]:null;
+  const feeOf=p=> e.region==='UK'? p*0.025+0.30 : p*0.035+100;
+  const sub=t?t.price*R.qty:0, fee=t?feeOf(t.price)*R.qty:0;
+  const providers = e.region==='UK'
+    ? [['stripe-card','Card · Apple Pay · Google Pay','Stripe','#635BFF']]
+    : [['paystack-card','Card','Paystack','#0BA4DB'],['paystack-transfer','Bank transfer / USSD','Paystack','#0BA4DB'],['a1pay','A1Pay (card or transfer)','A1Pay','#11845B']];
+  if(R.done) return `<div class="row between" style="max-width:420px;margin:0 auto 12px"><span class="proto">Guest view · mobile</span><button class="btn btn-sm" data-act="rsvpreset">Start again</button></div>
+   <div class="phone"><div class="pad">
+    <div class="ticket"><div class="eyebrow" style="color:#FFC6B3">${isT?'Your ticket':'You’re on the list'}</div><h1 style="color:#fff;font-size:1.4em;margin-top:6px">${esc(e.title)}</h1>
+     <div class="small" style="opacity:.85">${esc(e.date)} · ${esc(e.time)}<br>${esc(e.venue)}</div>
+     <div class="qrw" id="liveqr">${qr(e.id+R.seed,190)}</div>
+     <div class="kbd" style="font-size:1.2em" id="livecode">${R.code}</div>
+     <div class="small" style="opacity:.8">Code changes every 30 seconds · <span id="qrtick">30</span>s</div>
+     <div class="row" style="justify-content:center;margin-top:12px"><button class="btn btn-sm" style="background:#fff;color:#16141D" data-act="speak" data-v="Your entry code is ${R.code.split('').join(' ')}">🔊 Speak my code</button><button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff" data-act="toast" data-v="Added to Apple Wallet / Google Wallet (prototype)">Add to Wallet</button></div>
+    </div>
+    ${e.safeguard?`<div class="callout ok" style="margin-top:14px"><b>Safe Pickup is on for this event.</b> At the door, your child gets a wristband and you get a matching pickup label. Only someone with that label can collect your child.</div>`:''}
+    <div style="margin-top:14px">${journeyCard(e,true)}</div>
+    <p class="small muted" style="text-align:center">Confirmation sent by email and WhatsApp.</p>
+   </div></div>`;
+  return `<div class="row between" style="max-width:420px;margin:0 auto 12px"><span class="proto">Guest view · mobile · no login</span>
+    <select data-act-change="pickev" aria-label="Preview event" style="max-width:220px;min-height:38px;padding:6px 10px">${S.events.map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select></div>
+  <div class="phone">
+   <div class="cov">${flyer(e.title,e.date,e.hue,e.style,'wide')}</div>
+   <form class="pad stack" id="rsvpform" novalidate>
+    <div><span class="badge b-brand">${esc(e.type)}</span><h1 style="font-size:1.45em;margin-top:8px">${esc(e.title)}</h1>
+     <div class="small muted">📅 ${esc(e.date)} · ${esc(e.time)}<br>📍 ${esc(e.venue)}, ${esc(e.city)}</div></div>
+    <div class="row"><button type="button" class="btn btn-sm" data-act="speak" data-v="${esc(`You're invited to ${e.title}, on ${e.date} at ${e.time}, at ${e.venue}, ${e.city}. ${e.desc}`)}">🔊 Listen to this invitation</button><button type="button" class="btn btn-sm" data-act="toast" data-v="Calendar file (.ics) added">📆 Add to calendar</button></div>
+    <p class="small" style="margin:0">${esc(e.desc)}</p>
+    ${songCard(e)}
+    ${journeyCard(e,true)}
+    <div><label class="f" for="r-name">Your name</label><input type="text" id="r-name" autocomplete="name" placeholder="Full name"></div>
+    ${isT?`
+     <fieldset style="border:0;padding:0;margin:0"><legend class="f" style="font-weight:700;font-size:.86em;margin-bottom:6px">Choose a ticket</legend>
+      <div class="stack">${e.tickets.map((tk,i)=>{const so=tk.sold>=tk.cap;return `<button type="button" class="paybtn" data-act="tier" data-v="${i}" aria-pressed="${R.tier===i}" ${so?'disabled style="opacity:.5"':''}><span class="grow"><b>${esc(tk.name)}</b><div class="small muted">${so?'Sold out · join waitlist':(tk.cap-tk.sold)+' left'}</div></span><b>${money(tk.price,e.region)}</b></button>`;}).join('')}</div></fieldset>
+     <div class="row between"><span class="f" style="margin:0">Quantity</span><div class="stepper"><button type="button" data-act="qty" data-v="-1" aria-label="Fewer tickets">−</button><output aria-live="polite">${R.qty}</output><button type="button" data-act="qty" data-v="1" aria-label="More tickets">+</button></div></div>`
+    :`
+     <div><span class="f" style="display:block;font-weight:700;font-size:.86em;margin-bottom:6px">Will you attend?</span>
+      <div class="rsvpbtns" role="group" aria-label="RSVP response">${[['yes','✓ Yes'],['maybe','Maybe'],['no','✕ No']].map(([k,l])=>`<button type="button" data-act="resp" data-v="${k}" aria-pressed="${R.resp===k}">${l}</button>`).join('')}</div></div>
+     ${R.resp!=='no'?`
+     ${e.parts.length?`<fieldset style="border:0;padding:0;margin:0"><legend class="f" style="font-weight:700;font-size:.86em;margin-bottom:6px">${e.multi?'Which days will you attend?':'Which parts will you attend?'}</legend>${e.parts.map((p,i)=>`<label class="switch" style="padding:8px 0"><input type="checkbox" data-act="part" data-v="${esc(p)}" ${R.parts[p]!==false?'checked':''}><div><b>${esc(p)}</b></div></label>`).join('')}</fieldset>`:''}
+     <div class="row between"><span class="f" style="margin:0">Bringing a guest?</span><div class="stepper"><button type="button" data-act="plus" data-v="-1" aria-label="Fewer plus-ones">−</button><output aria-live="polite">${R.plus}</output><button type="button" data-act="plus" data-v="1" aria-label="More plus-ones">+</button></div></div>
+     ${e.type==='Wedding'?`<div><label class="f" for="r-aso">Aso-ebi (event outfit fabric) size</label><select id="r-aso" data-bind="rsvp.size">${['Not needed','S','M','L','XL','XXL','Gele / cap only'].map(s=>`<option ${R.size===s?'selected':''}>${s}</option>`).join('')}</select></div>`:''}
+     ${e.type==='Kids party'?`<div class="callout"><b>Bringing children?</b> Add each child’s name, age and allergies. You’ll get a matching pickup label at the door.<div class="row" style="margin-top:8px"><input type="text" placeholder="Child’s name and age" aria-label="Child name and age" style="flex:1"><input type="text" placeholder="Allergies" aria-label="Child allergies" style="flex:1"></div><label class="switch" style="padding:8px 0 0"><input type="checkbox"><div><b>I consent to my child wearing a safety wristband</b><span>Used only during the event. Location data is deleted 48 hours afterwards.</span></div></label></div>`:''}
+     `:''}`}
+    <fieldset style="border:0;padding:0;margin:0"><legend class="f" style="font-weight:700;font-size:.86em;margin-bottom:6px">Access and dietary needs (optional)</legend>
+     <div class="row" style="gap:6px">${NEEDS.map(n=>`<button type="button" class="chip" data-act="need" data-v="${esc(n)}" aria-pressed="${R.needs.includes(n)}">${esc(n)}</button>`).join('')}</div>
+     <p class="hint">We share this only with the organiser so they can prepare.</p></fieldset>
+    ${isT?`<fieldset style="border:0;padding:0;margin:0"><legend class="f" style="font-weight:700;font-size:.86em;margin-bottom:6px">Pay with</legend>
+      <div class="stack">${providers.map(([k,l,n,c])=>`<button type="button" class="paybtn" data-act="pay" data-v="${k}" aria-pressed="${R.pay===k}"><span class="lg" style="background:${c}">${n.slice(0,2).toUpperCase()}</span><span class="grow"><b>${n}</b><div class="small muted">${l}</div></span></button>`).join('')}</div></fieldset>
+     <div class="card" style="box-shadow:none;padding:14px;background:var(--surface-2)"><div class="row between small"><span>${R.qty} × ${esc(t.name)}</span><span>${money(sub,e.region)}</span></div><div class="row between small"><span>Booking fee (all-in, nothing added later)</span><span>${money(fee,e.region)}</span></div><div class="row between" style="margin-top:6px"><b>Total</b><b>${money(sub+fee,e.region)}</b></div></div>`:''}
+    <button type="submit" class="btn btn-primary btn-block" style="min-height:54px">${isT?`Pay ${money(sub+fee,e.region)}`:R.resp==='no'?'Send my apologies':'Confirm RSVP'}</button>
+    <p class="hint" style="text-align:center">🔒 ${isT?(e.region==='UK'?'Secure checkout by Stripe':'Secure checkout by Paystack or A1Pay'):'No account or password needed'}</p>
+   </form></div>`;
+};
+
+function tagPanel(e){ return `<div style="text-align:center">
+   <div class="sticker" aria-hidden="true"><span>TAP YOUR<br>PHONE HERE<br><span style="font-size:1.6em">))))</span></span></div>
+   <p><b>Attendees tap their own phone on the door sticker</b></p>
+   <p class="small muted" style="max-width:46ch;margin:0 auto 12px">Works on iPhone and Android, with no app needed. Each NTAG 424 DNA sticker makes a fresh code on every tap, so a copied link can’t be used from home. ${e.multi?'One tap per person per day.':''}</p>
+   <button class="btn btn-primary" data-act="tagtap">Simulate an attendee tap</button>
+  </div>`; }
+VIEWS.checkin = ()=>{
+  const e=ev(), C=S.ck; const tot=e.guests.filter(g=>g.status==='yes').length; const ck=e.guests.filter(g=>g.checked).length;
+  const nfcOK = 'NDEFReader' in window;
+  const L=C.last;
+  return `<div class="row between"><div><div class="eyebrow">Door staff · ${esc(e.title)}</div><h1>Check-in</h1>${e.multi?`<div class="row" role="group" aria-label="Seminar day" style="gap:6px;margin-top:6px">${e.parts.map((d,i)=>`<button class="chip" data-act="ckday" data-v="${i}" aria-pressed="${C.day===i}">${esc(d)}</button>`).join('')}</div>`:''}</div>
+   <label class="switch" style="border:0;padding:0"><input type="checkbox" data-act="offline" ${C.offline?'checked':''}><div><b>Offline mode</b><span>${C.offline?C.queue+' scans waiting to sync':'Scans sync instantly'}</span></div></label></div>
+  <div class="grid g3" style="margin:12px 0 16px">
+   <div class="card stat"><div class="l">Checked in</div><div class="v">${ck} <span class="small muted">/ ${tot}</span></div><div class="bar" style="margin-top:6px"><i style="width:${tot?Math.round(ck/tot*100):0}%"></i></div></div>
+   <div class="card stat"><div class="l">This device</div><div class="v">${C.count}</div><div class="d">scans this session</div></div>
+   <div class="card stat"><div class="l">Sync</div><div class="v" style="font-size:1.1em;margin-top:6px">${C.offline?'<span class="badge b-warn">Offline · '+C.queue+' queued</span>':'<span class="badge b-ok">Live</span>'}</div></div>
+  </div>
+  <div class="split">
+   <div class="card">
+    <div class="tabs" role="tablist" aria-label="Check-in method" style="margin-top:-8px">${[['tag','Phone tap (door tag)'],['qr','QR scan'],['nfc','NFC wristband'],['manual','Search name'],['encode','Encode wristband']].map(([k,l])=>`<button role="tab" aria-selected="${C.mode===k}" data-act="ckmode" data-v="${k}">${l}</button>`).join('')}</div>
+    ${C.mode==='tag'?tagPanel(e):C.mode==='qr'?`<div class="viewfinder" aria-hidden="true"><div class="corners"></div><div class="laser"></div></div>
+      <p class="small muted" style="text-align:center">The camera isn’t available in this preview, so tap below to simulate a scan.</p>
+      <div class="row" style="justify-content:center"><button class="btn btn-primary" data-act="scan">Simulate QR scan</button><button class="btn" data-act="scanbad">Simulate bad code</button></div>`
+    :C.mode==='nfc'?`<div class="nfcring" aria-hidden="true">${ic('scan',48)}</div>
+      <p style="text-align:center"><b>Hold the wristband near the back of the phone</b></p>
+      <div class="callout ${nfcOK?'ok':'warn'} small">${nfcOK?'Web NFC is available on this device.':'Web NFC works only in Chrome on Android. On iPhone, the native app (coming later) uses Core NFC, or staff can use a Bluetooth reader. Simulating a tap here.'}</div>
+      <div class="row" style="justify-content:center;margin-top:12px"><button class="btn btn-primary" data-act="nfcread">${nfcOK?'Start NFC scan':'Simulate NFC tap'}</button></div>`
+    :C.mode==='manual'?`<label class="f" for="msearch">Find guest</label><input type="search" id="msearch" data-act-input="msearch" placeholder="Type a name…">
+      <ul class="list" id="mlist">${e.guests.filter(g=>g.status==='yes').slice(0,30).map(g=>`<li data-q="${esc(g.name.toLowerCase())}"><span class="grow"><b>${esc(g.name)}</b><div class="small muted">${esc(g.group)}${g.plus?' · +'+g.plus:''}</div></span>${g.checked?'<span class="badge b-ok">In</span>':`<button class="btn btn-sm btn-primary" data-act="manualin" data-v="${g.id}">Check in</button>`}</li>`).join('')}</ul>`
+    :`<p class="small muted" style="margin-top:-4px">Write a guest’s code, or a code you generated, to an NFC wristband. Children get bands linked to their guardian’s pickup code.</p>
+      <label class="f" for="encsel">What to write</label>
+      <select id="encsel">${(S.codes.length?S.codes.slice(0,20).map(c=>`<option value="${c}">Access code ${c}</option>`):[]).concat(e.guests.filter(g=>g.status==='yes').slice(0,15).map(g=>`<option value="${g.code}">${esc(g.name)} · ${g.code}</option>`)).join('')}</select>
+      <div class="nfcring" aria-hidden="true" style="width:110px;height:110px;margin:18px auto">${ic('tag',36)}</div>
+      <div class="row" style="justify-content:center"><button class="btn btn-primary" data-act="nfcwrite">${nfcOK?'Write to wristband':'Simulate write'}</button></div>
+      <p class="hint" style="text-align:center">Supported chips: NFC NTAG 213/216 and NTAG 424 DNA (anti-clone). UHF RFID bands are encoded at the hardware station.</p>`}
+   </div>
+   <aside class="stack">
+    ${C.welcome&&C.mode==='tag'?`<div class="card"><div class="proto">Sent to ${esc(C.welcome.name.split(' ')[0])} on WhatsApp</div><div class="bubble" style="margin-top:10px">
+      <b>${C.welcome.first?'Welcome to':'Welcome back to'} ${esc(e.title)}, ${esc(C.welcome.name.split(' ')[0])}! ✅</b><br>${C.welcome.first?'Your registration is complete.':'Your '+esc(e.parts[C.day]||'today')+' attendance is recorded.'} Here’s what’s nearby:
+      <div class="pin">🚻 <span><b>Toilets</b>: ground floor, left of reception</span></div><div class="pin">🍽️ <span><b>Canteen</b>: 1st floor, lunch at 13:00</span></div><div class="pin">🕌 <span><b>Prayer room</b>: room 104</span></div><div class="pin">🎤 <span><b>Session hall</b>: Hall A, first session 09:30</span></div><div class="pin">⛑️ <span><b>First aid</b>: next to the security desk</span></div>
+      <div style="margin-top:6px"><u>Open the venue map</u> · <u>Today’s agenda</u></div></div></div>`:''}
+    ${L?`<div class="result ${L.k}" role="status"><div class="big">${L.k==='ok'?'✓ Welcome':L.k==='warn'?'⚠ Already in':'✕ Not valid'}</div><div>${esc(L.name)}</div><div class="small" style="font-weight:600">${esc(L.note)}</div></div>`
+      :`<div class="card muted small" style="text-align:center">The scan result shows here. Staff get a big tick or cross, a sound and a vibration.</div>`}
+    <div class="card"><h2>Recent scans</h2><ul class="list small">${C.log.slice(0,8).map(l=>`<li><span class="badge ${l.k==='ok'?'b-ok':l.k==='warn'?'b-warn':'b-danger'}">${l.t}</span><span class="grow trunc">${esc(l.name)}</span><span class="muted">${l.via}</span></li>`).join('')||'<li class="muted">No scans yet</li>'}</ul></div>
+   </aside></div>`;
+};
+
+/* ---------- Safeguarding console ---------- */
+const ZONES=[
+  {n:'Main Hall',x:20,y:20,w:330,h:230,ok:true,c:'#5B3DF5'},
+  {n:'Kids Zone',x:370,y:20,w:210,h:150,ok:true,c:'#11845B'},
+  {n:'Toilets',x:370,y:190,w:100,h:70,ok:true,c:'#0E7490'},
+  {n:'Dining',x:20,y:270,w:330,h:90,ok:true,c:'#C2410C'},
+  {n:'Exit A',x:490,y:190,w:90,h:70,ok:false,c:'#D9363E'},
+  {n:'Lobby',x:370,y:280,w:210,h:80,ok:false,c:'#B57A00'}
+];
+const zoneAt=(x,y)=>ZONES.find(z=>x>=z.x&&x<=z.x+z.w&&y>=z.y&&y<=z.y+z.h);
+const ptIn=z=>({x:z.x+12+Math.random()*(z.w-24), y:z.y+12+Math.random()*(z.h-24)});
+function initKids(){
+  if(S.sg.kids.length) return;
+  const names=[['Ada',7,'Mrs Ngozi Eze'],['Tobi',6,'Mr Bayo Adeyemi'],['Lily',5,'Ms Hannah Clarke'],['Zara',8,'Mr Musa Ibrahim'],['Leo',4,'Mrs Grace Taylor'],['Kamsi',7,'Dr Chidi Okafor'],['Noah',6,'Mr Tom Brown'],['Ife',5,'Mrs Funke Balogun']];
+  S.sg.kids=names.map(([n,a,g],i)=>{const z=ZONES[i%3===0?1:i%3===1?0:3]; const p=ptIn(z); const t=ptIn(z); return {id:'k'+i,name:n,age:a,guardian:g,x:p.x,y:p.y,tx:t.x,ty:t.y,zone:z.n,tech:i%2?'BLE band':'BLE + NFC',code:code(4),allergy:i===2?'Peanuts':i===5?'Dairy':'',status:'in',alarm:false,lastTap:z.n+' door · '+now()};});
+  S.sg.audit.unshift({t:now(),m:'You (Safeguarding officer) opened the live map'});
+}
+function startSafeguard(){
+  initKids(); S.sg.wanderAt = Date.now()+14000; let fired=false;
+  S.sg.timer=setInterval(()=>{
+    S.sg.kids.forEach(k=>{
+      if(k.status!=='in') return;
+      const dx=k.tx-k.x, dy=k.ty-k.y; const d=Math.hypot(dx,dy);
+      if(d<6){ const cur=zoneAt(k.x,k.y)||ZONES[0]; let z=cur.ok?cur:ZONES[1]; if(!k.wander && Math.random()<.18){ z=pick(ZONES.filter(q=>q.ok)); } if(!k.wander){ const t=ptIn(z); k.tx=t.x; k.ty=t.y; } }
+      else { const s=Math.min(d, k.wander?16:11); k.x+=dx/d*s; k.y+=dy/d*s; }
+      const z=zoneAt(k.x,k.y); if(z && z.n!==k.zone){ k.zone=z.n; if(!z.ok && !k.alarm){ raiseAlarm(k,z); } }
+    });
+    if(!fired && Date.now()>S.sg.wanderAt){ fired=true; wander(); }
+    paintMap();
+  }, 600);
+}
+function stopSafeguard(){ if(S.sg.timer){clearInterval(S.sg.timer);S.sg.timer=null;} }
+function wander(id){ const k = id? S.sg.kids.find(x=>x.id===id) : pick(S.sg.kids.filter(x=>x.status==='in'&&!x.alarm)); if(!k) return; const ex=ZONES[4]; k.wander=true; k.tx=ex.x+ex.w/2; k.ty=ex.y+ex.h/2; }
+function raiseAlarm(k,z){
+  k.alarm=true; S.sg.alerts.unshift({id:k.id,t:now(),m:`${k.name} (${k.age}) entered ${z.n} without a paired guardian band`}); S.sg.ack=false;
+  S.sg.audit.unshift({t:now(),m:`ALERT raised: ${k.name} at ${z.n}. Stewards and guardian (${k.guardian}) notified`});
+  buzz(); announce(`Alert. ${k.name} has entered ${z.n}.`);
+  if(route()==='safeguard') rerender();
+}
+function paintMap(){
+  S.sg.kids.forEach(k=>{ const c=document.getElementById('dot-'+k.id); if(c){ c.setAttribute('transform',`translate(${k.x.toFixed(1)} ${k.y.toFixed(1)})`); }
+    const z=document.getElementById('kz-'+k.id); if(z) z.textContent=k.status==='in'?k.zone:'Collected'; });
+}
+VIEWS.safeguard = ()=>{
+  initKids(); const G=S.sg; const f=G.kids.find(k=>k.id===G.focus);
+  const al=G.alerts.find(a=>!G.ack);
+  const alarmKid = al? G.kids.find(k=>k.id===al.id):null;
+  return `${al&&alarmKid&&alarmKid.alarm?`<div class="alertbar" role="alert"><div style="font-size:1.6em" aria-hidden="true">🚨</div><div class="grow"><b>${esc(al.m)}</b><div class="small">${al.t} · Exit gate stewards notified · Guardian ${esc(alarmKid.guardian)} notified by push and SMS</div></div><button class="btn btn-sm" data-act="locate" data-v="${al.id}">Locate</button><button class="btn btn-sm" data-act="ack" data-v="${al.id}">Child found safe</button></div>`:''}
+  <div class="row between"><div><div class="eyebrow">Safeguarding console · Ada’s 7th Birthday Party</div><h1>Children in the venue</h1></div>
+   <div class="row"><span class="tracking-on" role="status">Tracking active</span><button class="btn btn-sm" data-act="wander">Simulate a wandering child</button></div></div>
+  <p class="muted small" style="margin:0 0 14px">Live dots come from BLE (Bluetooth Low Energy) wristbands. Taps at zone doors come from NFC. Exit A has a UHF RFID gate. Only guardians and safeguarding officers can see this screen.</p>
+  <div class="split">
+   <div class="stack">
+    <div class="card map" style="padding:12px">
+     <svg viewBox="0 0 600 380" role="img" aria-label="Live venue map showing ${G.kids.filter(k=>k.status==='in').length} children across zones. Use the list for details.">
+      ${ZONES.map(z=>`<g><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="12" fill="${z.c}" fill-opacity="${z.ok?.08:.14}" stroke="${z.c}" stroke-opacity=".6" stroke-width="1.5" ${z.ok?'':'stroke-dasharray="6 4"'}/><text x="${z.x+10}" y="${z.y+20}" font-size="12" font-weight="800" fill="${z.c}" font-family="Plus Jakarta Sans,sans-serif">${z.n}${z.ok?'':' ⚠'}</text></g>`).join('')}
+      <rect x="486" y="186" width="6" height="78" fill="#D9363E"/><text x="498" y="252" font-size="9" fill="#D9363E" font-weight="700" font-family="Plus Jakarta Sans,sans-serif">UHF gate</text>
+      ${[[200,135],[475,95],[420,225],[185,315],[475,320]].map(([x,y])=>`<g transform="translate(${x} ${y})" opacity=".5"><circle r="5" fill="none" stroke="var(--ink-2)"/><circle r="1.5" fill="var(--ink-2)"/></g>`).join('')}
+      ${G.kids.filter(k=>k.status==='in').map((k,i)=>`<g id="dot-${k.id}" transform="translate(${k.x.toFixed(1)} ${k.y.toFixed(1)})" style="transition:transform .6s linear">
+        ${k.alarm?'<circle r="16" fill="#D9363E" opacity=".25"><animate attributeName="r" values="10;20;10" dur="1.2s" repeatCount="indefinite"/></circle>':''}
+        <circle r="${G.focus===k.id?11:9}" fill="${k.alarm?'#D9363E':COLORS[i%COLORS.length]}" stroke="#fff" stroke-width="2.5"/>
+        <text y="4" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="Plus Jakarta Sans,sans-serif">${k.name[0]}</text></g>`).join('')}
+     </svg>
+     <div class="row small muted" style="margin-top:8px;gap:14px"><span>◎ BLE gateway</span><span style="color:var(--danger)">▮ UHF exit gate</span><span>Dashed zone = alert on entry</span><span>Updates every 0.6 s</span></div>
+    </div>
+    <div class="card">
+     <h2>Safe Pickup check</h2>
+     <p class="small muted" style="margin-top:-6px">The guardian shows their pickup label. Type the code, or scan or tap it. It must match the child’s wristband.</p>
+     <div class="grid g2"><div><label class="f" for="pk-kid">Child</label><select id="pk-kid">${G.kids.filter(k=>k.status==='in').map(k=>`<option value="${k.id}" ${G.focus===k.id?'selected':''}>${esc(k.name)} (${k.age})</option>`).join('')}</select></div>
+      <div><label class="f" for="pk-code">Guardian’s code</label><input type="text" id="pk-code" class="kbd" maxlength="4" placeholder="e.g. 7KQ2" autocomplete="off" style="text-transform:uppercase"></div></div>
+     <div class="row" style="margin-top:10px"><button class="btn btn-primary" data-act="verify">Verify and release</button><span class="hint">Tip: each child’s code is shown on their card (demo only).</span></div>
+     ${G.verify?`<div class="result ${G.verify.ok?'ok':'bad'}" role="status" style="margin-top:12px"><div class="big">${G.verify.ok?'✓ Match: release child':'✕ Codes don’t match'}</div><div class="small">${esc(G.verify.m)}</div></div>`:''}
+    </div>
+   </div>
+   <aside class="stack">
+    <div class="card"><div class="row between"><h2 style="margin:0">Children (${G.kids.filter(k=>k.status==='in').length} in venue)</h2></div>
+     <div class="stack" style="margin-top:10px">${G.kids.map((k,i)=>`<button class="kid ${k.alarm?'alarm':''}" data-act="focus" data-v="${k.id}" aria-pressed="${G.focus===k.id}">
+       <span class="av" style="background:${k.alarm?'#D9363E':COLORS[i%COLORS.length]}" aria-hidden="true">${k.name[0]}</span>
+       <span class="grow"><b>${esc(k.name)}</b> <span class="small muted">· ${k.age}</span>${k.allergy?` <span class="badge b-warn">⚠ ${esc(k.allergy)}</span>`:''}
+        <span class="small muted" style="display:block">${k.status==='in'?'📍 <span id="kz-'+k.id+'">'+esc(k.zone)+'</span>':'✓ Collected by '+esc(k.guardian)} · ${k.tech}</span></span>
+       <span class="kbd small" title="Pickup code (demo)">${k.code}</span></button>`).join('')}</div></div>
+    ${f?`<div class="card"><h2>${esc(f.name)}</h2><p class="small" style="margin:0">Guardian: <b>${esc(f.guardian)}</b><br>Last NFC tap: ${esc(f.lastTap)}<br>Band: ${f.tech} · Battery 86%</p>
+      <div class="row" style="margin-top:10px"><button class="btn btn-sm" data-act="toast" data-v="Message sent to ${esc(f.guardian)}">Message guardian</button><button class="btn btn-sm" data-act="wander" data-v="${f.id}">Simulate wander</button></div></div>`:''}
+    <div class="card"><h2>Audit log</h2><ul class="list small">${G.audit.slice(0,7).map(a=>`<li><span class="muted kbd">${a.t}</span><span class="grow">${esc(a.m)}</span></li>`).join('')}</ul>
+     <p class="hint">Location trails are deleted automatically 48 hours after the event. This log is kept for incident review.</p></div>
+   </aside></div>`;
+};
+
+/* ---------- v2: questionnaires ---------- */
+const TPL={
+  seminar:{name:'Seminar / training / inaugural lecture',icon:'🎓',type:'Seminar',days:3,tone:'Professional',problem:'Slow registration; no proof of learning or lecturer quality',on:['Multi-day schedule','Daily phone tap-in','Per-lecture AI questionnaires','Certificates and CPD hours','Speaker profiles','Captioned livestream']},
+  kids:{name:'Children’s events & birthdays',icon:'🎈',type:'Kids party',safe:true,tone:'Playful',problem:'Lost children, allergies, chaotic pickup',on:['Safeguarding Mode','Safe Pickup codes','Allergy flags','Guardian consent','Party song card','Gift or “no gifts” wording']},
+  funeral:{name:'Funeral / remembrance',icon:'🕊️',type:'Funeral / remembrance',tone:'Gentle',problem:'Families overwhelmed; relatives abroad',on:['Order of service','Tribute wall (moderated)','Condolence book','Livestream for relatives abroad','Wake, service and interment parts','Donations ledger']},
+  launch:{name:'Launch / major event',icon:'🚀',type:'Launch',mode:'tickets',tone:'Bold',problem:'Crowd flow, VIP and press, sponsor reporting',on:['Ticket tiers','VIP and press lists','NFC gates','Live capacity','Sponsor dashboard','Post-event reel']}
+};
+function fbSession(){ const [d,j]=S.fb.session.split('-').map(Number); const s=S.sem[d].s[j]; return {d,j,time:s[0],title:s[1],by:s[2],day:S.sem[d].d}; }
+VIEWS.feedback = ()=>{ const F=S.fb, s=fbSession();
+  return `<div class="eyebrow">Questionnaires · Tom Associates Leadership Seminar</div><h1>Feedback after every lecture</h1>
+  <p class="lead">Pick a session and AI drafts a 30-second questionnaire from its title and speaker. It goes out automatically when the session ends. Answers are anonymous by default.</p>
+  <div class="split"><div class="stack">
+   <div class="card stack">
+    <div><label class="f" for="fbs">Session</label><select id="fbs" data-act-change="fbsession">${S.sem.map((d,i)=>d.s.map((x,j)=>`<option value="${i}-${j}" ${F.session===i+'-'+j?'selected':''}>${esc(d.d)} · ${x[0]} · ${esc(x[1])}</option>`).join('')).join('')}</select></div>
+    <div class="row between"><span class="small muted">Speaker: <b>${esc(s.by)}</b> · ends ${s.j===2?'16:00':s.j===1?'13:00':'11:00'}</span><button class="btn btn-primary" data-act="fbbuild" ${F.busy?'disabled':''}>${ic('spark',16)} ${F.busy?'Writing…':F.qs.length?'Rebuild with AI':'Build with AI'}</button></div>
+    <label class="switch"><input type="checkbox" data-act="fbanon" ${F.anon?'checked':''}><div><b>Anonymous responses</b><span>On by default. Organisers see totals and themes only. Results from fewer than 5 people stay hidden.</span></div></label>
+   </div>
+   <div class="card"><h2>Questions</h2>
+    ${F.busy?'<div class="shimmer" style="height:180px;border-radius:14px"></div>':F.qs.length?`<div class="stack">${F.qs.map((q,i)=>`<div class="qrow"><span class="badge b-brand">${i+1}</span><div class="grow"><b class="small">${esc(q.t)}</b><div class="hint">${q.k==='rate'?'Rating 1–5':q.k==='choice'?'Choice: '+q.o.join(' / '):'Short text (optional)'}</div></div><button class="btn btn-sm btn-ghost" data-act="fbdel" data-v="${i}" aria-label="Remove question ${i+1}">✕</button></div>`).join('')}</div>
+      <div class="row" style="margin-top:12px"><button class="btn btn-primary" data-act="fbsend">Schedule for when the session ends</button><button class="btn" data-act="toast" data-v="Saved as a template for every session in this seminar">Use for all sessions</button></div>
+      ${F.sentTo[F.session]?'<div class="callout ok small" style="margin-top:10px">✓ Scheduled. It sends by WhatsApp and in-app at session end, with one reminder 2 hours later.</div>':''}`
+     :'<p class="muted small">No questions yet. Tap “Build with AI”.</p>'}
+   </div>
+   <div class="card"><h2>Also scheduled</h2><ul class="list small">
+     <li><span class="badge b-accent">Daily</span><span class="grow"><b>Day pulse</b> at 17:00: three taps for food, venue comfort and organisation. Scores below 3.5 alert you that evening.</span></li>
+     <li><span class="badge b-accent">End</span><span class="grow"><b>Thank-you and survey</b>: overall rating, NPS (Net Promoter Score), highlight and fix, plus photos and certificates.</span></li></ul></div>
+  </div>
+  <aside><div class="proto" style="text-align:center;margin-bottom:8px">Attendee preview</div><div class="phone"><div class="pad stack">
+   <div><div class="eyebrow">${esc(s.day)} · ${esc(s.time)}</div><h2 style="margin:4px 0 0">${esc(s.title)}</h2><div class="small muted">${esc(s.by)} · about 30 seconds${F.anon?' · 🔒 anonymous':''}</div></div>
+   ${F.qs.length?F.qs.map((q,i)=>`<div><div class="f" style="font-weight:700;font-size:.9em;margin-bottom:6px">${esc(q.t)}</div>${q.k==='rate'?`<div class="stars" role="group" aria-label="Rating">${[1,2,3,4,5].map(n=>`<button data-act="fbans" data-v="${i}:${n}" aria-pressed="${F.ans[i]===n}" aria-label="${n} out of 5">${F.ans[i]>=n?'★':'☆'}</button>`).join('')}</div>`:q.k==='choice'?`<div class="row" style="gap:6px">${q.o.map(o=>`<button class="chip" data-act="fbans" data-v="${i}:${esc(o)}" aria-pressed="${F.ans[i]===o}">${esc(o)}</button>`).join('')}</div>`:`<textarea aria-label="${esc(q.t)}" placeholder="Optional"></textarea>`}</div>`).join('')+`<button class="btn btn-primary btn-block" data-act="fbsubmit">Send feedback</button>`:'<p class="small muted">The questionnaire preview appears here.</p>'}
+  </div></div></aside></div>`; };
+
+/* ---------- v2: insights dashboard ---------- */
+VIEWS.insights = ()=>{
+  const rows=[]; S.sem.forEach((d,i)=>d.s.forEach((s,j)=>{ const r=rng(hash(s[1])); const mean=Math.round((3.4+r()*1.35)*10)/10; const n=(i===2&&j>0)?(j===1?3:0):Math.round(68+r()*30); const sd=.55+r()*.35; const h=n>=5?1.96*sd/Math.sqrt(n):0; rows.push({day:d.d.slice(0,5),title:s[1],by:s[2],mean,n,lo:Math.max(1,mean-h),hi:Math.min(5,mean+h)}); }));
+  const X=v=>8+(v-1)/4*224;
+  const areas=[['Food',[3.9,3.2,4.1],'var(--accent)'],['Environment',[3.4,3.8,4.0],'var(--brand)'],['Organisation',[4.2,4.4,4.5],'var(--ok)']];
+  const Y=v=>140-(v-1)/4*120;
+  const hist=[['Mar 2026',3.9],['Jun 2026',4.0],['Sep 2026',4.2],['Nov 2026',4.3]];
+  return `<div class="row between"><div><div class="eyebrow">Insights · Tom Associates Leadership Seminar</div><h1>What worked, and what to fix</h1></div>
+   <div class="row"><span class="badge b-warn">Sample data</span><button class="btn btn-sm" data-act="toast" data-v="PDF report generated for management (prototype)">Export PDF</button><button class="btn btn-sm" data-act="toast" data-v="CSV exported (anonymous responses only)">Export CSV</button></div></div>
+  <div class="grid g4" style="margin:14px 0">
+   <div class="card stat"><div class="l">Attendance (Day 1 / 2)</div><div class="v">93% · 90%</div><div class="d" style="color:var(--muted)">of 120 registered</div></div>
+   <div class="card stat"><div class="l">Response rate</div><div class="v">78%</div><div class="d">▲ vs 61% on paper forms</div></div>
+   <div class="card stat"><div class="l">Average session score</div><div class="v">${(rows.filter(r=>r.n>=5).reduce((a,r)=>a+r.mean,0)/rows.filter(r=>r.n>=5).length).toFixed(1)} / 5</div></div>
+   <div class="card stat"><div class="l">NPS so far</div><div class="v">+46</div><div class="d">Good (above +30)</div></div>
+  </div>
+  <div class="split"><div class="stack">
+   <div class="card"><h2>Lecturer and session scores</h2><p class="small muted" style="margin-top:-6px">Bar = average out of 5. Whisker = 95% confidence range: a wider whisker means fewer responses and less certainty.</p>
+    <div class="tablewrap"><table class="t"><thead><tr><th>Session</th><th style="min-width:240px">Score (1–5)</th><th>n</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td><b class="small">${esc(r.title)}</b><div class="hint" style="margin:0">${esc(r.day)} · ${esc(r.by)}</div></td><td>${r.n>=5?`<svg viewBox="0 0 240 26" width="240" height="26" role="img" aria-label="${r.mean} out of 5, range ${r.lo.toFixed(1)} to ${r.hi.toFixed(1)}"><rect x="8" y="9" width="224" height="8" rx="4" fill="var(--surface-2)"/><rect x="8" y="9" width="${X(r.mean)-8}" height="8" rx="4" fill="${r.mean<3.8?'var(--accent)':'var(--brand)'}"/><line x1="${X(r.lo)}" x2="${X(r.hi)}" y1="13" y2="13" stroke="var(--ink)" stroke-width="2"/><line x1="${X(r.lo)}" x2="${X(r.lo)}" y1="7" y2="19" stroke="var(--ink)" stroke-width="2"/><line x1="${X(r.hi)}" x2="${X(r.hi)}" y1="7" y2="19" stroke="var(--ink)" stroke-width="2"/></svg> <b>${r.mean.toFixed(1)}</b>`:`<span class="small muted">${r.n?'Collecting · hidden until 5 responses':'Session not finished'}</span>`}</td><td class="small">${r.n}</td></tr>`).join('')}
+    </tbody></table></div></div>
+   <div class="card"><h2>Food, environment and organisation by day</h2>
+    <svg viewBox="0 0 320 170" width="100%" role="img" aria-label="Day pulse scores by day. Food: 3.9, 3.2, 4.1. Environment: 3.4, 3.8, 4.0. Organisation: 4.2, 4.4, 4.5">
+     ${[1,2,3,4,5].map(v=>`<line x1="40" x2="300" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="30" y="${Y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="Plus Jakarta Sans,sans-serif">${v}</text>`).join('')}
+     <line x1="40" x2="300" y1="${Y(3.5)}" y2="${Y(3.5)}" stroke="var(--danger)" stroke-dasharray="4 4"/><text x="44" y="${Y(3.5)+12}" font-size="9" fill="var(--danger)" font-weight="700" font-family="Plus Jakarta Sans,sans-serif">alert below 3.5</text>
+     ${areas.map(([n,v,c])=>`<polyline points="${v.map((x,i)=>(60+i*110)+','+Y(x)).join(' ')}" fill="none" stroke="${c}" stroke-width="3"/>${v.map((x,i)=>`<circle cx="${60+i*110}" cy="${Y(x)}" r="4.5" fill="${c}"/>`).join('')}`).join('')}
+     ${['Day 1','Day 2','Day 3'].map((d,i)=>`<text x="${60+i*110}" y="162" text-anchor="middle" font-size="10" fill="var(--muted)" font-family="Plus Jakarta Sans,sans-serif">${d}</text>`).join('')}
+    </svg>
+    <div class="row small" style="gap:14px;margin:4px 0 10px">${areas.map(([n,v,c])=>`<span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${c};vertical-align:-1px"></span> ${n} (${v.join(' → ')})</span>`).join('')}</div>
+    <div class="callout warn small">⚠ Food dropped to <b>3.2 on Day 2</b>. Comments point to lunch being 40 minutes late. The caterer was alerted that evening, and Day 3 recovered to 4.1.</div></div>
+  </div>
+  <aside class="stack">
+   <div class="card"><h2>AI summary of comments</h2><ul class="list small">
+    <li><span class="badge b-ok">31</span><span class="grow">Excellent workshop facilitation (Team dynamics)</span></li>
+    <li><span class="badge b-warn">23</span><span class="grow">Hall A too cold in the morning</span></li>
+    <li><span class="badge b-warn">17</span><span class="grow">Lunch served late on Day 2</span></li>
+    <li><span class="badge b-brand">14</span><span class="grow">Please share the slides afterwards</span></li></ul>
+    <h3 style="margin-top:12px">Recommended fixes</h3><ol class="small" style="padding-left:18px;margin:0"><li>Set the Hall A air conditioning to 24°C before 09:00.</li><li>Move lunch to 12:45 with a second serving point.</li><li>Auto-send slides with each questionnaire.</li></ol></div>
+   <div class="card"><h2>Across Tom Associates events</h2>
+    <svg viewBox="0 0 280 130" width="100%" role="img" aria-label="Overall satisfaction across four events: ${hist.map(h=>h[0]+' '+h[1]).join(', ')}">${hist.map((h,i)=>`<rect x="${i*68+14}" y="${118-(h[1]-1)*25}" width="44" height="${(h[1]-1)*25}" rx="6" fill="var(--brand)" opacity="${i===3?1:.55}"/><text x="${i*68+36}" y="${112-(h[1]-1)*25}" text-anchor="middle" font-size="11" font-weight="800" fill="var(--ink)" font-family="Plus Jakarta Sans,sans-serif">${h[1]}</text>`).join('')}</svg>
+    <div class="row between small muted">${hist.map(h=>`<span>${h[0]}</span>`).join('')}</div>
+    <p class="hint">Overall satisfaction out of 5. The rise from 3.9 to 4.3 is statistically significant (p &lt; 0.05). Earlier events are sample history.</p></div>
+   <div class="callout small">🔒 Anonymous by default: lecturers see only their own scores. Groups smaller than 5 are hidden, and answers are stored apart from check-in records.</div>
+  </aside></div>`; };
+
+VIEWS.more = ()=>`<h1>More</h1><p class="lead">Everything in the prototype.</p><div class="grid g2 morelinks">${NAV.map(([r,l,i])=>`<a class="card" href="#${r}">${ic(i,24)}<b>${l}</b></a>`).join('')}<a class="card" href="#" data-act="a11y">${ic('access',24)}<b>Accessibility settings</b></a></div>`;
+
+/* ---------- Pricing ---------- */
+VIEWS.pricing = ()=>{
+  const uk=S.region==='UK';
+  const plans=[
+    ['Free',0,0,'For anyone hosting',['Unlimited free events','Up to 100 guests per event','RSVP, QR check-in, Safe Pickup','Directions and weather on invites','Spotify song card','1 recurring series (4 dates a month)','Templates (no AI)'],0],
+    ['Mini',3.99,2500,'AI starts here',['Everything in Free','250 guests per event','WhatsApp and SMS bundle','Route-watch traffic alerts','Royalty-free music in AI videos','30 AI credits each month'],30],
+    ['Personal Pro',9.99,7500,'Weddings and big birthdays',['Everything in Mini','Multi-day and recurring events','Seating planner','Funeral and kids templates','Post-event survey','120 AI credits'],120],
+    ['Event Planner',29,25000,'Professional planners',['Multi-client workspace','Per-lecture questionnaires and day pulse','NFC door-tag tap-in','Team roles, white-label','Lower ticket fee','400 AI credits'],400],
+    ['Corporate',149,150000,'Companies and venues',['Insights across events with statistics','HR attendance and CPD reports','Sponsor dashboard, Wallet NFC passes','SSO (single sign-on) and API (application programming interface)','BLE Live Location hire','SLA (service-level agreement) and DPA (Data Processing Agreement)'],2000]
+  ];
+  return `<div class="eyebrow">Plans &amp; fees</div><h1>Simple prices. Fees shown upfront.</h1>
+  <p class="lead">Free events are always free. Prices are set for each market: naira prices are set for Nigeria, not converted from pounds. Use the switch at the top to change market.</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">
+   ${plans.map(([n,gb,ng,tag,feat,cr])=>`<div class="card plan ${n==='Personal Pro'?'pop':''}">${n==='Personal Pro'?'<span class="badge b-brand" style="position:absolute;top:14px;right:14px">Popular</span>':''}
+     <div class="eyebrow" style="color:var(--muted)">${tag}</div><h2 style="margin:4px 0 2px">${n}</h2>
+     <div class="price">${gb===0?(uk?'£0':'₦0'):uk?'£'+gb:'₦'+ng.toLocaleString()}<span class="small muted" style="font-weight:600">${gb?'/mo':''}${n==='Corporate'?' from':''}</span></div>
+     <ul>${feat.map(x=>`<li>${x}</li>`).join('')}</ul>
+     <button class="btn ${S.plan===n?'':'btn-primary'}" data-act="plan" data-v="${n}" data-c="${cr}">${S.plan===n?'Current plan':n==='Corporate'?'Talk to sales':'Choose '+n}</button></div>`).join('')}
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+   <div class="card"><h2>AI credits</h2><table class="t"><thead><tr><th>Create</th><th>Credits</th></tr></thead><tbody>
+     <tr><td>Standard image or flyer</td><td>1</td></tr><tr><td>Premium image</td><td>3</td></tr><tr><td>Animated template video with captions</td><td>2</td></tr><tr><td>8-second AI video (Lite)</td><td>15</td></tr><tr><td>8-second AI video (Standard)</td><td>60</td></tr></tbody></table>
+     <div class="row between" style="margin-top:12px"><span class="small">Top-up: 50 credits for <b>${uk?'£5':'₦3,000'}</b></span><button class="btn btn-sm" data-act="topup">Buy top-up</button></div>
+     <p class="hint">One-off <b>Wedding Pass</b>: ${uk?'£29':'₦20,000'} for one event, with Pro features until the day.</p></div>
+   <div class="card"><h2>Ticket fee calculator</h2>
+     <label class="f" for="feep">Ticket price (${sym()})</label><input type="number" id="feep" value="${uk?30:15000}" data-act-input="feecalc" min="0">
+     <div id="feeout">${feeTable(uk?30:15000)}</div>
+     <p class="hint">Competitor figures are from their public pricing pages, November 2026. Check them again before publishing a comparison.</p></div>
+  </div>`;
+};
+function feeTable(p){ p=+p||0; const uk=S.region==='UK';
+  const rows = uk? [['Gatherwise (includes processing)',p*.025+.30,true],['Eventbrite UK (6.95% + 59p)',p*.0695+.59],['Ticket Tailor (72p incl. VAT + Stripe 1.5% + 20p)',.72+p*.015+.20]]
+                 : [['Gatherwise (includes processing)',p*.035+100,true],['Tix Africa (8% + ₦100)',p*.08+100],['Tickets by Selar (4% + ₦50)',p*.04+50]];
+  return `<table class="t fees" style="margin-top:10px"><thead><tr><th>Platform</th><th>Fee per ticket</th></tr></thead><tbody>${rows.map(([n,v,us])=>`<tr><td>${n}</td><td class="${us?'us':''}">${money(v)}</td></tr>`).join('')}</tbody></table>`; }
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+const A = {};
+A.fbbuild = ()=>{ const F=S.fb, s=fbSession(); F.busy=true; rerender(); setTimeout(()=>{ F.qs=[
+  {t:`How useful was “${s.title}” for your role?`,k:'rate'},
+  {t:`How clearly did ${s.by} explain the ideas?`,k:'rate'},
+  {t:'Was the pace right?',k:'choice',o:['Too slow','About right','Too fast']},
+  {t:'How likely are you to use something from this session in the next month?',k:'rate'},
+  {t:'What is one thing you will do differently after today?',k:'text'}]; F.busy=false; F.ans={}; rerender(); toast('✨ Questionnaire drafted. Edit or schedule it.'); },900); };
+A.fbdel = el=>{ S.fb.qs.splice(+el.dataset.v,1); rerender(); };
+A.fbanon = el=>{ S.fb.anon=el.checked; toast(el.checked?'Responses are anonymous':'Named responses: attendees are told before they answer'); rerender(); };
+A.fbsend = ()=>{ S.fb.sentTo[S.fb.session]=true; toast('Scheduled for the end of the session'); rerender(); };
+A.fbans = el=>{ const [i,v]=el.dataset.v.split(':'); S.fb.ans[+i]=isNaN(+v)?v:+v; rerender(); };
+A.fbsubmit = ()=>{ S.fb.ans={}; toast(S.fb.anon?'Thank you! Your answers are anonymous.':'Thank you for your feedback!'); rerender(); };
+A.go = el=>{ location.hash=el.dataset.v; };
+A.region = el=>{ S.region=el.dataset.v; toast(S.region==='UK'?'UK market: GBP, Stripe':'Nigeria market: NGN, Paystack and A1Pay'); rerender(); };
+A.openev = el=>{ S.cur=el.dataset.v; S.tab=el.dataset.tab||'overview'; S.codes=[]; if(location.hash==='#event') rerender(); else location.hash='event'; };
+A.tab = el=>{ S.tab=el.dataset.v; rerender(); };
+A.toast = el=>toast(el.dataset.v);
+A.copy = async el=>{ try{ await navigator.clipboard.writeText(el.dataset.v); toast('Link copied'); }catch(e){ toast('Copy isn’t allowed here. Select the link and copy it manually.'); } };
+A.remind = el=>{ const e=ev(); const n=e.guests.filter(g=>g.status==='pending'||g.status==='maybe').length; toast(`${el.dataset.v} reminder sent to ${n} guests (prototype)`); };
+A.speak = el=>speak(el.dataset.v);
+A.addguest = ()=>modal(`<h2 id="mtitle">Add guest</h2><form id="addgform" class="stack"><div><label class="f" for="ag-n">Name</label><input type="text" id="ag-n" required></div><div><label class="f" for="ag-p">Phone or email</label><input type="text" id="ag-p" placeholder="+234… or name@…"></div><div class="row"><button type="submit" class="btn btn-primary">Add &amp; send invite</button><button type="button" class="btn" data-act="closemodal">Cancel</button></div></form>`);
+A.closemodal = ()=>closeModal();
+A['closemodal-bg'] = (el,ev2)=>{ if(ev2.target===el) closeModal(); };
+A.a11y = (el,e2)=>{ e2&&e2.preventDefault(); const a=S.a11y; modal(`<h2 id="mtitle">Accessibility</h2><p class="small muted" style="margin-top:-6px">These settings apply to everything you see. Guests get the same options on their invitation.</p>
+  ${[['hc','High contrast','Yellow and black, with strong outlines'],['lg','Larger text','About 20% bigger everywhere'],['rm','Reduce motion','Turns off animations and the moving scan line'],['cap','Captions on by default','Captions on all video announcements']].map(([k,l,d])=>`<label class="switch"><input type="checkbox" data-act="a11yset" data-v="${k}" ${a[k]?'checked':''}><div><b>${l}</b><span>${d}</span></div></label>`).join('')}
+  <div class="row" style="margin-top:14px"><button class="btn" data-act="speak" data-v="Screen reader and text to speech test. Gatherwise reads invitations, agendas and ticket codes aloud.">🔊 Test read-aloud</button><button class="btn btn-primary" data-act="closemodal">Done</button></div>`); };
+A.a11yset = el=>{ const k=el.dataset.v; S.a11y[k]=el.checked; applyA11y(); };
+function applyA11y(){ const h=document.documentElement; h.classList.toggle('hc',S.a11y.hc); h.classList.toggle('lg',S.a11y.lg); h.classList.toggle('rm',S.a11y.rm || matchMedia('(prefers-reduced-motion: reduce)').matches); }
+/* create */
+A.ctype = el=>{ S.create.type=el.dataset.v; rerender(); };
+A.ctpl = el=>{ const k=el.dataset.v, t=TPL[k], c=S.create; c.tpl=k; c.type=t.type; if(t.days) c.days=t.days; if(t.safe) c.safeguard=true; if(t.mode) c.mode=t.mode; toast(t.icon+' '+t.name+' template applied'); rerender(); };
+A.cmode = el=>{ S.create.mode=el.dataset.v; rerender(); };
+A.csafe = el=>{ S.create.safeguard=el.checked; };
+A.autofill = ()=>{
+  const c=S.create; const t=c.title||'Our celebration'; const place=c.venue||'the venue';
+  const D={Seminar:[`${t}: a practical programme at ${place}. Tap your phone on the door sticker each morning to sign in, and rate every session in 30 seconds. Certificates are issued on completion.`,'Day 1  09:00 Tap-in · 09:30 Session 1 · 11:30 Session 2 · 14:00 Workshop\nDay 2  Same format\nDay 3  Sessions, then action planning and certificates'],
+    'Inaugural lecture':[`You are cordially invited to the inaugural lecture "${t}" at ${place}. Academic procession at 10:00. A live captioned stream is available for guests who can’t attend.`,'10:00  Academic procession\n10:20  Citation of the lecturer\n10:40  Inaugural lecture\n12:00  Vote of thanks and reception'],
+    'Funeral / remembrance':[`With love and gratitude, we celebrate the life of ${t.replace(/^(Funeral|Remembrance)( of)?\s*/i,'')||'our loved one'}. Family and friends abroad can join the livestream and leave a tribute in the condolence book.`,'Fri  Wake-keeping and service of songs\nSat 10:00  Funeral service\nSat 13:00  Interment (family only)\nSat 15:00  Reception'],
+    Launch:[`Be first to see ${t} at ${place}. Press and VIP arrivals from 18:00, with the reveal at 19:00. Tap-in entry, so there's no queue.`,'18:00  Press and VIP arrivals\n18:45  Doors open\n19:00  The reveal\n19:30  Demos, drinks and music'],
+    Wedding:[`We’re getting married! Join us at ${place} as we celebrate love, family and plenty of dancing. Colour of the day will be shared soon, and aso-ebi can be ordered in the RSVP form.`,'10:00  Traditional engagement\n12:30  Church service\n15:00  Reception: first dance, toasts, cake\n18:00  After-party'],
+    Corporate:[`${t}: a focused session at ${place} with expert talks, practical takeaways and time to network. Breakfast and coffee included.`,'08:00  Registration & breakfast\n08:30  Keynote\n09:15  Panel: AI in the workplace\n10:00  Networking'],
+    'Kids party':[`It’s party time! Games, face painting and cake at ${place}. Every child gets a safety wristband at the door, and parents get a matching pickup label.`,'14:00  Arrivals & wristbands\n14:30  Games & bouncy castle\n15:30  Cake & songs\n16:30  Pickup (show your label)']};
+  const [d,a]=D[c.type]||[`Join us for ${t} at ${place}. Expect great company, good food and memories to share. RSVP so we can plan for you.`,'18:00  Doors open\n18:30  Welcome\n19:00  Main programme\n21:00  Close'];
+  c.busy=true; c.desc=''; c.agenda=''; if(c.type==='Kids party') c.safeguard=true; rerender();
+  if(S.a11y.rm){ c.desc=d; c.agenda=a; c.busy=false; rerender(); announce('Description and agenda filled in'); return; }
+  let i=0; const iv=setInterval(()=>{ i+=4; c.desc=d.slice(0,i); const ta=$('#c-desc'); if(ta) ta.value=c.desc; if(i>=d.length){ clearInterval(iv); c.agenda=a; c.busy=false; rerender(); announce('Description and agenda filled in'); toast('✨ AI drafted your description and agenda'); } },18);
+};
+/* event tabs */
+A.addcodes=()=>{};
+A.gencodes = ()=>{ const o=S.codeOpts; const n=Math.max(1,Math.min(500,+o.count||10)); const p=(o.prefix||'').toUpperCase().replace(/[^A-Z0-9]/g,''); S.codes=Array.from({length:n},()=>(p?p+'-':'')+code(4)); S.codeSel=0; toast(`${n} codes generated`); rerender(); };
+A.selcode = el=>{ S.codeSel=+el.dataset.v; rerender(); };
+A.copycodes = async ()=>{ try{ await navigator.clipboard.writeText(S.codes.join('\n')); toast('Codes copied'); }catch(e){ toast('Copy isn’t allowed in this viewer'); } };
+A.seatsel = el=>{ S.seatSel=+el.dataset.v; rerender(); };
+A.seat = ()=>{ const id=$('#seatadd').value; const g=ev().guests.find(x=>x.id===id); if(g){ g.table=S.seatSel; toast(`${g.name} seated at Table ${S.seatSel}`);} rerender(); };
+A.unseat = el=>{ const g=ev().guests.find(x=>x.id===el.dataset.v); if(g){g.table=0;} rerender(); };
+A.autoseat = ()=>{ const yes=ev().guests.filter(g=>g.status==='yes'); const groups=[...new Set(yes.map(g=>g.group))]; let t=1,c=0; groups.forEach(gr=>yes.filter(g=>g.group===gr).forEach(g=>{ if(c>=8){t=Math.min(6,t+1);c=0;} g.table=t;c++; })); toast('✨ Guests seated by group'); rerender(); };
+A.evsafe = el=>{ ev().safeguard=el.checked; toast(el.checked?'Safeguarding Mode on: guardians will be asked for consent':'Safeguarding Mode off'); };
+/* studio */
+A.stylepick = el=>{ S.studio.style=el.dataset.v; rerender(); };
+A.generate = ()=>{
+  if(S.credits<4){ return modal(`<h2 id="mtitle">You’re out of credits</h2><p>Top up 50 credits for ${S.region==='UK'?'£5':'₦3,000'}, or upgrade your plan.</p><div class="row"><button class="btn btn-primary" data-act="topup">Buy top-up</button><a class="btn" href="#pricing" data-act="closemodal">See plans</a></div>`); }
+  const st=S.studio; st.busy=true; st.sel=-1; rerender();
+  setTimeout(()=>{ const base=hash(st.prompt+st.style+Date.now()); const others=['Elegant','Vibrant','Minimal','Afro-pop'].filter(s=>s!==st.style);
+    st.drafts=[0,1,2,3].map(i=>({seed:(base+i*97)%100000,style:i<2?st.style:others[i-1]})); st.busy=false; S.credits-=4; st.sel=0; st.vscene=0; setAlt(); rerender(); announce('4 drafts ready'); toast('✨ 4 drafts ready · 4 credits used'); }, 1400);
+};
+function setAlt(){ const e=ev(), d=S.studio.drafts[S.studio.sel]; const m={Elegant:'dark background, thin gold frame and serif lettering',Vibrant:'bright gradient with confetti and colourful circles',Minimal:'off-white background, a bold colour block and clean black type','Afro-pop':'bold Ankara-inspired zigzag pattern in warm colours'};
+  S.studio.alt = `Invitation flyer for ${e.title}: ${m[d.style]}. Text reads “${e.title}” and “${e.date}”.`; }
+A.seldraft = el=>{ stopVideo(); S.studio.sel=+el.dataset.v; S.studio.vscene=0; setAlt(); rerender(); };
+A.vplay = ()=>{ const st=S.studio; if(st.vplaying){ stopVideo(); rerender(); return; }
+  st.vplaying=true; st.vscene=0; const sc=scenes(); rerender(); try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(sc.map(s=>s.c).join(' ')); u.lang='en-GB'; speechSynthesis.speak(u);}catch(e){}
+  vtimer=setInterval(()=>{ st.vscene++; if(st.vscene>=sc.length){ clearInterval(vtimer); vtimer=null; st.vplaying=false; st.vscene=sc.length-1; rerender(); return; } const v=$('#vid'); if(v) v.innerHTML=videoFrame(); },2600);
+};
+A.capt = el=>{ S.a11y.cap=el.checked; const v=$('#vid'); if(v) v.innerHTML=videoFrame(); };
+A.genvideo = ()=>{ if(S.credits<15) return toast('Not enough credits: you need 15'); S.credits-=15; S.studio.gen=0; rerender(); toast('Video queued. We’ll notify you when it’s ready.');
+  const iv=setInterval(()=>{ S.studio.gen=Math.min(100,S.studio.gen+Math.ceil(Math.random()*9)); if(S.studio.gen>=100){ clearInterval(iv); toast('🎬 Your AI video is ready'); buzz(); setTimeout(()=>{S.studio.gen=null; if(route()==='studio') rerender();},3000);} if(route()==='studio' && !S.studio.vplaying) rerender(); },450); };
+A.usedraft = ()=>{ const d=S.studio.drafts[S.studio.sel]; const e=ev(); e.hue=d.seed; e.style=d.style; toast('Cover updated for '+e.title); };
+A.clearupload = ()=>{ S.studio.upload=null; rerender(); };
+A.topup = ()=>{ S.credits+=50; closeModal(); toast('+50 credits added (prototype, no charge)'); rerender(); };
+A.plan = el=>{ const n=el.dataset.v; if(n==='Corporate') return toast('Sales will contact you within one working day (prototype)'); S.plan=n; S.credits=+el.dataset.c; toast(`Switched to ${n}`); rerender(); };
+/* rsvp */
+A.resp = el=>{ S.rsvp.resp=el.dataset.v; rerender(); };
+A.plus = el=>{ S.rsvp.plus=Math.max(0,Math.min(5,S.rsvp.plus+ +el.dataset.v)); rerender(); };
+A.qty = el=>{ S.rsvp.qty=Math.max(1,Math.min(10,S.rsvp.qty+ +el.dataset.v)); rerender(); };
+A.tier = el=>{ S.rsvp.tier=+el.dataset.v; rerender(); };
+A.pay = el=>{ S.rsvp.pay=el.dataset.v; rerender(); };
+A.part = el=>{ S.rsvp.parts[el.dataset.v]=el.checked; };
+A.need = el=>{ const n=el.dataset.v, a=S.rsvp.needs; const i=a.indexOf(n); i>=0?a.splice(i,1):a.push(n); el.setAttribute('aria-pressed',i<0); };
+A.rsvpreset = ()=>{ S.rsvp.done=false; stopQR(); rerender(); };
+let qrtimer=null; function stopQR(){ if(qrtimer){clearInterval(qrtimer);qrtimer=null;} }
+function startQR(){ stopQR(); let s=30; qrtimer=setInterval(()=>{ if(route()!=='rsvp'||!S.rsvp.done){stopQR();return;} s--; const t=$('#qrtick'); if(t) t.textContent=s; if(s<=0){ s=30; S.rsvp.seed=Math.random(); const q=$('#liveqr'); if(q) q.innerHTML=qr(ev().id+S.rsvp.seed,190); } },1000); }
+/* check-in */
+A.ckmode = el=>{ S.ck.mode=el.dataset.v; rerender(); };
+A.offline = el=>{ S.ck.offline=el.checked; if(!el.checked && S.ck.queue){ toast(`Synced ${S.ck.queue} queued check-ins`); S.ck.queue=0; } rerender(); };
+function logScan(k,name,note,via){ const C=S.ck; C.last={k,name,note}; C.log.unshift({k,name,via,t:now()}); C.count++; if(C.offline&&k==='ok') C.queue++; buzz(); announce((k==='ok'?'Checked in ':k==='warn'?'Already checked in ':'Invalid ')+name); rerender(); }
+function checkInRandom(via){ const e=ev(); const pool=e.guests.filter(g=>g.status==='yes'); const g=pick(pool); if(!g) return;
+  if(g.checked) return logScan('warn',g.name,'First scanned earlier today', via);
+  g.checked=true; logScan('ok',g.name,(g.plus?`+${g.plus} guest · `:'')+(g.table?'Table '+g.table:g.group)+(g.needs.length?' · ♿ '+g.needs[0]:''), via); }
+A.scan = ()=>checkInRandom('QR');
+A.ckday = el=>{ S.ck.day=+el.dataset.v; S.ck.welcome=null; S.ck.last=null; rerender(); };
+A.tagtap = ()=>{ const e=ev(), d=S.ck.day; const pool=e.guests.filter(g=>g.status==='yes'); const free=pool.filter(g=>!(g.att&&g.att[d])); const g=free.length?pick(free):pick(pool); if(!g) return;
+  g.att=g.att||{}; if(g.att[d]){ S.ck.welcome=null; return logScan('warn',g.name,'Already tapped in today','Phone tap'); }
+  const first=!Object.keys(g.att).length; g.att[d]=true; if(d===0) g.checked=true;
+  const tm=['08:41','08:52','09:03','09:12','09:27'][Math.floor(Math.random()*5)]; S.ck.welcome={name:g.name,first};
+  logScan('ok',g.name,(e.multi?(e.parts[d]+' · '):'')+'tapped in at '+tm+(tm>'09:30'?' (late)':' (on time)')+' · welcome message sent','Phone tap'); };
+A.geo = ()=>{ try{ if(!navigator.geolocation) throw 0; navigator.geolocation.getCurrentPosition(()=>toast('📍 Using your location for directions'),()=>toast('Location isn’t allowed in this preview, so a sample starting point is used')); }catch(e){ toast('Location isn’t available here, so a sample starting point is used'); } };
+A.setsong = ()=>{ const v=($('#songin').value||'').trim(); ev().song=v; toast(v?'🎵 Song added to the invitation':'Song removed'); rerender(); };
+A.scanbad = ()=>logScan('bad','Unknown code','This code was cancelled or belongs to a different event','QR');
+A.manualin = el=>{ const g=ev().guests.find(x=>x.id===el.dataset.v); if(g){ g.checked=true; logScan('ok',g.name,g.group,'Manual'); } };
+A.nfcread = async ()=>{
+  if('NDEFReader' in window){ try{ const r=new NDEFReader(); await r.scan(); toast('Ready: tap a wristband'); r.onreading=()=>checkInRandom('NFC'); return; }catch(err){ toast('NFC isn’t allowed in this viewer. Simulating a tap.'); } }
+  setTimeout(()=>checkInRandom('NFC'),500);
+};
+A.nfcwrite = async ()=>{ const v=$('#encsel')&&$('#encsel').value; if(!v) return toast('Nothing to write');
+  if('NDEFReader' in window){ try{ const w=new NDEFReader(); toast('Hold the wristband to the phone…'); await w.write({records:[{recordType:'text',data:'GW:'+ev().id+':'+v}]}); toast('✓ Wristband written: '+v); buzz(); return; }catch(err){ toast('NFC isn’t allowed in this viewer. Simulating the write.'); } }
+  setTimeout(()=>{ toast('✓ Wristband encoded with '+v+' (simulated)'); buzz(); },700); };
+/* safeguarding */
+A.wander = el=>{ wander(el.dataset.v); toast('Simulating: a child heads towards Exit A…'); };
+A.focus = el=>{ S.sg.focus=el.dataset.v; S.sg.audit.unshift({t:now(),m:'Officer viewed '+S.sg.kids.find(k=>k.id===el.dataset.v).name+'’s location'}); rerender(); };
+A.locate = el=>{ S.sg.focus=el.dataset.v; rerender(); toast('Nearest steward dispatched to Exit A'); };
+A.ack = el=>{ const k=S.sg.kids.find(x=>x.id===el.dataset.v); k.alarm=false; k.wander=false; const z=ZONES[1]; const t=ptIn(z); k.tx=t.x; k.ty=t.y; S.sg.ack=true; S.sg.audit.unshift({t:now(),m:`${k.name} found safe and returned to Kids Zone. Incident closed`}); toast(`${k.name} marked safe`); rerender(); };
+A.verify = ()=>{ const id=$('#pk-kid').value, c=($('#pk-code').value||'').trim().toUpperCase(); const k=S.sg.kids.find(x=>x.id===id); if(!k) return;
+  if(c===k.code){ k.status='out'; S.sg.verify={ok:true,m:`${k.name} released to ${k.guardian} at ${now()}. Wristband deactivated.`}; S.sg.audit.unshift({t:now(),m:`${k.name} collected by ${k.guardian} (code matched)`}); }
+  else { S.sg.verify={ok:false,m:`Don’t release ${k.name}. Ask for photo ID and call a safeguarding officer.`}; S.sg.audit.unshift({t:now(),m:`Failed pickup attempt for ${k.name} (code mismatch)`}); buzz(); }
+  rerender(); };
+
+/* ---------- Delegated events ---------- */
+document.addEventListener('click',e=>{ const el=e.target.closest('[data-act]'); if(!el) return; const a=el.dataset.act; if(!A[a]) return;
+  if(el.tagName==='INPUT' && el.type==='checkbox'){ A[a](el,e); return; }
+  if(el.tagName==='A' && a!=='a11y' && a!=='closemodal'){ /* links navigate normally */ }
+  if(a!=='closemodal-bg') e.preventDefault(); A[a](el,e); if(a==='closemodal' && el.getAttribute('href')) location.hash=el.getAttribute('href').slice(1); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('#modalroot').innerHTML) closeModal();
+  if((e.key==='Enter'||e.key===' ') && e.target.matches('article[data-act]')){ e.preventDefault(); A[e.target.dataset.act](e.target,e); } });
+document.addEventListener('input',e=>{ const el=e.target;
+  if(el.dataset.bind){ const [o,k]=el.dataset.bind.split('.'); S[o][k]=el.value; if(o==='create' && (k==='title'||k==='venue')){ /* live preview without losing focus */ clearTimeout(window._pv); window._pv=setTimeout(()=>{ const id=el.id, pos=el.selectionStart; rerender(); const n=document.getElementById(id); if(n){ n.focus(); try{n.setSelectionRange(pos,pos);}catch(x){} } },450); } }
+  const ia=el.dataset.actInput;
+  if(ia==='gsearch'||ia==='msearch'){ const q=el.value.toLowerCase(); document.querySelectorAll(ia==='gsearch'?'#glist li':'#mlist li').forEach(li=>li.style.display=li.dataset.q.includes(q)?'':'none'); }
+  if(ia==='feecalc'){ $('#feeout').innerHTML=feeTable(el.value); }
+});
+document.addEventListener('change',e=>{ const el=e.target; const a=el.dataset.actChange;
+  if(el.dataset.bind && el.tagName==='SELECT'){ const [o,k]=el.dataset.bind.split('.'); S[o][k]=el.value; }
+  if(a==='fbsession'){ S.fb.session=el.value; S.fb.qs=[]; S.fb.ans={}; rerender(); }
+  if(a==='pickev'){ S.cur=el.value; S.codes=[]; S.rsvp={resp:'yes',plus:0,parts:{},needs:[],tier:0,qty:1,pay:null,done:false,size:'M'}; rerender(); }
+  if(a==='upload'){ const f=el.files&&el.files[0]; if(f){ S.studio.upload={url:URL.createObjectURL(f),type:f.type||'image/'}; toast('Upload added to the event gallery'); rerender(); } }
+});
+document.addEventListener('submit',e=>{ e.preventDefault(); const f=e.target;
+  if(f.id==='createform'){ const c=S.create; if(!c.title.trim()){ toast('Please add an event title'); $('#c-title').focus(); return; }
+    const id='ev'+Date.now(); const st=(c.type==='Wedding'||c.type==='Funeral / remembrance'||c.type==='Church')?'Elegant':['Corporate','Conference','Seminar','Inaugural lecture'].includes(c.type)?'Minimal':(c.type==='Concert'||c.type==='Launch')?'Afro-pop':'Vibrant';
+    S.events.unshift({id,title:c.title,type:c.type,date:c.date?new Date(c.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):'Date to be confirmed',time:'18:00',venue:c.venue||'Venue to be confirmed',city:S.region==='UK'?'UK':'Nigeria',region:S.region,hue:hash(c.title)%360,style:st,
+      mode:c.mode==='both'?'tickets':c.mode,multi:(+c.days>1),recur:c.recur!=='none'?c.recur:'',template:c.tpl,parts:(+c.days>1)?Array.from({length:+c.days},(_,i)=>'Day '+(i+1)):c.type==='Wedding'?['Traditional engagement','Church service','Reception']:c.type==='Funeral / remembrance'?['Wake-keeping','Funeral service','Interment','Reception']:[],tickets:c.mode==='rsvp'?[]:(S.region==='UK'?[{name:'General',price:20,sold:0,cap:100},{name:'VIP',price:50,sold:0,cap:20}]:[{name:'Regular',price:10000,sold:0,cap:300},{name:'VIP',price:40000,sold:0,cap:50}]),
+      safeguard:c.safeguard,desc:c.desc||'Details coming soon.',guests:[]});
+    S.cur=id; S.tab='overview'; S.create={title:'',type:'Wedding',date:'',venue:'',mode:'rsvp',safeguard:false,desc:'',agenda:'',busy:false,tpl:'',days:1,recur:'none'}; toast('🎉 Event created'); location.hash='event'; }
+  if(f.id==='rsvpform'){ const e2=ev(); if(e2.mode==='tickets' && !S.rsvp.pay){ toast('Choose how you’d like to pay'); return; }
+    S.rsvp.done=true; S.rsvp.seed=Math.random(); S.rsvp.code=code(6);
+    if(e2.mode==='tickets'){ e2.tickets[S.rsvp.tier].sold=Math.min(e2.tickets[S.rsvp.tier].cap,e2.tickets[S.rsvp.tier].sold+S.rsvp.qty); }
+    rerender(); window.scrollTo(0,0); startQR(); announce(e2.mode==='tickets'?'Payment successful. Your ticket is ready.':'RSVP confirmed'); }
+  if(f.id==='addgform'){ const n=$('#ag-n').value.trim(); if(!n) return; ev().guests.unshift({id:'g'+Date.now(),name:n,status:'pending',plus:0,needs:[],table:0,code:code(6),checked:false,group:'Added',color:pick(COLORS)}); closeModal(); toast('Invite sent to '+n); rerender(); }
+});
+
+applyA11y();
+if(!location.hash) history.replaceState(null,'','#home');
+render(false);
+</script>
+</body>
+</html>

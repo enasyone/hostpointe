@@ -1,0 +1,17 @@
+{
+  "team": "Hostpointe engineering team",
+  "orchestrator": "Michael (Munder Difflin GOD agent, Enahoro's clone)",
+  "phase0": [
+    "adaeze-tech-lead.hire.json",
+    "uchenna-delivery-jira.hire.json",
+    "segun-devops.hire.json",
+    "babajide-qa-lead.hire.json",
+    "osaretin-compliance.hire.json"
+  ],
+  "phase1": [
+    "chinedu-frontend.hire.json",
+    "ibrahim-backend-db.hire.json",
+    "amina-integrations-payments.hire.json",
+    "obinna-security-a11y-perf.hire.json"
+  ]
+}

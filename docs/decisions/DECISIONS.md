@@ -1,0 +1,28 @@
+# Decision log (approved by Enahoro Asikhia)
+
+Each decision is final until a new numbered decision replaces it. Earlier decisions are never edited, only superseded.
+
+| # | Date | Decision | Why |
+|---|---|---|---|
+| D-001 | 5 Nov 2026 | Launch in the **UK and Nigeria together** (GBP and NGN) | Pilot client in Lagos; the core market spans the UK–Nigeria corridor |
+| D-002 | 5 Nov 2026 | Business model: **free RSVP plus paid ticketing**, with **paid tickets in Phase 1b** (right after the MVP (minimum viable product)) | Matches the agreed model without making the first release too big |
+| D-003 | 5 Nov 2026 | **Safe Pickup** (matching child and guardian codes, no location tracking) ships in the **first release**. All location tracking waits for Phase 4 | Low risk, high value; tracking needs field trials and a DPIA (Data Protection Impact Assessment) |
+| D-004 | 5 Nov 2026 | **WhatsApp ships in the first release** alongside email, using approved templates and opt-in | WhatsApp is the main channel in Nigeria |
+| D-005 | 5 Nov 2026 | Name: **Hostpointe by Datapointe**, subject to trademark checks. "Gatherwise" was dropped because Gatherwise, Inc. already uses it for event software | Avoid trademark conflict |
+| D-006 | 5 Nov 2026 | Architecture: **modular monolith** (Next.js web + NestJS API + PostgreSQL), not microservices | Faster, cheaper and safer for check-in and payments; modules can be split later |
+| D-007 | 5 Nov 2026 | Adopt the scheduling model **Event → EventSeries (RRULE) → EventOccurrence → Session** | Multi-day and recurring events must not be confused |
+| D-008 | 5 Nov 2026 | Add the **planner suite** (run-of-show timelines, vendor views, leads, client portal, proposals, contracts, invoicing) in Phases 2–3 | Strengthens the planner tiers |
+| D-009 | 6 Nov 2026 | Host on **Azure UK South**, free tiers for the MVP, with free extras (Cloudflare, GitHub, Sentry, PostHog) | Low cost until launch |
+| D-010 | 6 Nov 2026 | Native **Android and iOS apps later in React Native (Expo)** | Shares TypeScript with the web app |
+| D-011 | 6 Nov 2026 | Build with the **Munder Difflin** agent harness: **Claude Code builds, Codex tests**. Lean team of 8 agents plus 1 on-call compliance reviewer, phased in | Separation of duties with low coordination overhead |
+| D-012 | 6 Nov 2026 | **GitHub Issues and Projects** for daily work; **Jira Scrum** as the official record, run by Uchenna | Work stays next to the code; there is still a formal audit trail |
+| D-013 | 6 Nov 2026 | Reporting: a **daily summary** plus a **milestone report** at each phase gate | Enahoro's preference |
+| D-014 | 6 Nov 2026 | Feedback is **anonymous by default** | More honest answers and lower privacy risk |
+| D-015 | 6 Nov 2026 | Comparison, consolidated strategy and build setup **APPROVED**; Phase 0 started | Final approval |
+
+## Still open (Enahoro to decide)
+- The consolidated 6-tier pricing as a working hypothesis.
+- Team budget and target launch date.
+- Tom Associates pilot details: participants, dates, venue and who sees lecturer scores.
+- Hosting the pilot on Azure from day one (default) vs a simpler host first.
+- WhatsApp route: Meta Cloud API direct vs Azure Communication Services or another reseller.
