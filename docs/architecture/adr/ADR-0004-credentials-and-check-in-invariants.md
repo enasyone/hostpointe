@@ -52,7 +52,8 @@ The staff app queues scans with a device-made `idempotency_key` and `scanned_at`
 - Tenant offboarding job (C-3), before the first paid customer.
 - Osaretin reviews the public invite-token function (C-4).
 - Staff `users` rows anonymised 12 months after the end of the person's last membership, or on their request, whichever is sooner.
-- No messages sent until the consent migration lands (N-2).
+- No messages sent until the consent migration lands (N-2), with one exception added by Osaretin (GUIDANCE-0002, 6 Nov 2026): the RSVP confirmation email may go earlier as a service message on a recorded lawful basis. It goes once, only to the address on that RSVP, with no marketing and no access needs, names the organiser with a privacy link, and runs a suppression check first. Reminders, updates, WhatsApp and anything to imported guests still wait for consent.
+- Access needs are health data (GUIDANCE-0002): own table, fixed choices, separate explicit consent, owner and admin only, audited separate export, never in emails, QR codes, analytics, logs or AI. Hard delete 30 days after the last occurrence or promptly on withdrawal. `app.anonymise_guest` must delete them and write an erasure-log entry.
 
 ### Erasure log (added 6 Nov 2026, Osaretin's rules in `RETENTION.md`; required before the first real guest; not built)
 - Every erasure writes one entry to an append-only log in Azure Blob: guest ID, tenant ID, time, action. No name or contact details. After any restore, the log is applied before reopening, so an erased person cannot come back.
