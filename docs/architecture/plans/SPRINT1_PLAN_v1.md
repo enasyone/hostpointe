@@ -16,8 +16,9 @@ Real attendees enter real data. An earlier test-data rule in this file is withdr
 
 **Minimum before the first real attendee** (Osaretin, `docs/compliance/PILOT_DATA_PLAN.md`):
 - Real sign-in with a session timeout.
-- Erasure on Neon Free (HPE-76), with no Blob: Osaretin's fallback, a manual register, for the pilot only. On each erasure, named DevOps staff add guest ID, tenant ID, time and action to a private register the same day. Names and contact details never go in it. The restore runbook applies it before reopening. Audit events still record each erasure, and deleting a guest with no attendance writes one too. The automatic log returns with Azure Blob, as a gate for launch. Awaits Osaretin's agreement.
+- Erasure on Neon Free (HPE-76), with no Blob: Osaretin's fallback, a manual register, for the pilot only. On each erasure, named DevOps staff add guest ID, tenant ID, time and action to a private register the same day. Names and contact details never go in it. The restore runbook applies it before reopening. Audit events still record each erasure, and deleting a guest with no attendance writes one too. The automatic log returns with Azure Blob, as a gate for launch. Agreed by Osaretin, kept by Segun and deleted at pilot end.
 - Email only, with a provider tested in sandbox. No WhatsApp. Access needs off unless needed.
+- Neon's signed data processing agreement, and Tom Associates' written authorisation of Neon: a legal requirement, not covered by D-017's risk acceptance.
 - Privacy notice shown first, and a breach runbook. Non-technical items are in Osaretin's plan.
 - Deletion within 30 days of the last pilot day, with a signed record.
 
