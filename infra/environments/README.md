@@ -28,3 +28,7 @@ Each login's password is a separate Key Vault secret per environment. `database/
 - Neon branches map to environments: `dev` (exists, agents use only this), a `staging` branch and the project's default branch (named `production`) for live. Creating further branches or moving off the free plan needs Michael's cost check first; agents never touch the `production` branch.
 - Connection strings (three role logins per branch, see above) are stored in Azure Key Vault for deployed environments and in the git-ignored `.env` locally. Neon uses TLS; the API uses the pooled host with `set_config('app.tenant_id', $1, true)` inside a transaction for tenant context (session-level SET is forbidden), pg-boss workers (`WORKER_DATABASE_URL`) and migrations use the direct host.
 - Region confirmed: AWS eu-west-2 (London). Osaretin's review is done with conditions: see ADR-0006. Still open: a tested restore (free plan restore window is only 6 hours).
+
+## API start-up settings (from HPE-82)
+- The API exits at start-up without `APP_ENV`. With `APP_ENV=production` it also needs `ALLOWED_DB_HOSTS`: list BOTH the pooled (`-pooler`) and the direct Neon host names, comma-separated.
+- `deploy.yml` and the Bicep container settings must set both for staging and production. CI sets `APP_ENV=development`. Not wired yet: deploy is inactive and Azure is deferred.

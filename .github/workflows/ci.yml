@@ -42,6 +42,7 @@ jobs:
       DATABASE_URL: postgresql://hostpointe_api:api_local_only@localhost:5432/hostpointe
       MIGRATION_DATABASE_URL: postgresql://hostpointe_owner:owner_local_only@localhost:5432/hostpointe
       PURGE_DATABASE_URL: postgresql://hostpointe_purge_job:purge_local_only@localhost:5432/hostpointe
+      APP_ENV: development
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
