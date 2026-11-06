@@ -1,0 +1,76 @@
+# Backup and restore REHEARSAL on the Neon *dev* branch (fake data only). Proves the steps; it is NOT the real-data backup.
+# WARNING: this repository is PUBLIC. Workflow artifacts and logs of a public repo can be read by any GitHub user.
+# So: the dump is encrypted with `age` before it is uploaded (only ciphertext is stored), nothing sensitive is printed,
+# and the secrets live in the "backup-rehearsal" GitHub environment (dev branch connection only, NEVER production).
+# Osaretin's rules for real data (14-day retention, UK location, access control) still apply; real dumps do not go here
+# unless Osaretin and Enahoro approve it in writing.
+name: backup-rehearsal
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: backup-rehearsal
+  cancel-in-progress: false
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    environment: backup-rehearsal   # secrets: BACKUP_DATABASE_URL (hostpointe_backup, dev, direct host), AGE_PUBLIC_KEY
+    services:
+      restore-target:
+        image: postgres:18
+        env: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: restore_local_only, POSTGRES_DB: restore }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - name: Mask the connection string and refuse the pooler
+        env: { SRC: "${{ secrets.BACKUP_DATABASE_URL }}" }
+        run: |
+          echo "::add-mask::$SRC"
+          case "$SRC" in *-pooler*) echo "Use the direct host, not the pooler"; exit 1;; esac
+      - name: Install PostgreSQL 18 client and age
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client-18 age
+          pg_dump --version
+      - name: Count rows per table at the source (as the backup login)
+        env: { SRC: "${{ secrets.BACKUP_DATABASE_URL }}" }
+        run: |
+          : > src-counts.txt
+          for t in $(psql "$SRC" -At -c "select schemaname||'.'||tablename from pg_tables where schemaname='public' order by 1"); do
+            echo "$t $(psql "$SRC" -At -c "select count(*) from $t")" >> src-counts.txt
+          done
+          cat src-counts.txt
+          total=$(awk '{s+=$2} END{print s+0}' src-counts.txt)
+          if [ "$total" -eq 0 ]; then echo "Source has no rows: an empty dump proves nothing. Seed fake tenants and guests first."; exit 1; fi
+      - name: Dump (no --enable-row-security; the login has BYPASSRLS), then encrypt
+        env: { SRC: "${{ secrets.BACKUP_DATABASE_URL }}", AGE_PUBLIC_KEY: "${{ secrets.AGE_PUBLIC_KEY }}" }
+        run: |
+          pg_dump --format=custom --no-owner --no-privileges --file=dump.dump "$SRC"
+          sha256sum dump.dump | cut -d' ' -f1 > dump.sha256
+          age -r "$AGE_PUBLIC_KEY" -o dump.dump.age dump.dump
+          ls -l dump.dump dump.dump.age
+      - name: Upload ONLY the encrypted dump (14 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: neon-dev-dump-encrypted
+          path: |
+            dump.dump.age
+            dump.sha256
+          retention-days: 14
+          if-no-files-found: error
+      - name: Restore into the throwaway PostgreSQL 18 and compare counts
+        env: { PGPASSWORD: restore_local_only }
+        run: |
+          pg_restore --no-owner --no-privileges --dbname="postgresql://postgres@localhost:5432/restore" dump.dump
+          : > dst-counts.txt
+          for t in $(psql -h localhost -U postgres -d restore -At -c "select schemaname||'.'||tablename from pg_tables where schemaname='public' order by 1"); do
+            echo "$t $(psql -h localhost -U postgres -d restore -At -c "select count(*) from $t")" >> dst-counts.txt
+          done
+          diff src-counts.txt dst-counts.txt && echo "Row counts match for every table"
+      - name: Remove plaintext
+        if: always()
+        run: shred -u dump.dump 2>/dev/null || rm -f dump.dump
