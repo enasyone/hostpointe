@@ -13,10 +13,13 @@
 - [ ] Agreed maintenance window and the app can show a "read-only / maintenance" state. Check-in must keep working offline (ADR-0004); tell staff before the window.
 
 ## 1. Back up the source
-- Use the **direct** Neon host (never the pooler) and the owner login (`MIGRATION_DATABASE_URL`).
-- `pg_dump --format=custom --no-owner --no-privileges --file=hostpointe-YYYYMMDD.dump "$MIGRATION_DATABASE_URL"` using a pg_dump of major version 18 or newer.
-- Store the dump only in the private Azure Blob container (encrypted, no public access), never in git or chat. The dump holds real personal data in production: treat it as such, and delete local copies after the restore test.
-- Record the dump's SHA-256 and the Neon branch, time and migration version (`select * from pgmigrations`).
+- **Login:** use `BACKUP_DATABASE_URL` (`hostpointe_backup`: read-only via `pg_read_all_data`, `BYPASSRLS`, no write rights, used by nothing else). Do **not** use `hostpointe_owner`: row-level security is forced on our tables, so `pg_dump` (which turns `row_security` off) errors for the owner. Do **not** pass `--enable-row-security`: with no tenant set it can produce a dump with no rows. On Neon `dev` this login exists and was checked by query: `rolbypassrls = true`, not superuser, not in `neon_superuser`, and `CREATE TABLE` and `DELETE` are refused. On Azure the admin user plays this part until a backup login is created there.
+- Use the **direct** host, never the pooler, and a `pg_dump` client of major version 18 or newer.
+- `pg_dump --format=custom --no-owner --no-privileges --file=hostpointe-YYYYMMDD.dump "$BACKUP_DATABASE_URL"`.
+- Encrypt before it leaves the machine (`age` with a public key; the private key is held only by named DevOps staff).
+- Real-data rules (Osaretin's `RETENTION.md`): keep 14 days then delete automatically (Blob lifecycle rule); UK South private container, no public access, no copies outside the UK; encrypted at rest and in transit; access for the backup job and named DevOps staff only; the backup login is logged and its password sits in Key Vault and is rotated; no dumps on laptops. Restore drills use fake data, or the restored copy is deleted the same day.
+- Record the dump's SHA-256, the branch, the time and the migration version (`select * from pgmigrations`).
+- **Fake-data proof before Azure exists:** a private GitHub Actions workflow may run the same steps (artifact retention 14 days) and restore into a throwaway `postgres:18` container. This proves the steps only; real data never goes there. Seed fake tenants and guests first: empty tables pass without proving anything.
 
 ## 2. Prepare the target server
 - Bicep creates the server, TLS required, firewall limited to the API's outbound addresses and the operator's address. Admin password in Key Vault.
@@ -27,8 +30,11 @@
 - `pg_restore --no-owner --no-privileges --role=hostpointe_owner --dbname="$TARGET_OWNER_URL" --jobs=4 hostpointe-YYYYMMDD.dump`
 - Because the dump uses `--no-owner --no-privileges`, ownership comes from `--role`, and **grants must be re-applied**. Safest way: let migrations own the grants. Restore, then re-run the grant section of the migrations as the owner, or run `pnpm --filter @hostpointe/database migrate:up` against a schema-only restore and load data only (`pg_dump --data-only`). Decide in the rehearsal which is cleaner and record it here.
 
+## 3b. Re-apply erasures (required whenever real guests exist)
+A restore must never bring an erased person back. Before reopening, apply every `guest.anonymised` / erasure-log entry dated after the dump: read the erasure log (append-only files in Azure Blob, ADR-0004; until it is built, the manual register kept by DevOps and compliance) and call `app.anonymise_guest(guest_id)` for each. Write an entry for this re-application in the erasure log. If the database was lost, the log outside the database is the only record. The erasure log is required before the first real guest and is **not built yet**.
+
 ## 4. Verify the target (all must pass)
-- Row counts per table equal the source (script compares `count(*)` for every table).
+- Seeded fake data present (not empty tables). Row counts per table equal the source (script compares `count(*)` for every table).
 - `select count(*) from pgmigrations` and the last migration name match.
 - Row-level security: connect as `hostpointe_api`, confirm `rolsuper = false`, `rolbypassrls = false`, then run the P0-07 tenant-isolation test (tenant A cannot read tenant B). Also the live RLS test against the new server.
 - Check-in uniqueness constraint exists and rejects a duplicate.
