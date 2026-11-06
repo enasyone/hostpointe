@@ -2,6 +2,8 @@
 
 > **Revision 2 (6 Nov 2026, D-016):** the MVP database moved from Azure PostgreSQL Flexible Server to the Neon free plan in London. Azure PostgreSQL becomes the database at launch. Revision 1 is kept in git history.
 
+> **Revision 3 (6 Nov 2026, Adaeze):** corrects the Neon Free storage figure from 0.5 GB to 1 GB (Neon's plans page, read 6 Nov 2026); adds the third move trigger, the two-cloud note and the links to ADR-0006; the backup target for real pilot data is open, because Enahoro put off Azure Blob until Azure exists.
+
 **Shape:** a modular monolith (one web app and one API, with clear internal modules) plus a few background workers. Region: **Azure UK South**. MVP = free tiers first.
 
 ## Free-tier MVP stack
@@ -11,9 +13,9 @@
 | Web app (Next.js) + API (NestJS) | Azure Container Apps, Consumption plan, scale to zero | Always free: 180,000 vCPU-seconds, 360,000 GiB-seconds and 2 million requests a month | Higher traffic; 1 replica always running on event days |
 | Marketing pages | Azure Static Web Apps (Free) | 100 GB bandwidth, 2 custom domains | Rarely |
 | Webhooks and scheduled jobs | Azure Functions + Container Apps Jobs | Functions: always free for 1 million requests | High volume |
-| Database (MVP and pilot, D-016) | Neon free plan, region AWS Europe (London) `aws-eu-west-2`; branch `dev` for agents, `main` kept clean | Free: 0.5 GB storage per project, 100 compute-unit hours a month, scale to zero | Move at launch, or earlier past about 700 MB storage or 80 CU-hours a month |
+| Database (MVP and pilot, D-016) | Neon free plan, PostgreSQL 18, region AWS Europe (London) `aws-eu-west-2`; branch `dev` for agents, the default branch (`production`) kept clean. See ADR-0006 | Free: 1 GB storage per project, 100 compute-unit (CU) hours a month, scale to zero after 5 minutes idle, 6-hour restore window | Move at launch, or earlier once storage passes about 700 MB, compute regularly passes 80 of 100 CU-hours a month, or longer backups are needed |
 | Database (from launch) | Azure Database for PostgreSQL Flexible Server, UK South | Paid (the existing Azure account gets no 12-month free database) | From launch |
-| Database backups | Nightly `pg_dump` from Neon to Azure Blob Storage, with a tested restore | Within Blob free allowance | — |
+| Database backups | Nightly `pg_dump` with a tested restore. Target for real pilot data to be decided (Azure Blob once Azure exists). Needs a login that can read past row-level security (ADR-0006) | Within Blob free allowance once on Azure; the pilot target's cost is not known until it is chosen | — |
 | Job queue | pg-boss (inside Postgres) | Free | — |
 | Files | Azure Blob Storage or Cloudflare R2 | Blob free for 12 months: 5 GB hot storage | Media growth |
 | Organiser sign-in | Microsoft Entra External ID (guests need no account) | Free for 50,000 monthly active users | Above that, or premium add-ons |
@@ -32,7 +34,7 @@
 
 **Important:** Datapointe's existing Azure account is unlikely to get Azure's 12-month free offers, so check them in Cost Management before relying on them. Set a budget alert at £10.
 
-**Database rules (D-016):** use standard Postgres features only (no Neon-specific auth, functions or object storage), so moving to Azure is a routine copy. Warm the database before event-day check-in, because Neon pauses when idle. Secrets (`DATABASE_URL`, `NEON_API_KEY`) live only in the local `.env`, GitHub environment secrets and, later, Key Vault.
+**Database rules (D-016):** use standard Postgres features only (no Neon-specific auth, functions or object storage), so moving to Azure is a routine copy. Warm the database before event-day check-in and keep it awake during check-in, because Neon pauses when idle. While on Neon the API reaches the database across two clouds (Azure to AWS London). The pilot holds real data on Neon Free, on the `production` branch, by Enahoro's decision (ADR-0006). Secrets (`DATABASE_URL`, `NEON_API_KEY`) live only in the local `.env`, GitHub environment secrets and, later, Key Vault.
 
 ## Modules (inside the NestJS API)
 IAM (identity and access management) and tenancy · Events and scheduling · Guests and RSVP · Credentials · Check-in · Safe Pickup · Journey and venue · Messaging · Surveys and insights · Ticketing and payments ledger (Phase 1b) · Billing and plans · AI and media (Phase 2) · Planner suite (Phases 2–3) · Audit · SafeZone and hardware adapter (Phase 4, isolated).
