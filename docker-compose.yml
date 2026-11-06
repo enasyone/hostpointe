@@ -1,8 +1,11 @@
 # Local development only. Fake credentials. Same major version as Azure PostgreSQL (16).
+# The bootstrap superuser is used only by the init script; apps use the non-superuser logins it creates.
 services:
   postgres:
     image: postgres:16
-    environment: { POSTGRES_USER: user, POSTGRES_PASSWORD: password, POSTGRES_DB: hostpointe }
-    ports: ["5432:5432"]
-    volumes: [pgdata:/var/lib/postgresql/data]
+    environment: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: bootstrap_local_only }
+    ports: ["127.0.0.1:5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/local/init-roles.sh:/docker-entrypoint-initdb.d/10-init-roles.sh:ro
 volumes: { pgdata: {} }

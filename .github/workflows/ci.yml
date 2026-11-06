@@ -22,16 +22,37 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build
+      - name: Package boundary rules (ADR-0001); needs build first
+        run: pnpm lint:boundaries
   tests:
     name: Codex tests (unit, accessibility)
     runs-on: ubuntu-latest
     needs: quality
+    # Row-level security tests need a real PostgreSQL 16 with NON-superuser logins (superusers bypass RLS).
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: bootstrap_local_only
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://hostpointe_api:api_local_only@localhost:5432/hostpointe
+      MIGRATION_DATABASE_URL: postgresql://hostpointe_owner:owner_local_only@localhost:5432/hostpointe
+      PURGE_DATABASE_URL: postgresql://hostpointe_purge_job:purge_local_only@localhost:5432/hostpointe
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm }
+      - name: Create database roles (same script as local Docker Compose)
+        run: |
+          sudo apt-get install -y postgresql-client >/dev/null
+          PGPASSWORD=bootstrap_local_only POSTGRES_USER=postgres PGHOST=localhost sh infra/local/init-roles.sh
       - run: pnpm install --frozen-lockfile
+      - run: pnpm build
       - run: pnpm test
   security:
     name: security scan
