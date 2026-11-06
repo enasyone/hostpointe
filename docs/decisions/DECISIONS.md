@@ -23,6 +23,8 @@ Each decision is final until a new numbered decision replaces it. Earlier decisi
 
 D-016 detail: ADR-0006 (Accepted 6 Nov 2026) in `docs/architecture`; conditions before real guests are tracked in Jira HPE-34.
 
+D-016 confirmation (6 Nov 2026, Enahoro): D-016 stands as written. The move to Azure happens at launch, not earlier. The Tom Associates pilot, even with about 120 attendees, runs on test (fake) data, not real guest personal data, so Neon never holds real personal data. This resolves the open question in ADR-0006 (option (a) in effect, without moving the pilot to Azure). No new decision number. Dev-only DEMO sign-in approved for Sprint 1. Personal invite links per guest are the default.
+
 ## Still open (Enahoro to decide)
 - The consolidated 6-tier pricing as a working hypothesis.
 - Team budget and target launch date.
