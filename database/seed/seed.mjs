@@ -1,6 +1,6 @@
 // FAKE seed data for development databases only (DEMO). Every name, email and phone here is invented.
 // Run with the owner login: MIGRATION_DATABASE_URL (loaded from the repository root .env if present).
-// Safe to run twice: fixed ids and ON CONFLICT DO NOTHING. Refuses to run when APP_ENV=production.
+// Safe to run twice: fixed ids and ON CONFLICT DO NOTHING. Refuses to run unless APP_ENV is development or test (unset is refused).
 // Row-level security is forced even for the owner, so each tenant's rows are written with that
 // tenant's context set inside one transaction.
 import pg from 'pg';
@@ -11,8 +11,8 @@ try {
 } catch (err) {
   if (err.code !== 'ENOENT') throw err;
 }
-if (process.env.APP_ENV === 'production') {
-  console.error('Refusing to seed fake data when APP_ENV=production.');
+if (process.env.APP_ENV !== 'development' && process.env.APP_ENV !== 'test') {
+  console.error('Refusing to seed fake data unless APP_ENV is development or test.');
   process.exit(1);
 }
 if (!process.env.MIGRATION_DATABASE_URL) {
@@ -67,7 +67,7 @@ try {
       await client.query(
         `INSERT INTO guests (id, tenant_id, event_id, full_name, email, phone, rsvp_status)
          VALUES ($1,$2,$3,$4,$5,$6,'yes') ON CONFLICT DO NOTHING`,
-        [guestId, tenantId, eventId, names[i], `guest${t.n}${i}@example.invalid`, `+4477009${t.n}0${i}00`]);
+        [guestId, tenantId, eventId, names[i], `guest${t.n}${i}@example.invalid`, `+447700900${t.n}0${i}`]);
       await client.query(
         `INSERT INTO credentials (id, tenant_id, event_id, guest_id, kind) VALUES ($1,$2,$3,$4,'qr')
          ON CONFLICT DO NOTHING`, [credId, tenantId, eventId, guestId]);
