@@ -13,7 +13,7 @@ CREATE TABLE venues (
   tenant_id  uuid NOT NULL REFERENCES tenants (id) ON DELETE RESTRICT,
   name       text NOT NULL CHECK (length(name) BETWEEN 1 AND 200),
   address    text CHECK (address IS NULL OR length(address) <= 500),
-  timezone   text NOT NULL,
+  timezone   text NOT NULL, -- a default for forms; each occurrence's own timezone is authoritative
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (tenant_id, id)
@@ -28,21 +28,18 @@ ALTER TABLE event_occurrences ADD CONSTRAINT event_occurrences_venue_fk
   FOREIGN KEY (tenant_id, venue_id) REFERENCES venues (tenant_id, id) ON DELETE RESTRICT;
 
 -- ---------------------------------------------------------------------------------------------
--- Duplicate rule: one guest per normalised email and per normalised phone within an event.
--- Anonymised guests have email and phone cleared (0001), so they never block a new guest.
--- email: trimmed, lower case. phone: digits and a leading + only; full international formatting
--- (E.164) is done by the API before saving, this is the database backstop.
+-- Duplicate rule: NOT unique. Couples and families share an email or phone, a shared phone is common,
+-- and under Safe Pickup one guardian contact sits on several children. Personal invite links already
+-- stop one guest answering twice. The normalised columns exist so the API can warn the organiser about
+-- possible duplicates at import. Anonymised guests have email and phone cleared (0001).
+-- email: trimmed, lower case. phone: digits and a leading + only; the API formats to E.164 first.
 -- ---------------------------------------------------------------------------------------------
 
 ALTER TABLE guests
   ADD COLUMN email_normalised text GENERATED ALWAYS AS (NULLIF(lower(btrim(email)), '')) STORED,
   ADD COLUMN phone_normalised text GENERATED ALWAYS AS (NULLIF(regexp_replace(phone, '[^0-9+]', '', 'g'), '')) STORED;
-CREATE UNIQUE INDEX guests_event_email_unique
-  ON guests (tenant_id, event_id, email_normalised)
-  WHERE email_normalised IS NOT NULL AND anonymised_at IS NULL;
-CREATE UNIQUE INDEX guests_event_phone_unique
-  ON guests (tenant_id, event_id, phone_normalised)
-  WHERE phone_normalised IS NOT NULL AND anonymised_at IS NULL;
+CREATE INDEX guests_event_email_idx ON guests (tenant_id, event_id, email_normalised) WHERE email_normalised IS NOT NULL;
+CREATE INDEX guests_event_phone_idx ON guests (tenant_id, event_id, phone_normalised) WHERE phone_normalised IS NOT NULL;
 
 -- ---------------------------------------------------------------------------------------------
 -- Guest invites. The link holds a random 256-bit token; only its SHA-256 hash is stored, so a
@@ -57,10 +54,11 @@ CREATE TABLE guest_invites (
   token_hash   bytea NOT NULL UNIQUE CHECK (length(token_hash) = 32),
   expires_at   timestamptz NOT NULL,
   revoked_at   timestamptz,
-  last_used_at timestamptz,
+  last_used_at timestamptz, -- NOT proof a guest opened the link: email scanners and WhatsApp previews fetch links. RSVP only on POST, never GET.
   created_at   timestamptz NOT NULL DEFAULT now(),
+  -- CASCADE: an invite is worthless without its guest. (Consent records stay RESTRICT: such a guest is anonymised.)
   FOREIGN KEY (tenant_id, event_id, guest_id)
-    REFERENCES guests (tenant_id, event_id, id) ON DELETE RESTRICT
+    REFERENCES guests (tenant_id, event_id, id) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX guest_invites_one_live_per_guest
   ON guest_invites (guest_id) WHERE revoked_at IS NULL;
@@ -188,8 +186,8 @@ DROP FUNCTION app.revoke_invites_on_anonymise();
 DROP TABLE suppressions;
 DROP TABLE consent_records;
 DROP TABLE guest_invites;
-DROP INDEX guests_event_phone_unique;
-DROP INDEX guests_event_email_unique;
+DROP INDEX guests_event_phone_idx;
+DROP INDEX guests_event_email_idx;
 ALTER TABLE guests DROP COLUMN phone_normalised, DROP COLUMN email_normalised;
 ALTER TABLE event_occurrences DROP CONSTRAINT event_occurrences_venue_fk;
 ALTER TABLE event_occurrences DROP COLUMN venue_id;
