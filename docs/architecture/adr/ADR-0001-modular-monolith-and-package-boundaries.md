@@ -35,7 +35,7 @@ The typed API client is generated from the API's OpenAPI document into `apps/web
 - CI fails on an illegal import, using dependency-cruiser or an equivalent lint rule. The table above is the rule set.
 - TypeScript `strict` everywhere, with one shared base config.
 - Pin Node to an in-support long-term-support version in `.nvmrc` and `engines`. This machine has Node 20, whose support ended in April 2026, so pin 22 or 24.
-- Local PostgreSQL 16 or later through Docker Compose, at the same major version as Azure.
+- PostgreSQL 18 everywhere: Docker Compose, CI, the Neon dev branch and Azure. Microsoft's supported-versions page (updated August 2026) lists 18 for Flexible Server. Availability on B1MS in UK South is confirmed when P0-04 deploys.
 
 ## Consequences
 - One deployable and one transaction boundary, which is what check-in and payments need.
