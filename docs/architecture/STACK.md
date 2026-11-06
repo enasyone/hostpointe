@@ -2,7 +2,7 @@
 
 > **Revision 2 (6 Nov 2026, D-016):** the MVP database moved from Azure PostgreSQL Flexible Server to the Neon free plan in London. Azure PostgreSQL becomes the database at launch. Revision 1 is kept in git history.
 
-> **Revision 3 (6 Nov 2026, Adaeze):** corrects the Neon Free storage figure from 0.5 GB to 1 GB (Neon's plans page, read 6 Nov 2026); adds the third move trigger, the two-cloud note and the links to ADR-0006.
+> **Revision 3 (6 Nov 2026, Adaeze):** corrects the Neon Free storage figure from 0.5 GB to 1 GB (Neon's plans page, read 6 Nov 2026); adds the third move trigger, the two-cloud note and the links to ADR-0006; the backup target for real pilot data is open, because Enahoro put off Azure Blob until Azure exists.
 
 **Shape:** a modular monolith (one web app and one API, with clear internal modules) plus a few background workers. Region: **Azure UK South**. MVP = free tiers first.
 
@@ -15,7 +15,7 @@
 | Webhooks and scheduled jobs | Azure Functions + Container Apps Jobs | Functions: always free for 1 million requests | High volume |
 | Database (MVP and pilot, D-016) | Neon free plan, PostgreSQL 18, region AWS Europe (London) `aws-eu-west-2`; branch `dev` for agents, the default branch (`production`) kept clean. See ADR-0006 | Free: 1 GB storage per project, 100 compute-unit (CU) hours a month, scale to zero after 5 minutes idle, 6-hour restore window | Move at launch, or earlier once storage passes about 700 MB, compute regularly passes 80 of 100 CU-hours a month, or longer backups are needed |
 | Database (from launch) | Azure Database for PostgreSQL Flexible Server, UK South | Paid (the existing Azure account gets no 12-month free database) | From launch |
-| Database backups | Nightly `pg_dump` from Neon to Azure Blob Storage from day one, with a tested restore. Needs a login that can read past row-level security (ADR-0006) | Within Blob free allowance | — |
+| Database backups | Nightly `pg_dump` with a tested restore. Target for real pilot data to be decided (Azure Blob once Azure exists). Needs a login that can read past row-level security (ADR-0006) | Within Blob free allowance once on Azure; the pilot target's cost is not known until it is chosen | — |
 | Job queue | pg-boss (inside Postgres) | Free | — |
 | Files | Azure Blob Storage or Cloudflare R2 | Blob free for 12 months: 5 GB hot storage | Media growth |
 | Organiser sign-in | Microsoft Entra External ID (guests need no account) | Free for 50,000 monthly active users | Above that, or premium add-ons |
