@@ -4,7 +4,7 @@
 
 **Starts after:** the scaffold and migration 0001 are on `main` (P0-02, P0-03, P0-08).
 
-**Assumes:** personal RSVP links, recommended by Uchenna and me. Enahoro has not answered this. An open link would change tasks 2 and 6.
+**Assumes:** personal RSVP links, the default per Uchenna (6 Nov 2026). An open link would change tasks 2 and 6.
 
 ## Pilot rule: test data only
 Enahoro's decision: the Tom Associates pilot has real attendees, but no real guest data enters the system (ADR-0006). The software has to make that hard to break:
