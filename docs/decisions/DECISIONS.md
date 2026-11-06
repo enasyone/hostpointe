@@ -21,6 +21,8 @@ Each decision is final until a new numbered decision replaces it. Earlier decisi
 | D-015 | 6 Nov 2026 | Comparison, consolidated strategy and build setup **APPROVED**; Phase 0 started | Final approval |
 | D-016 | 6 Nov 2026 | **Database for MVP and pilot: Neon free Postgres in Europe (London), `aws-eu-west-2`.** Move to Azure PostgreSQL Flexible Server (UK South) at launch, or earlier once storage passes about 700 MB, compute regularly passes 80 of 100 CU-hours a month, or longer backups are needed. Rules: standard Postgres only, no Neon-specific features (auth, functions, object storage); nightly backup to Azure Blob from day one; warm the database before event-day check-in | The existing Azure account doesn't get the 12-month free database; Neon keeps the MVP at £0, and moving later is a routine Postgres copy |
 
+D-016 detail: ADR-0006 (Accepted 6 Nov 2026) in `docs/architecture`; conditions before real guests are tracked in Jira HPE-34.
+
 ## Still open (Enahoro to decide)
 - The consolidated 6-tier pricing as a working hypothesis.
 - Team budget and target launch date.
