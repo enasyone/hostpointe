@@ -3,7 +3,7 @@ Owner for all rows: **Enahoro**. Agents cannot do these. Status is updated by Uc
 
 | # | Task | Needed by | Blocks | Status | Jira |
 |---|---|---|---|---|---|
-| H-01 | Create Azure account (UK South); upgrade to pay-as-you-go within 30 days; set £10 budget alert | Now | P0-04 Azure foundation, staging, Phase 0 gate | Open | HPE-24 |
+| H-01 | Azure owner setup (see infra/AZURE_OWNER_SETUP.md) and £10 budget alert. **DEFERRED 6 Nov 2026 by Enahoro; do later** | Later | P0-04 Azure foundation, staging, Phase 0 gate | Deferred | HPE-24 |
 | H-02 | Apply to Microsoft for Startups (credits) | Before Phase 1 spend | Hosting cost | Open | HPE-24 (add comment) |
 | H-03 | Start Meta Business verification for WhatsApp (takes weeks) | Start now | WhatsApp in first release (D-004) | Open | HPE-25 |
 | H-04 | NDPC (Nigeria Data Protection Commission) registration | Before Nigerian pilot | Launch in Nigeria (D-001) | Open | HPE-26 |
