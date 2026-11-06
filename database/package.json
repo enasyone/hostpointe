@@ -1,0 +1,1 @@
+{ "name": "@hostpointe/database", "version": "0.0.0", "private": true, "description": "Plain SQL up/down migrations and fake seed data. Runner chosen by Ibrahim." }
