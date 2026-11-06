@@ -1,0 +1,23 @@
+# Deploy. DEMO / NOT ACTIVE until P0-04 (Azure foundation) lands and Enahoro confirms the Azure account.
+# Staging deploys on merge to main; production needs Enahoro's approval via the "production" environment.
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: staging or production
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Configure required reviewers (Enahoro) on the "production" environment in GitHub settings.
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Placeholder: azure/login (OIDC, no stored secrets) then az deployment group create with infra/environments/${{ inputs.target }}.bicepparam. Enabled in P0-04."
