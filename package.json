@@ -17,8 +17,10 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.6",
+    "@types/pg": "^8.23.1",
     "dependency-cruiser": "^18.7.2",
     "eslint": "^10.14.0",
+    "pg": "^8.23.1",
     "prettier": "^3.9.10",
     "turbo": "^2.11.10",
     "typescript": "^6.0.3",
