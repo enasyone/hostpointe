@@ -24,7 +24,18 @@ export const tokens = {
     "--shadow": "0 1px 2px rgba(22,20,29,.06),0 8px 24px rgba(22,20,29,.06)",
     "--font": "'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif",
     "--display": "'Fraunces',Georgia,serif",
-    "--fs": "16px"
+    "--fs": "16px",
+    "--ok-text": "#0B6B49",
+    "--warn-text": "#7A5200",
+    "--danger-text": "#B3242C",
+    "--accent-text": "#A83A12",
+    "--on-brand": "#FFFFFF",
+    "--on-accent": "#16141D",
+    "--on-ok": "#FFFFFF",
+    "--on-danger": "#FFFFFF",
+    "--brand-hover": "#4A2FD6",
+    "--focus": "#5B3DF5",
+    "--line-strong": "#8C8798"
   },
   "highContrast": {
     "--bg": "#000",
@@ -45,7 +56,18 @@ export const tokens = {
     "--warn-soft": "#261C00",
     "--danger": "#FF6B6B",
     "--danger-soft": "#2A0000",
-    "--shadow": "none"
+    "--shadow": "none",
+    "--ok-text": "#4DFF9A",
+    "--warn-text": "#FFD24D",
+    "--danger-text": "#FF6B6B",
+    "--accent-text": "#00E5FF",
+    "--on-brand": "#000",
+    "--on-accent": "#000",
+    "--on-ok": "#000",
+    "--on-danger": "#000",
+    "--brand-hover": "#FFE600",
+    "--focus": "#00E5FF",
+    "--line-strong": "#fff"
   },
   "largeText": {
     "--fs": "19px"
