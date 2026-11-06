@@ -1,1 +1,13 @@
-{ "name": "@hostpointe/database", "version": "0.0.0", "private": true, "description": "Plain SQL up/down migrations and fake seed data. Runner chosen by Ibrahim." }
+{
+  "name": "@hostpointe/database",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Plain SQL migrations (one file each, with Up and Down sections) run by node-pg-migrate. Fake seed data only.",
+  "scripts": {
+    "migrate:up": "node-pg-migrate up --migrations-dir migrations --database-url-var MIGRATION_DATABASE_URL --migrations-table pgmigrations --check-order",
+    "migrate:down": "node-pg-migrate down 1 --migrations-dir migrations --database-url-var MIGRATION_DATABASE_URL --migrations-table pgmigrations"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "^9.0.0"
+  }
+}
