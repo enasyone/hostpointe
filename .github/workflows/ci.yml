@@ -53,6 +53,8 @@ jobs:
           PGPASSWORD=bootstrap_local_only POSTGRES_USER=postgres PGHOST=localhost sh infra/local/init-roles.sh
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - name: Apply database migrations (owner login, direct)
+        run: pnpm --filter @hostpointe/database migrate:up
       - run: pnpm test
   security:
     name: security scan
