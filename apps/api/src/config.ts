@@ -39,12 +39,19 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     for (const name of ["DATABASE_URL", "MIGRATION_DATABASE_URL", "WORKER_DATABASE_URL"]) {
       const value = env[name];
       if (!value) continue;
-      let host: string;
+      let parsed: URL;
       try {
-        host = new URL(value).hostname.toLowerCase();
+        parsed = new URL(value);
       } catch {
         throw new ConfigError(`Refusing to start: ${name} is not a valid URL.`);
       }
+      // The pg driver lets ?host= or ?hostaddr= override the host in the URL, which would bypass this list.
+      for (const key of parsed.searchParams.keys()) {
+        if (["host", "hostaddr"].includes(key.toLowerCase())) {
+          throw new ConfigError(`Refusing to start: ${name} must not carry a host or hostaddr query parameter.`);
+        }
+      }
+      const host = parsed.hostname.toLowerCase();
       if (!allowed.includes(host)) {
         throw new ConfigError(`Refusing to start: ${name} uses a host that is not in ALLOWED_DB_HOSTS.`);
       }
@@ -60,5 +67,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     demoSignIn = { enabled: true, secret };
   }
 
-  return { appEnv, port: Number(env.PORT ?? 4000), demoSignIn };
+  const port = Number(env.PORT ?? 4000);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new ConfigError("PORT must be a whole number between 1 and 65535.");
+  }
+  return { appEnv, port, demoSignIn };
 }
