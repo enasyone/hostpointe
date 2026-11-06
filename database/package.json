@@ -5,9 +5,11 @@
   "description": "Plain SQL migrations (one file each, with Up and Down sections) run by node-pg-migrate. Fake seed data only.",
   "scripts": {
     "migrate:up": "node scripts/migrate.mjs up",
-    "migrate:down": "node scripts/migrate.mjs down"
+    "migrate:down": "node scripts/migrate.mjs down",
+    "seed": "node seed/seed.mjs"
   },
   "devDependencies": {
-    "node-pg-migrate": "^9.0.0"
+    "node-pg-migrate": "^9.0.0",
+    "pg": "^8.23.1"
   }
 }
