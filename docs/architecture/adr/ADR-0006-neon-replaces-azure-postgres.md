@@ -36,7 +36,7 @@ From day one, a nightly `pg_dump` over the direct connection goes to a private A
   - Access for the backup job and named DevOps staff only. The `BYPASSRLS` login is logged, and its password is in Key Vault and rotated. No dumps on laptops.
   - Restore drills use fake data, or the restored copy is deleted the same day.
 - **Erasure and restore:** erased data stays in dumps for up to 14 days, and the privacy notice says so. A restore must never bring an erased person back, so every `guest.anonymised` audit event dated after the dump is re-applied before reopening.
-- **Known gap:** those audit events live only in the database. If the database is lost and restored from a dump, events after that dump are lost too, and so is the record of who to re-erase. Erasures may need a small log of guest IDs kept outside the database. Not built; to settle with Osaretin before real guests.
+- **Database lost:** those audit events live only in the database, so a full loss would lose the record of who to re-erase. The erasure log outside the database in ADR-0004 covers this, and is required before the first real guest. Not built.
 
 ### Warm-up before check-in
 Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one warm-up is not enough. A scheduled ping starts before doors open and runs at intervals under 5 minutes until check-in ends. At the smallest size (0.25 CU), that costs about 0.25 CU-hours per hour of event. Check-in must also tolerate a slow first query (offline gate mode, ADR-0004). Not built; owner Segun, with Ibrahim for the API side.

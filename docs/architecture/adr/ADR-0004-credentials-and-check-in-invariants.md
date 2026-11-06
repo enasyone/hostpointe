@@ -54,6 +54,13 @@ The staff app queues scans with a device-made `idempotency_key` and `scanned_at`
 - Staff `users` rows anonymised 12 months after the end of the person's last membership, or on their request, whichever is sooner.
 - No messages sent until the consent migration lands (N-2).
 
+### Erasure log (added 6 Nov 2026, Osaretin's rules in `RETENTION.md`; required before the first real guest; not built)
+- Every erasure writes one entry to an append-only log in Azure Blob: guest ID, tenant ID, time, action. No name or contact details. After any restore, the log is applied before reopening, so an erased person cannot come back.
+- Deleting a guest with no attendance writes the same entry, through the same function or a `guest.deleted` event, with a test.
+- A database function cannot write to Blob, so the entry goes through a pg-boss job queued in the erasure's own transaction, with retries, and a logged failure.
+- Blob lifecycle rules delete whole files, not lines, so use one file a day and delete each after 35 days. The erasure path alone may write; the restore job and named DevOps staff may read. The log is treated as personal data.
+- Only fallback if this is late: a manual register of erased IDs kept by DevOps and compliance, applied after any restore.
+
 ### Deliberately not in v0
 - **Safe Pickup and all children's data:** separate tables in a separate migration, with Osaretin's review. D-003 rules out location tracking until Phase 4.
 - **Consent records:** arrive with messaging (AT-13).
