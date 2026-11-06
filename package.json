@@ -11,7 +11,7 @@
     "lint": "turbo run lint",
     "lint:boundaries": "depcruise apps packages --config .dependency-cruiser.cjs",
     "typecheck": "turbo run typecheck",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "format": "prettier --write ."
   },
   "devDependencies": {
