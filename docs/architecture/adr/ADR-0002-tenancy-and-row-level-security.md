@@ -38,7 +38,7 @@ A tenant ID from the client is only a request. Membership is the proof. With use
 `roles` is a fixed catalogue (`owner`, `admin`, `staff`, `viewer`) changed only by migrations. Each membership has one role. Roles are enforced in the API. Custom roles wait until a problem-map row needs them.
 
 ### Public guest pages (Phase 1)
-RSVP and pass pages have no signed-in user. They resolve an opaque invite token through a narrow `SECURITY DEFINER` function that returns only the tenant and event IDs, then proceed under normal RLS. Ibrahim adds this with the RSVP story, with review from Adaeze and Osaretin. No general "bypass" role is allowed.
+RSVP and pass pages have no signed-in user. They resolve an opaque invite token through a narrow `SECURITY DEFINER` function that returns only the tenant, event and guest IDs (guest added 6 Nov 2026, because links are personal), then proceed under normal RLS. Ibrahim adds this with the RSVP story, with review from Adaeze and Osaretin. No general "bypass" role is allowed.
 
 ### Migrations
 Plain SQL, because policies and composite keys are first-class here and an ORM would hide them. The runner is node-pg-migrate (Ibrahim's choice): one file in `database/migrations` with an up and a down section. Backfills that cross tenants need their own reviewed migration. They must not weaken a policy.

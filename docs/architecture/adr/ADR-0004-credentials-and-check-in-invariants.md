@@ -43,7 +43,7 @@ Repeat scans are normal at a door, so they are a clean result, not an error. Que
 The staff app queues scans with a device-made `idempotency_key` and `scanned_at`, then merges on reconnect. Rule 1 settles conflicts: the first row to arrive stands, and the later device sees "already checked in". `received_at` keeps the server's time, because device clocks can be wrong. Detailed design comes with the Phase 1 story.
 
 ### Erasure and retention (from REVIEW-0001)
-- **Erasure of a guest with attendance means anonymising in place.** A guest with no attendance may simply be deleted. `app.anonymise_guest` replaces the name with a placeholder, clears email and phone, revokes the guest's credentials and clears their hashes. Check-in rows stay, so attendance counts stay correct.
+- **Erasure of a guest with attendance means anonymising in place.** A guest with no attendance and no consent records may simply be deleted; a guest with consent records is anonymised, because those records are append-only. `app.anonymise_guest` replaces the name with a placeholder, clears email and phone, revokes the guest's credentials and clears their hashes. Check-in rows stay, so attendance counts stay correct.
 - **When:** on request within 30 days, and automatically 12 months after the event's last occurrence. An organiser may choose shorter. The scheduled job and the request flow are still to be built.
 - **Audit events:** kept 24 months. Only the scheduled purge job may delete them, through `hostpointe_purge`, which can remove rows older than 24 months and nothing else.
 - **Audit metadata:** a database check allows only listed keys and short lower-case values, because an append-only table cannot be erased. A new key needs a migration, and so a compliance review.
