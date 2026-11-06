@@ -2,7 +2,7 @@
 
 > **Revision 2 (6 Nov 2026):** corrected to the authoritative D-016. Revision 1 treated Neon as an open-ended replacement for Azure. D-016 uses Neon for the MVP and pilot only, with a move to Azure at launch or at set triggers. Revision 1 is kept in git history, and the file name is unchanged so links keep working.
 
-**Status:** Revision 1 Accepted (6 Nov 2026, god); revision 2 awaits Osaretin's review and god's acceptance · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (approved with conditions, DPIA section 5b)
+**Status:** Revision 1 Accepted (6 Nov 2026, god); revision 2 approved by Osaretin, awaits god's acceptance · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
 
 **Supersedes:** for the MVP and pilot only, the database part of D-009. From launch the database is Azure PostgreSQL Flexible Server, UK South. Everything else in D-009 stands: compute, storage, secrets and monitoring stay on Azure UK South.
 
@@ -30,7 +30,13 @@ Segun checks Neon usage against these triggers and reports them at each mileston
 From day one, a nightly `pg_dump` over the direct connection goes to a private Azure Blob container, with a tested restore (D-016, AT-22).
 - **Dependency:** this needs Azure Blob, and P0-04 is still blocked on the Azure account.
 - **Login:** `hostpointe_owner` cannot dump our tables, because row-level security is forced on them. `pg_dump` turns `row_security` off and PostgreSQL then raises an error instead of returning filtered rows. Tested on PGlite 18.6 with `SELECT`, not with `pg_dump` itself: the owner under `FORCE` got "query would be affected by row-level security policy", and a `BYPASSRLS` login read the row. The backup therefore needs its own read-only login with `BYPASSRLS`, used by nothing else. Do not use `--enable-row-security`: with no tenant set it can produce a dump with no rows in it. Whether Neon allows a role created with SQL to hold `BYPASSRLS` is not yet checked; Segun confirms on `dev`.
-- **Personal data:** once real guests exist, each dump is a copy of their data. Retention, encryption and erasure for dumps need Osaretin's review before then.
+- **Personal data (Osaretin's rules, `RETENTION.md`, Backup dumps):** once real guests exist, each dump is a copy of their data.
+  - Keep 14 days, then delete automatically by a Blob lifecycle rule.
+  - UK South only: private container, no public access, no copies outside the UK. Encrypted at rest and in transit.
+  - Access for the backup job and named DevOps staff only. The `BYPASSRLS` login is logged, and its password is in Key Vault and rotated. No dumps on laptops.
+  - Restore drills use fake data, or the restored copy is deleted the same day.
+- **Erasure and restore:** erased data stays in dumps for up to 14 days, and the privacy notice says so. A restore must never bring an erased person back, so every `guest.anonymised` audit event dated after the dump is re-applied before reopening.
+- **Known gap:** those audit events live only in the database. If the database is lost and restored from a dump, events after that dump are lost too, and so is the record of who to re-erase. Erasures may need a small log of guest IDs kept outside the database. Not built; to settle with Osaretin before real guests.
 
 ### Warm-up before check-in
 Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one warm-up is not enough. A scheduled ping starts before doors open and runs at intervals under 5 minutes until check-in ends. At the smallest size (0.25 CU), that costs about 0.25 CU-hours per hour of event. Check-in must also tolerate a slow first query (offline gate mode, ADR-0004). Not built; owner Segun, with Ibrahim for the API side.
@@ -73,10 +79,14 @@ Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one wa
 **Open question for Enahoro: may the pilot hold real guests on the Free plan?** D-016 puts the pilot on Neon Free. Revision 1 and Osaretin's review say Free is for fake data only. This revision does not settle that.
 - **Against Free for real guests:** 6-hour restore window, no availability guarantee, and a compute allowance that can run out. Osaretin's guidance: no certification is a legal requirement, but they are evidence for the Article 32 security duty. Launch is acceptable for an adults-only pilot once the processing agreement is signed. Scale should be in place before children's data or Safe Pickup goes live.
 - **D-003 ships Safe Pickup in the first release,** so if the pilot uses Safe Pickup, this guidance points to Scale or to Azure.
-- **Options:** (a) make the first real guest data a fourth move trigger, so Neon only ever holds fake data and no Neon agreement or paid plan is needed; (b) pay for Neon during the pilot; (c) keep Free with real guests, which needs Osaretin's written acceptance. Adaeze recommends (a), subject to Michael's cost check of Azure.
+- **The Tom Associates pilot has real guests, about 120 people** (Osaretin).
+- **Options:**
+  - (a) Make the first real guest data a fourth move trigger, so Neon only ever holds fake data and no Neon agreement or paid plan is needed. **The pilot then runs on Azure.** Adaeze recommends this, and Osaretin approves it, subject to Michael's approval of the Azure spend.
+  - (b) Pay for Neon during the pilot. All Neon conditions apply.
+  - (c) Keep Free with real guests. Osaretin will not give written acceptance. Accepting the risk would be for Michael.
 
 ## Conditions before real guests use Neon
-These apply only if real guests go on Neon, which depends on the open question above. Osaretin has not read Neon's terms, so the contract items are guidance to confirm.
+These apply only if real guests go on Neon, which depends on the open question above. Under option (a), conditions 2a, 2b and 6 fall away, because Neon never holds personal data (Osaretin); the move follows DPIA section 5c instead. Osaretin has not read Neon's terms, so the contract items are guidance to confirm.
 
 | # | Condition | Owner |
 |---|---|---|
