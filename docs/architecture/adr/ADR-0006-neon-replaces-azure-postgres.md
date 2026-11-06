@@ -37,7 +37,7 @@ Facts below come from Neon's documentation (plans, regions and connection poolin
 | production | `production` (the project's default branch) | Real |
 
 - **A branch copies its parent's data. Once `production` holds real guests, no branch may be created from it** unless a separate review approves it, because the copy would hold real personal data with weaker access. Build `dev` and `staging` from fake seed data. Before real data arrives, recreate any branch that descends from `production`, or confirm it holds only fake data.
-- Each branch gets its own three logins (owner, API, purge), created with SQL. Roles made through Neon's console, API or CLI may gain `neon_superuser`, which bypasses row-level security; this must be checked with the query in the P0-07 test setup.
+- Each branch gets its own three logins (owner, API, purge), created with SQL. Roles made through Neon's console, API or CLI may gain `neon_superuser`, which bypasses row-level security; so confirm for each login that `rolsuper` and `rolbypassrls` are false and that it holds no `neon_superuser` membership.
 - Migrations reach each environment through CI or deploy steps only, never by hand. Agents use `dev` and never touch `production`.
 - Connection strings live in Azure Key Vault for deployed environments, and in the git-ignored `.env` locally.
 
