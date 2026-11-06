@@ -19,6 +19,6 @@ jobs:
     # Configure required reviewers (Enahoro) on the "production" environment in GitHub settings.
     environment: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Placeholder
         run: echo "Placeholder - azure/login (OIDC, no stored secrets) then az deployment group create with infra/environments/${{ inputs.target }}.bicepparam. Enabled in P0-04."
