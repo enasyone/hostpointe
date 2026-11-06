@@ -57,12 +57,12 @@ Facts below come from Neon's documentation (plans, regions and connection poolin
 ## Conditions before real guests use it
 | # | Condition | Owner |
 |---|---|---|
-| 1 | Confirm the project is in `aws-eu-west-2`, or create a new project there | Segun |
+| 1 | Project is in `aws-eu-west-2`: **met**, confirmed by Segun from the Neon API, 6 Nov 2026 | Segun |
 | 2 | Add Neon to the data map and DPIA (Data Protection Impact Assessment): processor contract, AWS London location, UK–Nigeria transfers | Osaretin |
 | 3 | Choose the paid plan | Michael and Enahoro |
 | 4 | Backup and restore drill on Neon (AT-22) | Babajide, Segun |
 | 5 | Measure check-in from Azure UK South to Neon against the 500 ms target for 95% of scans (k6) | Obinna |
-| 6 | Restrict database access: IP allow list if the plan has it, TLS required either way | Segun |
+| 6 | Restrict database access: TLS is in place (`sslmode=require`); an IP allow list needs the Scale plan | Segun |
 
 ## Consequences
 - **Bicep creates no PostgreSQL server.** The rest of P0-04 is unchanged.
