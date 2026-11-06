@@ -1,6 +1,6 @@
 # ADR-0006: Neon replaces Azure PostgreSQL for now
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016)
+**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (approved with conditions, DPIA section 5b)
 
 **Supersedes:** the Database row in `STACK.md` (Azure Database for PostgreSQL Flexible Server, B1MS) and that part of D-009. Everything else in D-009 stands: compute, storage, secrets and monitoring stay on Azure UK South.
 
@@ -36,7 +36,7 @@ Facts below come from Neon's documentation (plans, regions and connection poolin
 | staging | `staging` (not created, needs a cost check) | Fake only |
 | production | `production` (the project's default branch) | Real |
 
-- **A branch copies its parent's data. Once `production` holds real guests, no branch may be created from it** unless a separate review approves it, because the copy would hold real personal data with weaker access. Build `dev` and `staging` from fake seed data. Before real data arrives, recreate any branch that descends from `production`, or confirm it holds only fake data.
+- **A branch copies its parent's data. Once `production` holds real guests, no branch may be created from it** unless a separate review approves it, because the copy would hold real personal data with weaker access. The same rule covers point-in-time restores into new branches, snapshots and exported dumps. Real-data dumps never go on developer laptops. Build `dev` and `staging` from fake seed data. Before real data arrives, recreate any branch that descends from `production`, or confirm it holds only fake data.
 - Each branch gets its own three logins (owner, API, purge), created with SQL. Roles made through Neon's console, API or CLI may gain `neon_superuser`, which bypasses row-level security; so confirm for each login that `rolsuper` and `rolbypassrls` are false and that it holds no `neon_superuser` membership.
 - Migrations reach each environment through CI or deploy steps only, never by hand. Agents use `dev` and never touch `production`.
 - Connection strings live in Azure Key Vault for deployed environments, and in the git-ignored `.env` locally.
@@ -52,13 +52,18 @@ Facts below come from Neon's documentation (plans, regions and connection poolin
 | Availability guarantee (SLA) | No | No | Yes |
 
 - **Free is for fake data only.** It is not acceptable for real guests, because of the 6-hour restore window, no availability guarantee, and a compute allowance that can run out.
-- **The plan for real guests is an open spend decision for Michael and Enahoro,** informed by Osaretin's review below. I recommend Scale for production, because of the certifications, IP allow list and availability guarantee.
+- **The plan for real guests is an open spend decision for Michael.** Osaretin's guidance: no certification is a legal requirement, but they are evidence for the Article 32 security duty. Launch is acceptable for an adults-only pilot once the processing agreement is signed. Scale should be in place before children's data or Safe Pickup goes live, and is recommended for production.
+- **D-003 ships Safe Pickup in the first release,** so in practice that release needs Scale unless Safe Pickup is switched off for it.
 
 ## Conditions before real guests use it
+Osaretin has not read Neon's terms, so the contract items are guidance to confirm.
+
 | # | Condition | Owner |
 |---|---|---|
 | 1 | Project is in `aws-eu-west-2`: **met**, confirmed by Segun from the Neon API, 6 Nov 2026 | Segun |
-| 2 | Add Neon to the data map and DPIA (Data Protection Impact Assessment): processor contract, AWS London location, UK–Nigeria transfers | Osaretin |
+| 2 | Neon added to the data map and DPIA (Data Protection Impact Assessment): **done** by Osaretin. AWS London is acceptable | Osaretin |
+| 2a | Signed data processing agreement with Neon, naming the UK–US transfer route, because Neon is US-owned: security measures, sub-processors including AWS, breach notice that lets us meet the 72-hour ICO (Information Commissioner's Office) deadline, deletion on exit. Check which plan includes it; keep a dated copy | Michael or Enahoro signs |
+| 2b | Privacy notice says erased data stays in backups until the restore window ends | Osaretin |
 | 3 | Choose the paid plan | Michael and Enahoro |
 | 4 | Backup and restore drill on Neon (AT-22) | Babajide, Segun |
 | 5 | Measure check-in from Azure UK South to Neon against the 500 ms target for 95% of scans (k6) | Obinna |
