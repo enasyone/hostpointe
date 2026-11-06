@@ -25,10 +25,24 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     if (wantsDemo) {
       throw new ConfigError("Refusing to start: DEMO sign-in must not be enabled when APP_ENV=production.");
     }
-    // Production runs on Azure (ADR-0006 covers the interim Neon pilot). Neon in production is refused.
+    // Production may only talk to databases named in ALLOWED_DB_HOSTS (comma-separated host names).
+    // Fail closed: no list means no start. This keeps the shared dev database (Neon "dev" branch,
+    // or any other host) from ever being used by a production API, whatever provider hosts production.
+    const allowed = (env.ALLOWED_DB_HOSTS ?? "").split(",").map((h) => h.trim().toLowerCase()).filter(Boolean);
+    if (allowed.length === 0) {
+      throw new ConfigError("Refusing to start: APP_ENV=production needs ALLOWED_DB_HOSTS (the database host names this environment may use).");
+    }
     for (const name of ["DATABASE_URL", "MIGRATION_DATABASE_URL", "WORKER_DATABASE_URL"]) {
-      if (/(^|[.@/])neon\.tech(\W|$)/i.test(env[name] ?? "")) {
-        throw new ConfigError(`Refusing to start: ${name} points at Neon while APP_ENV=production.`);
+      const value = env[name];
+      if (!value) continue;
+      let host: string;
+      try {
+        host = new URL(value).hostname.toLowerCase();
+      } catch {
+        throw new ConfigError(`Refusing to start: ${name} is not a valid URL.`);
+      }
+      if (!allowed.includes(host)) {
+        throw new ConfigError(`Refusing to start: ${name} uses a host that is not in ALLOWED_DB_HOSTS.`);
       }
     }
   }
