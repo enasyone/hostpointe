@@ -16,7 +16,8 @@ To re-run: `npm i @electric-sql/pglite`, then `node verify-schema.mjs <path to t
 
 ## Known limits
 - The 86 checks ran only on PGlite 0.5.15 (PostgreSQL 18.6 compiled to WebAssembly).
-- On 6 Nov 2026 Ibrahim ran the migration up, down and up on the Neon dev branch (PostgreSQL 18.6) through node-pg-migrate 9.0.0, as `hostpointe_owner`. It passed, and all 12 tables are owned by that login. This proves the migration applies and rolls back, not the isolation rules.
+- On 6 Nov 2026 Ibrahim ran the migration up, down and up on the Neon dev branch (PostgreSQL 18.6) through node-pg-migrate 9.0.0, as `hostpointe_owner`. It passed, and all 12 tables are owned by that login. This proves the migration applies and rolls back.
+- On 6 Nov 2026 god ran six isolation checks on Neon dev as `hostpointe_api`, through a scratch copy of Babajide's test, and all passed: least privilege, cross-tenant read and write blocked, no context fails closed, no context leak across transactions. Babajide's own test file has not run yet, because no test tooling is committed.
 - It has not run on Azure. The baseline is PostgreSQL 18 (ADR-0001).
 - The check script uses fake data and is not the acceptance test. The P0-07 proof test and AT-10 belong to Babajide; AT-10 must run against the real API.
 - No API code uses this yet.

@@ -1,6 +1,6 @@
-# Technical stack and hosting (approved, D-006 and D-009)
+# Technical stack and hosting (approved, D-006, D-009 and D-016)
 
-**Shape:** a modular monolith (one web app and one API, with clear internal modules) plus a few background workers. Region: **Azure UK South**. MVP = free tiers first.
+**Shape:** a modular monolith (one web app and one API, with clear internal modules) plus a few background workers. Region: **Azure UK South**, except PostgreSQL, which runs on **Neon in AWS London (`aws-eu-west-2`)** under D-016 and ADR-0006. MVP = free tiers first.
 
 ## Free-tier MVP stack
 | Layer | Choice | Free allowance (verify before relying on it) | Paid when |
@@ -9,7 +9,7 @@
 | Web app (Next.js) + API (NestJS) | Azure Container Apps, Consumption plan, scale to zero | Always free: 180,000 vCPU-seconds, 360,000 GiB-seconds and 2 million requests a month | Higher traffic; 1 replica always running on event days |
 | Marketing pages | Azure Static Web Apps (Free) | 100 GB bandwidth, 2 custom domains | Rarely |
 | Webhooks and scheduled jobs | Azure Functions + Container Apps Jobs | Functions: always free for 1 million requests | High volume |
-| Database | **Superseded by ADR-0006 and D-016: Neon (PostgreSQL 18).** Previously: Azure Database for PostgreSQL Flexible Server, B1MS | Neon Free: 1 GB, 100 CU-hours a project, fake data only. Previously: free for 12 months, 750 hours, 32 GB storage, 32 GB backup | Before any real guest data |
+| Database | **Neon, PostgreSQL 18, AWS London (`aws-eu-west-2`), under D-016 and ADR-0006.** Previously: Azure Database for PostgreSQL Flexible Server, B1MS | Neon Free: 1 GB, 100 CU-hours a project, fake data only. Previously: free for 12 months, 750 hours, 32 GB storage, 32 GB backup | Before any real guest data |
 | Job queue | pg-boss (inside Postgres) | Free | — |
 | Files | Azure Blob Storage or Cloudflare R2 | Blob free for 12 months: 5 GB hot storage | Media growth |
 | Organiser sign-in | Microsoft Entra External ID (guests need no account) | Free for 50,000 monthly active users | Above that, or premium add-ons |
@@ -25,6 +25,8 @@
 | Product analytics and feature flags | PostHog Free | Free plan | Scale |
 | Payments | Stripe (UK); Paystack and A1Pay (Nigeria) | No monthly fee | Per transaction |
 | Push notifications (later) | Azure Notification Hubs or Expo Push | Notification Hubs: always free for 1 million pushes | Scale |
+
+**Database hosting:** the database is not on Azure, so the API reaches it across two clouds. Conditions before real guest data are in ADR-0006.
 
 **Important:** to keep Azure's 12-month free offers, upgrade the new account to pay-as-you-go within 30 days. Set a budget alert at £10.
 
