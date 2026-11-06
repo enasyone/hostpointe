@@ -25,6 +25,8 @@ Each decision is final until a new numbered decision replaces it. Earlier decisi
 
 D-017 record of acceptance: Enahoro's words on file (via god, 6 Nov 2026): "The simulation will be real with real data. It will be deleted afterwards." The choice of option (c) with risk accepted in writing was relayed by god. **Enahoro's own written risk-acceptance wording is NOT yet in this file: it still has to be supplied and pasted here verbatim.** Osaretin's written objection: to be referenced from her review file in docs/compliance/reviews.
 
+D-016 known gap (6 Nov 2026): the D-016 row says nightly backup goes to Azure Blob from day one. Enahoro later said there is no Blob yet and asked for a free option, so the backup target for real pilot data is OPEN (Azure Blob vs a private repo). Adaeze corrected STACK.md and ADR-0006 (PR #6). The D-016 row is left as written; if Enahoro's NEON-DEC answer changes the target, a new numbered decision will supersede that clause. Jira: HPE-34.
+
 D-016 detail: ADR-0006 (Accepted 6 Nov 2026) in `docs/architecture`; conditions before real guests are tracked in Jira HPE-34.
 
 D-016 confirmation (6 Nov 2026, Enahoro): D-016 stands as written. The move to Azure happens at launch, not earlier. The Tom Associates pilot, even with about 120 attendees, runs on test (fake) data, not real guest personal data, so Neon never holds real personal data. This resolves the open question in ADR-0006 (option (a) in effect, without moving the pilot to Azure). No new decision number. Dev-only DEMO sign-in approved for Sprint 1. Personal invite links per guest are the default.
