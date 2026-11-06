@@ -12,7 +12,6 @@ const block = (sel, o) => `${sel} { ${decls(o)} }`;
 const css = `/* GENERATED from tokens.json by scripts/build-tokens.mjs. Do not edit. */
 ${block(':root', t.default)}
 ${block('html.hc', t.highContrast)}
-html.hc .btn-primary { color: #000; }
 html.hc .card, html.hc .btn, html.hc .chip, html.hc input, html.hc select, html.hc textarea { border-color: #fff !important; }
 ${block('html.lg', t.largeText)}
 /* Reduced motion: the in-app switch (html.rm) and the operating system setting. */
@@ -34,7 +33,7 @@ for (const [f, body] of Object.entries(out)) {
   const p = join(src, f);
   if (check) {
     let cur = ''; try { cur = readFileSync(p, 'utf8'); } catch {}
-    if (cur !== body) { console.error(`${f} is out of date. Run: npm run build:tokens`); bad = true; }
+    if (cur !== body) { console.error(`${f} is out of date. Run: pnpm --filter @hostpointe/ui build:tokens`); bad = true; }
   } else writeFileSync(p, body);
 }
 process.exit(bad ? 1 : 0);
