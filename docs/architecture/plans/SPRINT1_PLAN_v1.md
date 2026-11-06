@@ -30,7 +30,7 @@ Real attendees enter real data. An earlier test-data rule in this file is withdr
 | 3 | `packages/domain`: local time plus timezone to UTC, timezone validation, one-off event shape | Adaeze. Review: Ibrahim | 77 | — |
 | 4 | Create-event API: event, series and first occurrence in one transaction; OpenAPI | Ibrahim | 77 | 1, 2, 3 |
 | 5 | Create-event page, 320 px and up, asks personal or corporate with no default | Chinedu | 77 | 4 |
-| 6 | RSVP API and page via invite token. Duplicate does not reveal an earlier RSVP. Separate optional consent line for access needs | Ibrahim, Chinedu. Review: Osaretin | 78 | 2 |
+| 6 | RSVP API and page via invite token. Duplicate does not reveal an earlier RSVP. Separate optional consent line for access needs. Full venue address shown only after RSVP yes on a personal link | Ibrahim, Chinedu. Review: Osaretin | 78 | 2 |
 | 7 | Load prepared fake guest list and create invite links | Ibrahim, Chinedu | 78, 79 | 2 |
 | 8 | Guest list and default export without access needs; separate audited Access plan export for owner and admin; export protected from spreadsheet formulas | Ibrahim, Chinedu. Review: Osaretin | 79 | 6 |
 | 9 | Email port and DEMO adapter; job queued in the RSVP transaction; suppression check first; provider recommendation | Amina | 80 | 2, 6 |
