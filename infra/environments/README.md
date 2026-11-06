@@ -22,3 +22,9 @@ Row-level security only works as designed if app logins are not superusers or ta
 | API login | `hostpointe_app` | the NestJS API and workers | not superuser, not owner |
 | purge login | `hostpointe_purge` | the scheduled audit purge job | not superuser, not owner |
 Each login's password is a separate Key Vault secret per environment. `database/migrations/` is reserved for Adaeze's SQL files (runner chosen by Ibrahim: node-pg-migrate).
+
+## Database: Neon replaces Azure PostgreSQL (decision relayed by god, 6 Nov 2026; ADR in progress by Adaeze)
+- PostgreSQL runs on Neon, not Azure Database for PostgreSQL B1MS. Bicep will NOT create a PostgreSQL server. The rest of P0-04 (Container Apps, Blob Storage, Key Vault, Application Insights) is unchanged and still waits on the Azure account.
+- Neon branches map to environments: `dev` (exists, agents use only this), a `staging` branch and the project's default branch (named `production`) for live. Creating further branches or moving off the free plan needs Michael's cost check first; agents never touch the `production` branch.
+- Connection strings (three role logins per branch, see above) are stored in Azure Key Vault for deployed environments and in the git-ignored `.env` locally. Neon uses TLS; the API uses the pooled host with `SET LOCAL` for tenant context, migrations use the direct host.
+- Open: Neon data region and backups/restore test. Production data for UK and Nigerian guests needs Osaretin's review of Neon's region before launch.
