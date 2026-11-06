@@ -1,6 +1,6 @@
 # ADR-0005: Integrations adapter pattern
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Applies to:** `packages/integrations`, CLAUDE.md rules 5, 7 and 9 · **Tested by:** AT-04, AT-08, AT-13, AT-19, AT-20
+**Status:** Accepted (6 Nov 2026, god) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Applies to:** `packages/integrations`, CLAUDE.md rules 5, 7 and 9 · **Tested by:** AT-04, AT-08, AT-13, AT-19, AT-20
 
 ## Context
 Hostpointe depends on email, WhatsApp, SMS, payments, maps, weather and AI providers, and the WhatsApp route is still undecided. An outage must never block RSVP or check-in, and nothing simulated may be mistaken for real.
