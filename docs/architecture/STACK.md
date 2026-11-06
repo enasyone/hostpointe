@@ -34,7 +34,7 @@
 
 **Important:** Datapointe's existing Azure account is unlikely to get Azure's 12-month free offers, so check them in Cost Management before relying on them. Set a budget alert at £10.
 
-**Database rules (D-016):** use standard Postgres features only (no Neon-specific auth, functions or object storage), so moving to Azure is a routine copy. Warm the database before event-day check-in and keep it awake during check-in, because Neon pauses when idle. While on Neon the API reaches the database across two clouds (Azure to AWS London). Whether the free plan may hold real guests is an open question: see ADR-0006. Secrets (`DATABASE_URL`, `NEON_API_KEY`) live only in the local `.env`, GitHub environment secrets and, later, Key Vault.
+**Database rules (D-016):** use standard Postgres features only (no Neon-specific auth, functions or object storage), so moving to Azure is a routine copy. Warm the database before event-day check-in and keep it awake during check-in, because Neon pauses when idle. While on Neon the API reaches the database across two clouds (Azure to AWS London). Real guest data never goes on Neon, including the pilot, which uses test data (Enahoro, ADR-0006). Secrets (`DATABASE_URL`, `NEON_API_KEY`) live only in the local `.env`, GitHub environment secrets and, later, Key Vault.
 
 ## Modules (inside the NestJS API)
 IAM (identity and access management) and tenancy · Events and scheduling · Guests and RSVP · Credentials · Check-in · Safe Pickup · Journey and venue · Messaging · Surveys and insights · Ticketing and payments ledger (Phase 1b) · Billing and plans · AI and media (Phase 2) · Planner suite (Phases 2–3) · Audit · SafeZone and hardware adapter (Phase 4, isolated).
