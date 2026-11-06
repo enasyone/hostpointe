@@ -6,7 +6,7 @@
 
 **Assumes:** personal RSVP links, the default per Uchenna (6 Nov 2026). An open link would change tasks 2 and 6.
 
-## Pilot: real data on Neon Free (Enahoro, 6 Nov 2026, ADR-0006)
+## Pilot: real data on Neon Free (D-017, ADR-0006)
 Real attendees enter real data. An earlier test-data rule in this file is withdrawn; it is in git history. Development and tests still use fake data only, on `dev`.
 
 **Open, needs an answer before any real attendee:**
@@ -16,7 +16,7 @@ Real attendees enter real data. An earlier test-data rule in this file is withdr
 
 **Minimum before the first real attendee** (Osaretin, `docs/compliance/PILOT_DATA_PLAN.md`):
 - Real sign-in with a session timeout.
-- The erasure log (HPE-76), or as a fallback a manual register of erased IDs. Without Blob, the register is the likely route.
+- Erasure on Neon Free (HPE-76), with no Blob: Osaretin's fallback, a manual register, for the pilot only. On each erasure, named DevOps staff add guest ID, tenant ID, time and action to a private register the same day. Names and contact details never go in it. The restore runbook applies it before reopening. Audit events still record each erasure, and deleting a guest with no attendance writes one too. The automatic log returns with Azure Blob, as a gate for launch. Awaits Osaretin's agreement.
 - Email only, with a provider tested in sandbox. No WhatsApp. Access needs off unless needed.
 - Privacy notice shown first, and a breach runbook. Non-technical items are in Osaretin's plan.
 - Deletion within 30 days of the last pilot day, with a signed record.

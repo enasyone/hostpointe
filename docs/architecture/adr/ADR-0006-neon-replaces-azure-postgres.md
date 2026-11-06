@@ -2,7 +2,7 @@
 
 > **Revision 2 (6 Nov 2026):** corrected to the authoritative D-016. Revision 1 treated Neon as an open-ended replacement for Azure. D-016 uses Neon for the MVP and pilot only, with a move to Azure at launch or at set triggers. Revision 1 is kept in git history, and the file name is unchanged so links keep working. Enahoro's pilot data decision was added after acceptance.
 
-**Status:** Accepted, revision 2 (6 Nov 2026, god). Pilot data decided by Enahoro the same day: real data on Free · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
+**Status:** Accepted, revision 2 (6 Nov 2026, god). Pilot data decided the same day: real data on Free (D-017) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
 
 **Supersedes:** for the MVP and pilot only, the database part of D-009. From launch the database is Azure PostgreSQL Flexible Server, UK South. Everything else in D-009 stands: compute, storage, secrets and monitoring stay on Azure UK South.
 
@@ -77,7 +77,7 @@ Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one wa
 | IP allow list, private networking | No | No | Yes |
 | Availability guarantee (SLA) | No | No | Yes |
 
-**Decided by Enahoro (6 Nov 2026, relayed by god): the Tom Associates pilot holds real data on Neon Free (option (c)), with the risk accepted by him in writing.** The move to Azure stays at launch under D-016. Data is deleted after the pilot, under `docs/compliance/PILOT_DATA_PLAN.md`. The written acceptance has not been seen by the author of this record.
+**D-017 (Enahoro, 6 Nov 2026, Jira HPE-92): the Tom Associates pilot holds real data on Neon Free (option (c)), with the risk accepted by Enahoro.** The move to Azure stays at launch under D-016. Data is deleted after the pilot, under `docs/compliance/PILOT_DATA_PLAN.md`.
 
 - **Osaretin's objection is recorded:** Free has no signed agreement in place, a 6-hour restore window and no availability guarantee. Osaretin does not accept it for real guests.
 - **Risks accepted with this:** up to 6 hours' loss beyond the last good backup, no availability guarantee during the pilot, and a compute allowance that could run out during an event, which would stop check-in unless offline gate mode covers it.
