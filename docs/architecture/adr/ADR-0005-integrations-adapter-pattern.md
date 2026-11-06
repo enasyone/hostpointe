@@ -84,6 +84,8 @@ Amina Danjuma reviewed the design and asked for seven changes and two fallback a
 
 The rule that the factory also refuses `sandbox` in production was added by Adaeze when applying the changes.
 
+Amina approved the result on 6 Nov 2026 (commit 9ab775b). Build note from her: the factory decides what "production" means from an explicit environment setting, such as `APP_ENV=production`, so staging can run `sandbox` adapters.
+
 ## Consequences
 Provider choices stay reversible, including the open WhatsApp decision. Each integration costs a little more up front than a direct SDK call.
 
