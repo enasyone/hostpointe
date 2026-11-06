@@ -21,5 +21,6 @@ Next revision gets a new number (v2); this file is not edited in place except th
 ## Added 6 Nov 2026 (D-016, ADR-0006)
 | # | Task | Owner | Status | Jira |
 |---|---|---|---|---|
-| H-13 | **REOPENED 6 Nov 2026.** The pilot will use real attendee data (deleted afterwards). Pick: (a) Azure before the pilot, (b) paid Neon plan, or (c) accept Free-plan risk in writing (Michael). Also give a rough pilot date | Enahoro, with Michael for spend | Open | HPE-34 |
-| H-14 | Neon data processing agreement: required again if real data goes on Neon (options b, c). Check which plan includes it; keep a dated copy | Michael or Enahoro | Open (depends on H-13) | HPE-34 |
+| H-13 | **DECIDED 6 Nov 2026 (D-017):** Enahoro chose option (c): pilot on Neon Free with real data, risk accepted in writing. Osaretin's objection stays on record. Still needed: a rough pilot date | Enahoro | Done, date open | HPE-34 |
+| H-14 | **Sign a data processing agreement with Neon and get its sub-processor list** (needs a Datapointe signatory; check which plan includes it; keep a dated copy). Required before real data enters (D-017) | Michael or Enahoro (signatory) | Open | HPE-34 |
+| H-15 | Pilot data deletion plan: how and when all pilot data is deleted afterwards, with proof. Osaretin to draft, Enahoro to approve | Osaretin, Enahoro | Open | HPE-34 |

@@ -20,6 +20,8 @@ Each decision is final until a new numbered decision replaces it. Earlier decisi
 | D-014 | 6 Nov 2026 | Feedback is **anonymous by default** | More honest answers and lower privacy risk |
 | D-015 | 6 Nov 2026 | Comparison, consolidated strategy and build setup **APPROVED**; Phase 0 started | Final approval |
 | D-016 | 6 Nov 2026 | **Database for MVP and pilot: Neon free Postgres in Europe (London), `aws-eu-west-2`.** Move to Azure PostgreSQL Flexible Server (UK South) at launch, or earlier once storage passes about 700 MB, compute regularly passes 80 of 100 CU-hours a month, or longer backups are needed. Rules: standard Postgres only, no Neon-specific features (auth, functions, object storage); nightly backup to Azure Blob from day one; warm the database before event-day check-in | The existing Azure account doesn't get the 12-month free database; Neon keeps the MVP at £0, and moving later is a routine Postgres copy |
+| D-017 | 6 Nov 2026 | **Pilot stays on Neon Free with real guest data (option c in ADR-0006).** The pilot data is deleted afterwards. Enahoro accepts the risk in writing. **Osaretin's written objection is on record and is not resolved: it is overridden by Enahoro's decision** under the escalation rule (legal and safeguarding questions go to Enahoro). Still required: a signed data processing agreement with Neon and its sub-processor list (needs a Datapointe signatory), and a pilot data deletion plan. D-016's move to Azure at launch still stands | Enahoro wants the pilot to run on real data without waiting for Azure; the Neon Free plan keeps it at £0 |
+
 
 D-016 detail: ADR-0006 (Accepted 6 Nov 2026) in `docs/architecture`; conditions before real guests are tracked in Jira HPE-34.
 
