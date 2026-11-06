@@ -25,6 +25,8 @@ D-016 detail: ADR-0006 (Accepted 6 Nov 2026) in `docs/architecture`; conditions 
 
 D-016 confirmation (6 Nov 2026, Enahoro): D-016 stands as written. The move to Azure happens at launch, not earlier. The Tom Associates pilot, even with about 120 attendees, runs on test (fake) data, not real guest personal data, so Neon never holds real personal data. This resolves the open question in ADR-0006 (option (a) in effect, without moving the pilot to Azure). No new decision number. Dev-only DEMO sign-in approved for Sprint 1. Personal invite links per guest are the default.
 
+**NOTE: the paragraph above (test data only, DEMO sign-in, 'pilot gate') is OUT OF DATE. See the reversal below. DEMO sign-in is for development only.**
+
 **REVERSED later on 6 Nov 2026 (Enahoro):** "The simulation will be real with real data. It will be deleted afterwards." Real attendee data WILL go into the system during the pilot, so the test-data-only confirmation above no longer holds. Open again until Enahoro picks: Azure before the pilot, a paid Neon plan, or accepting Free-plan risk in writing (Michael). Also needs a rough pilot date. Everything real-data-related in ADR-0006 and the DPIA applies again. The pilot data is to be deleted afterwards (deletion plan needed).
 
 ## Still open (Enahoro to decide)
