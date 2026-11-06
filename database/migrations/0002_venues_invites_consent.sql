@@ -83,11 +83,12 @@ CREATE TRIGGER guests_revoke_invites AFTER UPDATE OF anonymised_at ON guests
   EXECUTE FUNCTION app.revoke_invites_on_anonymise();
 
 -- ---------------------------------------------------------------------------------------------
--- Consent records: append-only history. Current state = the newest row per guest, purpose and
--- channel. A withdrawal is a new row with action 'withdrawn'. No free text, no personal data.
+-- Consent records: append-only history. Current state = the row with the highest seq per guest, purpose
+-- and channel. A withdrawal is a new row with action 'withdrawn'. No free text, no personal data.
 -- ---------------------------------------------------------------------------------------------
 
 CREATE TABLE consent_records (
+  seq             bigint GENERATED ALWAYS AS IDENTITY UNIQUE, -- order of events; rows in one transaction share now()
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id       uuid NOT NULL,
   event_id        uuid NOT NULL,
@@ -96,11 +97,12 @@ CREATE TABLE consent_records (
   channel         text NOT NULL CHECK (channel IN ('email', 'whatsapp', 'sms', 'web')),
   action          text NOT NULL CHECK (action IN ('given', 'withdrawn')),
   wording_version text NOT NULL CHECK (length(wording_version) BETWEEN 1 AND 50),
+  source          text NOT NULL CHECK (source IN ('rsvp_form', 'email_link', 'import_evidence', 'organiser_entry')),
   recorded_at     timestamptz NOT NULL DEFAULT now(),
   FOREIGN KEY (tenant_id, event_id, guest_id)
     REFERENCES guests (tenant_id, event_id, id) ON DELETE RESTRICT
 );
-CREATE INDEX consent_records_guest_idx ON consent_records (tenant_id, guest_id, purpose, channel, recorded_at DESC);
+CREATE INDEX consent_records_guest_idx ON consent_records (tenant_id, guest_id, purpose, channel, seq DESC);
 
 -- ---------------------------------------------------------------------------------------------
 -- Suppressions: addresses that must not be messaged (unsubscribed, bounced, complained).
@@ -173,7 +175,8 @@ GRANT EXECUTE ON FUNCTION app.resolve_invite(bytea) TO hostpointe_app;
 GRANT SELECT, INSERT, UPDATE, DELETE ON venues TO hostpointe_app;
 GRANT SELECT, INSERT, UPDATE ON guest_invites TO hostpointe_app;
 GRANT SELECT, INSERT ON consent_records TO hostpointe_app;
-GRANT SELECT, INSERT, DELETE ON suppressions TO hostpointe_app;
+-- No DELETE: a suppression is lifted only through a re-consent flow with an audit event (review M-5), added later.
+GRANT SELECT, INSERT ON suppressions TO hostpointe_app;
 
 -- Down Migration
 -- Rollback for the up section. Destroys all data in the tables below (escalate before running anywhere
