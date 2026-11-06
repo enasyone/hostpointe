@@ -20,4 +20,5 @@ jobs:
     environment: ${{ inputs.target }}
     steps:
       - uses: actions/checkout@v4
-      - run: echo "Placeholder: azure/login (OIDC, no stored secrets) then az deployment group create with infra/environments/${{ inputs.target }}.bicepparam. Enabled in P0-04."
+      - name: Placeholder
+        run: echo "Placeholder - azure/login (OIDC, no stored secrets) then az deployment group create with infra/environments/${{ inputs.target }}.bicepparam. Enabled in P0-04."
