@@ -21,5 +21,5 @@ Next revision gets a new number (v2); this file is not edited in place except th
 ## Added 6 Nov 2026 (D-016, ADR-0006)
 | # | Task | Owner | Status | Jira |
 |---|---|---|---|---|
-| H-13 | ~~Neon plan / real guests on Free~~ **RESOLVED 6 Nov 2026 by Enahoro:** D-016 stands; pilot runs on test data; Azure at launch | Enahoro | Done | HPE-34 |
-| H-14 | Neon data processing agreement: not needed while Neon holds no real personal data (revisit if that changes) | Michael or Enahoro | Not needed now | HPE-34 |
+| H-13 | **REOPENED 6 Nov 2026.** The pilot will use real attendee data (deleted afterwards). Pick: (a) Azure before the pilot, (b) paid Neon plan, or (c) accept Free-plan risk in writing (Michael). Also give a rough pilot date | Enahoro, with Michael for spend | Open | HPE-34 |
+| H-14 | Neon data processing agreement: required again if real data goes on Neon (options b, c). Check which plan includes it; keep a dated copy | Michael or Enahoro | Open (depends on H-13) | HPE-34 |

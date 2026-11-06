@@ -1,3 +1,5 @@
+> **SUPERSEDED / ON HOLD (6 Nov 2026, later):** Enahoro reversed this: the pilot will use real attendee data, deleted afterwards. The controls below were written for test data only and must be re-done once the infra option is chosen (see H-13). A v2 will follow.
+
 # Pilot note (v1, 6 Nov 2026): Tom Associates pilot runs on test data
 Decision: Enahoro confirmed D-016 on 6 Nov 2026. The pilot has real attendees (about 120), but **no real guest personal data enters the system**. Neon (the database) never holds real personal data. Azure migration happens at launch.
 
