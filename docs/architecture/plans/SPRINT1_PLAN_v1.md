@@ -10,13 +10,18 @@
 Enahoro's decision: the Tom Associates pilot has real attendees, but no real guest data enters the system (ADR-0006). The software has to make that hard to break:
 - **Prepared guest lists:** guests are made-up names loaded by the organiser. Real attendees do not fill in the RSVP form with their own details.
 - **Visible warning:** every RSVP and organiser form says "Test system: do not enter real names or contact details" while `APP_ENV` is not `production`.
-- **No free text for people:** access needs are fixed choices (GUIDANCE-0002).
+- **Access needs hidden in the pilot:** a ticked box from a real person is real health data, even under a fake name. Real attendees are not asked; organisers may enter sample answers on fake guests (Osaretin).
+- **No free text from real people:** plus-one names and survey comments are off in the pilot, or carry the same warning. Comments naming a lecturer would be personal data too.
+- **Startup check:** the app refuses to start when `APP_ENV=production` and the database host is Neon, with a test.
+- **Logs:** real attendees leave IP addresses and device details. Sentry and PostHog stay off in the pilot, and server logs are kept 30 days at most. The pilot note names this.
 - **Email goes nowhere real:** the DEMO adapter does not leave the process. A later sandbox test sends only to an allow-list of team test addresses.
+
+Osaretin accepts staff checking real attendees in at the door with prepared fake tickets and no self-entered details; the link between person and ticket stays in the organiser's own paper or sheet. God is confirming with Enahoro whether attendees do anything more.
 
 ## Tasks, in order
 | # | Task | Owner | Story | Needs |
 |---|---|---|---|---|
-| 1 | DEMO sign-in: API guard and sign-in page, labelled DEMO. App refuses to start with it when `APP_ENV=production` | Ibrahim, Chinedu | 77, 79 | — |
+| 1 | DEMO sign-in: API guard and sign-in page, labelled DEMO. App refuses to start with it when `APP_ENV=production`. Also the Neon startup check | Ibrahim, Chinedu | 77, 79 | — |
 | 2 | Migration 0002: venues, guest_invites, consent_records, access_needs, suppressions, duplicate rule, invite-token function, with rollback | Ibrahim. Review: Adaeze, Osaretin | 77, 78, 79, 80 | — |
 | 3 | `packages/domain`: local time plus timezone to UTC, timezone validation, one-off event shape | Adaeze. Review: Ibrahim | 77 | — |
 | 4 | Create-event API: event, series and first occurrence in one transaction; OpenAPI | Ibrahim | 77 | 1, 2, 3 |
@@ -25,7 +30,8 @@ Enahoro's decision: the Tom Associates pilot has real attendees, but no real gue
 | 7 | Load prepared fake guest list and create invite links | Ibrahim, Chinedu | 78, 79 | 2 |
 | 8 | Guest list and default export without access needs; separate audited Access plan export for owner and admin; export protected from spreadsheet formulas | Ibrahim, Chinedu. Review: Osaretin | 79 | 6 |
 | 9 | Email port and DEMO adapter; job queued in the RSVP transaction; suppression check first; provider recommendation | Amina | 80 | 2, 6 |
-| 10 | Tests for all of the above, including tenant isolation on new tables and DEMO sign-in refused in production | Babajide, Obinna | all | as built |
+| 10 | Tests for all of the above, including tenant isolation on new tables, DEMO sign-in refused in production, and the Neon startup check | Babajide, Obinna | all | as built |
+| 11 | Pilot logging: Sentry and PostHog off, server logs 30 days at most, a pilot switch hiding access needs and free text | Segun, Chinedu | 78 | 6 |
 
 ## Known limits
 - **All of Sprint 1 is DEMO for sign-in and email** until Entra and a real provider are tested. This goes in the built-vs-mocked note.
