@@ -21,5 +21,5 @@ Next revision gets a new number (v2); this file is not edited in place except th
 ## Added 6 Nov 2026 (D-016, ADR-0006)
 | # | Task | Owner | Status | Jira |
 |---|---|---|---|---|
-| H-13 | Choose the paid Neon plan. Osaretin: Launch plan is enough for an adults-only pilot once the agreement (H-14) is signed; Scale is needed before children's data or Safe Pickup (D-003), so the first release in practice needs Scale | Michael (Enahoro approves spend) | Open | HPE-34 |
+| H-13 | Choose the Neon plan. NOTE: D-016 as approved says free Neon for MVP and pilot, moving to Azure PostgreSQL at launch or at 700 MB / 80 CU-hours; ADR-0006 and Osaretin assume a paid plan. To be reconciled by Adaeze and Osaretin before real guest data. Osaretin: Launch plan is enough for an adults-only pilot once the agreement (H-14) is signed; Scale is needed before children's data or Safe Pickup (D-003), so the first release in practice needs Scale | Michael (Enahoro approves spend) | Open | HPE-34 |
 | H-14 | Sign a data processing agreement with Neon before any real guest data. First check which plan includes it | Michael or Enahoro | Open | HPE-34 |
