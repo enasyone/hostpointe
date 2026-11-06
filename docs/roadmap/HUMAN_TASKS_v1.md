@@ -22,5 +22,5 @@ Next revision gets a new number (v2); this file is not edited in place except th
 | # | Task | Owner | Status | Jira |
 |---|---|---|---|---|
 | H-13 | **DECIDED 6 Nov 2026 (D-017):** Enahoro chose option (c): pilot on Neon Free with real data, risk accepted in writing. Osaretin's objection stays on record. Still needed: a rough pilot date | Enahoro | Done, date open | HPE-34 |
-| H-14 | **Sign a data processing agreement with Neon and get its sub-processor list** (needs a Datapointe signatory; check which plan includes it; keep a dated copy). Required before real data enters (D-017) | Michael or Enahoro (signatory) | Open | HPE-34 |
-| H-15 | Pilot data deletion plan: how and when all pilot data is deleted afterwards, with proof. Osaretin to draft, Enahoro to approve | Osaretin, Enahoro | Open | HPE-34 |
+| H-14 | **Sign a data processing agreement with Neon and get its sub-processor list** (needs a Datapointe signatory; check which plan includes it; keep a dated copy). Required before real data enters (D-017) | Michael or Enahoro (signatory) | Open. Checklist: docs/compliance/DPA_CHECKLIST.md (Osaretin). Ask Neon first which plan includes an agreement; if none, keep the click-through terms with a dated copy | HPE-34 |
+| H-15 | Pilot data deletion plan: how and when all pilot data is deleted afterwards, with proof. Draft: docs/compliance/PILOT_DATA_PLAN.md (Osaretin). Needs Enahoro's approval and Tom Associates' written agreement | Osaretin, Enahoro | Drafted, awaiting approval | HPE-34 |
