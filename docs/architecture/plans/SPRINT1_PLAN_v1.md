@@ -6,7 +6,18 @@
 
 **Assumes:** personal RSVP links, the default per Uchenna (6 Nov 2026). An open link would change tasks 2 and 6.
 
-## Pilot rule: test data only
+## Correction, 6 Nov 2026: the pilot uses real data
+Enahoro: "The simulation will be real with real data. It will be deleted afterwards." The section below rested on a relayed answer that was wrong, so it is **on hold, and is not to be built**. Task 11 and the pilot switch are on hold too. Sprint 1 development itself still uses fake data only.
+
+**A real-data pilot runs in production mode, so it needs, whichever database is chosen:**
+- Real sign-in (Entra, needs the Azure account). The DEMO sign-in stays refused in production.
+- Azure Blob for the erasure log (HPE-76) and backups, or an approved alternative.
+- A real email provider tested in sandbox, consent records, and the privacy notice.
+- A written deletion plan after the pilot, covering the database, restore history, dumps, logs and third-party tools.
+
+The Neon startup check in task 1 waits for the database decision.
+
+## Pilot rule: test data only (on hold, see above)
 Enahoro's decision: the Tom Associates pilot has real attendees, but no real guest data enters the system (ADR-0006). The software has to make that hard to break:
 - **Prepared guest lists:** guests are made-up names loaded by the organiser. Real attendees do not fill in the RSVP form with their own details.
 - **Visible warning:** every RSVP and organiser form says "Test system: do not enter real names or contact details" while `APP_ENV` is not `production`.

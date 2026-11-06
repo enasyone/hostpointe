@@ -1,8 +1,8 @@
 # ADR-0006: Neon for the MVP and pilot, Azure PostgreSQL at launch
 
-> **Revision 2 (6 Nov 2026):** corrected to the authoritative D-016. Revision 1 treated Neon as an open-ended replacement for Azure. D-016 uses Neon for the MVP and pilot only, with a move to Azure at launch or at set triggers. Revision 1 is kept in git history, and the file name is unchanged so links keep working. Enahoro's answer on pilot data was added after acceptance.
+> **Revision 2 (6 Nov 2026):** corrected to the authoritative D-016. Revision 1 treated Neon as an open-ended replacement for Azure. D-016 uses Neon for the MVP and pilot only, with a move to Azure at launch or at set triggers. Revision 1 is kept in git history, and the file name is unchanged so links keep working. The pilot data question reopened after acceptance.
 
-**Status:** Accepted, revision 2 (6 Nov 2026, god). Pilot data question settled by Enahoro, same day · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
+**Status:** Accepted, revision 2 (6 Nov 2026, god). The open question on the pilot's real data was reopened the same day and awaits Enahoro · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
 
 **Supersedes:** for the MVP and pilot only, the database part of D-009. From launch the database is Azure PostgreSQL Flexible Server, UK South. Everything else in D-009 stands: compute, storage, secrets and monitoring stay on Azure UK South.
 
@@ -60,7 +60,7 @@ Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one wa
 | Local, CI | None (Compose, CI service) | Fake only |
 | dev | `dev` | Fake only |
 | staging | `staging` (not created, needs a cost check) | Fake only |
-| production, until the move | `production` (the project's default branch) | Test data only until the move (Enahoro, 6 Nov 2026) |
+| production, until the move | `production` (the project's default branch) | Real, subject to the open question below |
 
 - **A branch copies its parent's data. Once `production` holds real guests, no branch may be created from it** unless a separate review approves it, because the copy would hold real personal data with weaker access. The same rule covers point-in-time restores into new branches, snapshots and exported dumps. Real-data dumps never go on developer laptops. Build `dev` and `staging` from fake seed data. Before real data arrives, recreate any branch that descends from `production`, or confirm it holds only fake data.
 - Each branch gets its own three logins (owner, API, purge), created with SQL. Roles made through Neon's console, API or CLI may gain `neon_superuser`, which bypasses row-level security; so confirm for each login that `rolsuper` and `rolbypassrls` are false and that it holds no `neon_superuser` membership.
@@ -77,13 +77,16 @@ Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one wa
 | IP allow list, private networking | No | No | Yes |
 | Availability guarantee (SLA) | No | No | Yes |
 
-**Decided by Enahoro (6 Nov 2026, relayed by god): real guest data never goes on Neon.** D-016 stands unchanged, with the move to Azure at launch. The Tom Associates pilot has real attendees, but the system holds only test data for it. No new numbered decision is needed. Azure Blob and backup timing stay deferred, because no real data flows through Neon.
+**Open question for Enahoro: where does the pilot's real data live?** On 6 Nov 2026 a relayed answer said the pilot would use test data. Enahoro then corrected this: "The simulation will be real with real data. It will be deleted afterwards." So the Tom Associates pilot (about 120 people) puts real personal data in the system. D-016 puts the pilot on Neon Free, and Osaretin holds that Free is for fake data only. Deleting afterwards limits retention, but does not cover the gaps while the data is live: no signed agreement, a 6-hour restore window and no availability guarantee.
 
-- **What this rests on:** nothing identifying a real person may be entered. Names, emails, phone numbers and free text in the pilot must be made up. Controls are in `docs/architecture/plans/SPRINT1_PLAN_v1.md`.
-- **If this changes** (for example a pilot that collects real attendees' details), it is a new decision. Osaretin's position then applies: Free is for fake data only, with no written acceptance of real guests on it, Launch is acceptable for an adults-only pilot with a signed agreement, and Scale is needed before children's data or Safe Pickup.
+- **Options:**
+  - (a) Move to Azure PostgreSQL before the pilot, so Neon only ever holds fake data. Adaeze recommends this, and Osaretin approves it, subject to Michael's approval of the Azure spend.
+  - (b) Pay for Neon during the pilot. All Neon conditions apply. Osaretin: Launch is acceptable for an adults-only pilot with a signed agreement; Scale before children's data or Safe Pickup.
+  - (c) Keep Free with real guests. Osaretin will not give written acceptance. Accepting the risk would be for Michael.
+- **Needed under every option:** real sign-in and Azure Blob. See `docs/architecture/plans/SPRINT1_PLAN_v1.md`.
 
 ## Conditions before real guests use Neon
-Under Enahoro's decision no real guests use Neon, so conditions 2a, 2b and 6 do not apply, because Neon holds no personal data (Osaretin). They would apply only after a new decision. The move follows DPIA section 5c. Osaretin has not read Neon's terms, so the contract items are guidance to confirm.
+These apply if real guests go on Neon, under option (b) or (c). Under option (a), conditions 2a, 2b and 6 fall away, because Neon never holds personal data (Osaretin), and the move follows DPIA section 5c. Osaretin has not read Neon's terms, so the contract items are guidance to confirm.
 
 | # | Condition | Owner |
 |---|---|---|
@@ -91,7 +94,7 @@ Under Enahoro's decision no real guests use Neon, so conditions 2a, 2b and 6 do 
 | 2 | Neon added to the data map and DPIA (Data Protection Impact Assessment): **done** by Osaretin. AWS London is acceptable | Osaretin |
 | 2a | Signed data processing agreement with Neon, naming the UK–US transfer route, because Neon is US-owned: security measures, sub-processors including AWS, breach notice that lets us meet the 72-hour ICO (Information Commissioner's Office) deadline, deletion on exit. Check which plan includes it; keep a dated copy | Michael or Enahoro signs |
 | 2b | Privacy notice says erased data stays in backups until the restore window ends | Osaretin |
-| 3 | Settled: no paid Neon plan, no real guests on Neon | Enahoro |
+| 3 | Settle the open question above, and the plan if it is a paid one | Enahoro, with Michael for spend |
 | 4 | Backup and restore drill on Neon (AT-22) | Babajide, Segun |
 | 5 | Measure check-in from Azure UK South to Neon against the 500 ms target for 95% of scans (k6) | Obinna |
 | 6 | Restrict database access: TLS is in place (`sslmode=require`); an IP allow list needs the Scale plan | Segun |
