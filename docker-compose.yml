@@ -1,4 +1,4 @@
-# Local development only. Fake credentials. Same major version as Azure PostgreSQL (18).
+# Local development only. Fake credentials. Same major version as the hosted database, Neon (18; see ADR-0006).
 # The bootstrap superuser is used only by the init script; apps use the non-superuser logins it creates.
 services:
   postgres:
