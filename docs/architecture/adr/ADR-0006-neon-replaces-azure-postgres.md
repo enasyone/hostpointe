@@ -83,7 +83,7 @@ Free scale-to-zero starts after 5 minutes idle and cannot be disabled, so one wa
   - (a) Move to Azure PostgreSQL before the pilot, so Neon only ever holds fake data. Adaeze recommends this, and Osaretin approves it, subject to Michael's approval of the Azure spend.
   - (b) Pay for Neon during the pilot. All Neon conditions apply. Osaretin: Launch is acceptable for an adults-only pilot with a signed agreement; Scale before children's data or Safe Pickup.
   - (c) Keep Free with real guests. Osaretin will not give written acceptance. Accepting the risk would be for Michael.
-- **Needed under every option:** real sign-in and Azure Blob. See `docs/architecture/plans/SPRINT1_PLAN_v1.md`.
+- **Needed under every option:** see `docs/compliance/PILOT_DATA_PLAN.md` (Osaretin) and `docs/architecture/plans/SPRINT1_PLAN_v1.md`. Real sign-in needs the Azure account. Osaretin assumes an adults-only pilot, so Launch would be enough under (b); any children or Safe Pickup means Scale or Azure. Option (c) needs Michael's written acceptance, with Osaretin's objection recorded.
 
 ## Conditions before real guests use Neon
 These apply if real guests go on Neon, under option (b) or (c). Under option (a), conditions 2a, 2b and 6 fall away, because Neon never holds personal data (Osaretin), and the move follows DPIA section 5c. Osaretin has not read Neon's terms, so the contract items are guidance to confirm.

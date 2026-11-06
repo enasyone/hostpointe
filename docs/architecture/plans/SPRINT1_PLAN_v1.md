@@ -9,11 +9,13 @@
 ## Correction, 6 Nov 2026: the pilot uses real data
 Enahoro: "The simulation will be real with real data. It will be deleted afterwards." The section below rested on a relayed answer that was wrong, so it is **on hold, and is not to be built**. Task 11 and the pilot switch are on hold too. Sprint 1 development itself still uses fake data only.
 
-**A real-data pilot runs in production mode, so it needs, whichever database is chosen:**
-- Real sign-in (Entra, needs the Azure account). The DEMO sign-in stays refused in production.
-- Azure Blob for the erasure log (HPE-76) and backups, or an approved alternative.
-- A real email provider tested in sandbox, consent records, and the privacy notice.
-- A written deletion plan after the pilot, covering the database, restore history, dumps, logs and third-party tools.
+**A real-data pilot runs in production mode. Minimum before the first real attendee, whichever database is chosen (Osaretin, `docs/compliance/PILOT_DATA_PLAN.md`):**
+- Real sign-in (Entra, needs the Azure account), with a session timeout. The DEMO sign-in stays off.
+- The erasure log (HPE-76), or as a fallback a manual register of erased IDs.
+- Email only, using a real provider tested in sandbox. No WhatsApp. Access needs off unless needed.
+- Privacy notice shown first, and a breach runbook. Non-technical items, such as the Tom Associates agreement and DPIA, are in Osaretin's plan.
+- Under option (a): dump rules and a tested restore. Under (b): a signed Neon agreement, at least the Launch plan, and a tested restore.
+- Deletion within 30 days of the last pilot day, with a signed deletion record, as set out in Osaretin's plan.
 
 The Neon startup check in task 1 waits for the database decision.
 
