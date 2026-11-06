@@ -15,7 +15,8 @@
 To re-run: `npm i @electric-sql/pglite`, then `node verify-schema.mjs <path to the migration file>`.
 
 ## Known limits
-- Run only on PGlite 0.5.15 (PostgreSQL 18.6 compiled to WebAssembly), not on PostgreSQL 16 or Azure Flexible Server. Repeat it on the real engine once Docker Compose exists.
-- The file's sections were split by the check script, not run through node-pg-migrate. Its source (version 9.0.0) shows it accepts this name and these section markers, but the runner itself has not been executed against this file.
-- The check script uses fake data and is not the acceptance test. AT-10 belongs to Babajide and must run against the real API.
+- The 86 checks ran only on PGlite 0.5.15 (PostgreSQL 18.6 compiled to WebAssembly).
+- On 6 Nov 2026 Ibrahim ran the migration up, down and up on the Neon dev branch (PostgreSQL 18.6) through node-pg-migrate 9.0.0, as `hostpointe_owner`. It passed, and all 12 tables are owned by that login. This proves the migration applies and rolls back, not the isolation rules.
+- It has not run on PostgreSQL 16, which Docker Compose and CI use, nor on Azure.
+- The check script uses fake data and is not the acceptance test. The P0-07 proof test and AT-10 belong to Babajide; AT-10 must run against the real API.
 - No API code uses this yet.
