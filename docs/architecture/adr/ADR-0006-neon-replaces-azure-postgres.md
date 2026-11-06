@@ -1,6 +1,6 @@
 # ADR-0006: Neon replaces Azure PostgreSQL for now
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (approved with conditions, DPIA section 5b)
+**Status:** Accepted (6 Nov 2026, god) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (approved with conditions, DPIA section 5b)
 
 **Supersedes:** the Database row in `STACK.md` (Azure Database for PostgreSQL Flexible Server, B1MS) and that part of D-009. Everything else in D-009 stands: compute, storage, secrets and monitoring stay on Azure UK South.
 

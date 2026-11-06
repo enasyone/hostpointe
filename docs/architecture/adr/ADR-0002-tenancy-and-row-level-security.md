@@ -1,6 +1,6 @@
 # ADR-0002: Tenancy, sign-in and row-level security
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** P0-07 · **Tested by:** AT-10
+**Status:** Accepted (6 Nov 2026, god) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** P0-07 · **Tested by:** AT-10
 
 ## Context
 A leak between tenants is the worst failure this platform can have (AGENTS.md treats it as an immediate escalation). One forgotten `WHERE tenant_id = ...` must not be enough to cause one.

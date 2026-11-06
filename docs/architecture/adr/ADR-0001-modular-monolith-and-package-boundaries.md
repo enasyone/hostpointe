@@ -1,6 +1,6 @@
 # ADR-0001: Modular monolith and package boundaries
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** D-006, P0-02
+**Status:** Accepted (6 Nov 2026, god) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** D-006, P0-02
 
 ## Context
 D-006 chose one Next.js web app, one NestJS API and PostgreSQL, not microservices. A monolith only stays splittable if its boundaries are enforced by tooling, not by habit.

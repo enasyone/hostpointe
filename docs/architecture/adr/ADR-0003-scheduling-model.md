@@ -1,6 +1,6 @@
 # ADR-0003: Scheduling model
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** D-007 · **Tested by:** AT-03, AT-06, AT-18
+**Status:** Accepted (6 Nov 2026, god) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** D-007 · **Tested by:** AT-03, AT-06, AT-18
 
 ## Context
 Multi-day events (Tom Associates, 3 days) and repeating events (a weekly service) must not be confused. Dates must survive daylight saving, moved dates and venues in different timezones. Attendance must be counted against the day people experienced, not a UTC (Coordinated Universal Time) day.

@@ -1,6 +1,6 @@
 # ADR-0004: Credentials and check-in invariants
 
-**Status:** Proposed · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** P0-08 · **Tested by:** AT-01, AT-03, AT-04, AT-09, AT-11, AT-17, AT-18
+**Status:** Accepted (6 Nov 2026, god) · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Implements:** P0-08 · **Tested by:** AT-01, AT-03, AT-04, AT-09, AT-11, AT-17, AT-18
 
 **Compliance:** Osaretin approved the data model with conditions (`docs/compliance/reviews/REVIEW-0001-data-model-v0.md`).
 
