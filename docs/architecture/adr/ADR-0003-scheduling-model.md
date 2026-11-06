@@ -14,7 +14,7 @@ Multi-day events (Tom Associates, 3 days) and repeating events (a weekly service
 | **EventOccurrence** | One real date people attend; attendance attaches here | Day 2 |
 | **Session** | A timed part of a date | "Keynote, 10:00" |
 
-Every event has at least one series and one occurrence, including a one-off. So check-in code has one path, with no special case for simple events.
+Every event has at least one series and one occurrence, including a one-off. So check-in code has one path, with no special case for simple events. The database does not enforce this; the API's create-event transaction does.
 
 ### Time rules
 1. **Store three things:** the IANA (Internet Assigned Numbers Authority) timezone, the local wall-clock time and the UTC instant (`starts_at`).
@@ -25,7 +25,7 @@ Every event has at least one series and one occurrence, including a one-off. So 
 ### Occurrences are real rows
 - Occurrences are stored, not calculated on read, because attendance, surveys and messages attach to them. The scheduler creates upcoming repeat dates ahead of time.
 - `recurrence_local_start` is a date's permanent identity (RECURRENCE-ID in RFC 5545) and never changes.
-- **Moving a date** changes `local_start`, `starts_at` and `ends_at`. Identity and attendance stay.
+- **Moving a date** changes `local_start`, `starts_at` and `ends_at`. Identity and attendance stay. In the same transaction the API shifts its sessions by the same local-time offset and recalculates their UTC times. It refuses the move if any of those sessions has check-ins.
 - **Skipping a date** sets `status = 'cancelled'` and keeps the row.
 - **Editing a rule** only touches future occurrences with no attendance. Past dates and dates with attendance are never rewritten.
 - `ON DELETE RESTRICT` means an occurrence with attendance cannot be deleted.
