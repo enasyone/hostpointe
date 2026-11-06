@@ -21,5 +21,5 @@ Next revision gets a new number (v2); this file is not edited in place except th
 ## Added 6 Nov 2026 (D-016, ADR-0006)
 | # | Task | Owner | Status | Jira |
 |---|---|---|---|---|
-| H-13 | **Answer the open question in ADR-0006 rev 2:** may the pilot hold real guests on Neon Free? (a) first real guest data triggers the move to Azure, so no Neon plan or agreement is needed (Adaeze recommends, after Michael checks Azure cost); (b) pay for Neon; (c) keep Free with Osaretin's written acceptance. Scale is advised before children's data or Safe Pickup (D-003) | Enahoro, with Michael for spend | Open | HPE-34 |
+| H-13 | **Answer the open question in ADR-0006 rev 2:** may the pilot hold real guests on Neon Free? (a) first real guest data triggers the move to Azure, so the ~120-guest pilot runs on Azure and no Neon plan or agreement is needed (Adaeze recommends, Osaretin approves, Michael to approve Azure spend; note this needs the deferred Azure setup H-01 revived); (b) pay for Neon; (c) keep Free with Osaretin's written acceptance. Scale is advised before children's data or Safe Pickup (D-003) | Enahoro, with Michael for spend | Open | HPE-34 |
 | H-14 | Only if real guests go on Neon: sign a data processing agreement naming the UK–US transfer route; check which plan includes it; keep a dated copy | Michael or Enahoro | Open (depends on H-13) | HPE-34 |
