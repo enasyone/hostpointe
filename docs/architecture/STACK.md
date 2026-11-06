@@ -1,4 +1,6 @@
-# Technical stack and hosting (approved, D-006 and D-009)
+# Technical stack and hosting (approved, D-006, D-009 and D-016)
+
+> **Revision 2 (6 Nov 2026, D-016):** the MVP database moved from Azure PostgreSQL Flexible Server to the Neon free plan in London. Azure PostgreSQL becomes the database at launch. Revision 1 is kept in git history.
 
 **Shape:** a modular monolith (one web app and one API, with clear internal modules) plus a few background workers. Region: **Azure UK South**. MVP = free tiers first.
 
@@ -9,7 +11,9 @@
 | Web app (Next.js) + API (NestJS) | Azure Container Apps, Consumption plan, scale to zero | Always free: 180,000 vCPU-seconds, 360,000 GiB-seconds and 2 million requests a month | Higher traffic; 1 replica always running on event days |
 | Marketing pages | Azure Static Web Apps (Free) | 100 GB bandwidth, 2 custom domains | Rarely |
 | Webhooks and scheduled jobs | Azure Functions + Container Apps Jobs | Functions: always free for 1 million requests | High volume |
-| Database | Azure Database for PostgreSQL Flexible Server, B1MS | Free for 12 months: 750 hours, 32 GB storage, 32 GB backup | After 12 months or when upsized |
+| Database (MVP and pilot, D-016) | Neon free plan, region AWS Europe (London) `aws-eu-west-2`; branch `dev` for agents, `main` kept clean | Free: 0.5 GB storage per project, 100 compute-unit hours a month, scale to zero | Move at launch, or earlier past about 700 MB storage or 80 CU-hours a month |
+| Database (from launch) | Azure Database for PostgreSQL Flexible Server, UK South | Paid (the existing Azure account gets no 12-month free database) | From launch |
+| Database backups | Nightly `pg_dump` from Neon to Azure Blob Storage, with a tested restore | Within Blob free allowance | — |
 | Job queue | pg-boss (inside Postgres) | Free | — |
 | Files | Azure Blob Storage or Cloudflare R2 | Blob free for 12 months: 5 GB hot storage | Media growth |
 | Organiser sign-in | Microsoft Entra External ID (guests need no account) | Free for 50,000 monthly active users | Above that, or premium add-ons |
@@ -26,7 +30,9 @@
 | Payments | Stripe (UK); Paystack and A1Pay (Nigeria) | No monthly fee | Per transaction |
 | Push notifications (later) | Azure Notification Hubs or Expo Push | Notification Hubs: always free for 1 million pushes | Scale |
 
-**Important:** to keep Azure's 12-month free offers, upgrade the new account to pay-as-you-go within 30 days. Set a budget alert at £10.
+**Important:** Datapointe's existing Azure account is unlikely to get Azure's 12-month free offers, so check them in Cost Management before relying on them. Set a budget alert at £10.
+
+**Database rules (D-016):** use standard Postgres features only (no Neon-specific auth, functions or object storage), so moving to Azure is a routine copy. Warm the database before event-day check-in, because Neon pauses when idle. Secrets (`DATABASE_URL`, `NEON_API_KEY`) live only in the local `.env`, GitHub environment secrets and, later, Key Vault.
 
 ## Modules (inside the NestJS API)
 IAM (identity and access management) and tenancy · Events and scheduling · Guests and RSVP · Credentials · Check-in · Safe Pickup · Journey and venue · Messaging · Surveys and insights · Ticketing and payments ledger (Phase 1b) · Billing and plans · AI and media (Phase 2) · Planner suite (Phases 2–3) · Audit · SafeZone and hardware adapter (Phase 4, isolated).

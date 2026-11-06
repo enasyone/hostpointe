@@ -24,7 +24,7 @@ Do steps 1–9 yourself. They take about 45 minutes. Step 10 is the handover.
   - **(b)** A free external Postgres (for example Neon's free tier) for development and the pilot, moving to Azure at launch.
 
   Tell Segun which one you chose.
-- **Decided (D-016, 6 Nov 2026): option (b).** Neon's free plan in **Europe (London)** for the MVP and pilot, moving to Azure PostgreSQL at launch. Your extra step: sign up at neon.com with the Datapointe email, create a project called `hostpointe` in region **AWS Europe (London)**, and invite Segun's working email, or share access through Michael. Never paste the connection string into chat: Segun stores it in Key Vault and GitHub environment secrets.
+- **Decided (D-016, 6 Nov 2026): option (b).** Neon's free plan in **Europe (London)** for the MVP and pilot, moving to Azure PostgreSQL at launch. Your extra step: sign up at neon.com with the Datapointe email, create a project called `hostpointe` in region **AWS Europe (London)**, then create a project-scoped API key for Segun (an AI agent, so a key rather than an email invite). **Done 6 Nov 2026** (HPE-32): `NEON_API_KEY` and `NEON_PROJECT_ID` are in the local `.env` and the GitHub dev and staging environment secrets. Never paste keys or connection strings into chat. You do not need to create Azure PostgreSQL now; it comes at launch.
 
 ## Step 3: Set a budget alert (do this before anything else is created)
 - **What:** **Cost Management → Budgets → Add**. Scope: the Hostpointe subscription. Amount: **£10 per month**. Alerts at **50%, 80% and 100%**, sent to your email.

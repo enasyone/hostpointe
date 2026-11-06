@@ -29,7 +29,7 @@ The Test Squad (Codex) is Babajide Ogunleye (QA (Quality Assurance) Lead) and Ob
 
 ## Architecture (approved, do not change without a decision record)
 - **Modular monolith:** Next.js + React + TypeScript web app (`apps/web`); NestJS API (`apps/api`) with modules for IAM (identity and access management) and tenancy, events and scheduling, guests and credentials, check-in, Safe Pickup, journey and venue, messaging, surveys and insights, payments ledger, AI and media, planner suite, and audit.
-- **Data:** PostgreSQL with row-level security per tenant. pg-boss for the job queue (no Redis in the MVP). Azure Blob Storage or Cloudflare R2 for files.
+- **Data:** PostgreSQL with row-level security per tenant. MVP and pilot run on Neon free Postgres in London (`dev` branch for agents); Azure PostgreSQL Flexible Server from launch (D-016). Standard Postgres features only. pg-boss for the job queue (no Redis in the MVP). Azure Blob Storage or Cloudflare R2 for files.
 - **Hosting:** Azure UK South, free tiers first (see `docs/architecture/STACK.md`).
 - **Scheduling model:** Event → EventSeries (RRULE) → EventOccurrence → Session. Store the IANA (Internet Assigned Numbers Authority) timezone plus UTC (Coordinated Universal Time). Never identify a date by UTC day alone.
 - **Invariants:** unique check-in enforced in the database; idempotent, authenticated, replay-protected webhooks; AI credits can't be overspent; guest data is not sent to AI by default; no personal data inside QR payloads.

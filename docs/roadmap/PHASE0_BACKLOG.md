@@ -1,5 +1,7 @@
 # Phase 0 backlog: Foundation (weeks 1–4)
 
+> **Revision 2 (6 Nov 2026):** P0-04 no longer creates Azure PostgreSQL; P0-16 (Neon) added, per D-016. Sprints: Sprint 0.1 runs 6–20 Nov, Sprint 0.2 runs 20 Nov – 4 Dec.
+
 **Goal:** a working, empty-but-solid foundation. Repo, pipelines, Azure, sign-in and tenancy, data model, design tokens, threat model and test plan, so that Phase 1 features can be built safely.
 
 **Gate (Enahoro approves):**
@@ -15,7 +17,7 @@
 | P0-01 | Record all approved decisions | Uchenna | `docs/decisions/DECISIONS.md` matches the approved comparison doc; Jira decision log created |
 | P0-02 | Monorepo scaffold | Segun (with Adaeze) | pnpm + Turborepo; `apps/web` (Next.js), `apps/api` (NestJS), `packages/ui`, `packages/domain`, `packages/integrations`; `pnpm dev` runs both apps locally with one command |
 | P0-03 | CI pipeline | Segun | GitHub Actions runs lint, typecheck, build, Codex tests and a security scan on every PR (pull request); main branch protected (PR plus review required) |
-| P0-04 | Azure foundation (needs Enahoro's Azure account) | Segun | Bicep deploys to UK South: Container Apps environment, PostgreSQL B1MS, Blob Storage, Key Vault, App Insights; £10 budget alert; nothing outside the free tier without approval |
+| P0-04 | Azure foundation (needs Enahoro's Azure account) | Segun | Bicep deploys to UK South: Container Apps environment, Blob Storage (including the database backup container), Key Vault, App Insights (no Azure PostgreSQL in Phase 0; Neon is used, see P0-16 and D-016); £10 budget alert; nothing outside the free tier without approval |
 | P0-05 | Environments and secrets | Segun | dev / staging / production; secrets only in Key Vault; `.env.example` placeholders only |
 | P0-06 | Architecture decision records | Adaeze | ADRs (architecture decision records) for the modular monolith, tenancy and row-level security, the scheduling model, credentials and check-in invariants, and the integrations adapter pattern |
 | P0-07 | Tenancy and sign-in foundation | Adaeze | Entra External ID set up for organisers; tenant, membership and role tables; row-level security proven by a test (tenant A can't read tenant B) |
@@ -27,3 +29,4 @@
 | P0-13 | Jira and GitHub link-up, Sprint 1 plan | Uchenna | Jira Scrum project with epics per phase; GitHub for Jira app connected; Sprint 1 (start of Phase 1) planned |
 | P0-14 | Human tasks tracker | Uchenna | Tracked with owner Enahoro: Azure account (upgrade to pay-as-you-go), Microsoft for Startups application, Meta Business verification for WhatsApp, NDPC (Nigeria Data Protection Commission) registration, ICO (Information Commissioner's Office) registration, Stripe and Paystack test accounts, register hostpointe.co.uk and hostpointe.events, UK IPO (Intellectual Property Office) and Nigerian trademark searches |
 | P0-15 | Daily and milestone report templates | Uchenna | First daily summary sent; milestone report template agreed |
+| P0-16 | Neon Postgres setup (D-016) | Segun | `dev` branch created with `NEON_API_KEY`; `DATABASE_URL` written to the local `.env` and GitHub environment secrets, never printed or committed; nightly `pg_dump` backup to Azure Blob with a tested restore; migration runbook from Neon to Azure PostgreSQL in `infra/` |
