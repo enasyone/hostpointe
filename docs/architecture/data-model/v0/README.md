@@ -1,6 +1,6 @@
 # Data model v0 (P0-07, P0-08)
 
-**Status: proposed, not yet applied to any shared database.** Decisions are in ADR-0002, ADR-0003 and ADR-0004. Compliance review: `docs/compliance/reviews/REVIEW-0001-data-model-v0.md`.
+**Status: reviewed, and applied to the Neon `dev` branch with fake data only. Not on any production database.** Decisions are in ADR-0002, ADR-0003 and ADR-0004. Compliance review: `docs/compliance/reviews/REVIEW-0001-data-model-v0.md`.
 
 | File | Purpose |
 |---|---|
