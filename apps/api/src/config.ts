@@ -21,14 +21,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   }
 
   const wantsDemo = env.DEMO_SIGNIN === "enabled";
-  // DEMO sign-in is for development and test only. Staging may hold real pilot data, so it is refused there too.
+  // DEMO sign-in is for development and test only. It is refused in staging and production.
   if (wantsDemo && appEnv !== "development" && appEnv !== "test") {
     throw new ConfigError(`Refusing to start: DEMO sign-in is only allowed when APP_ENV is development or test (APP_ENV=${appEnv}).`);
   }
   if (appEnv === "production") {
-    if (wantsDemo) {
-      throw new ConfigError("Refusing to start: DEMO sign-in must not be enabled when APP_ENV=production.");
-    }
     // Production may only talk to databases named in ALLOWED_DB_HOSTS (comma-separated host names).
     // Fail closed: no list means no start. This keeps the shared dev database (Neon "dev" branch,
     // or any other host) from ever being used by a production API, whatever provider hosts production.
