@@ -2,7 +2,7 @@
 
 > **Revision 2 (6 Nov 2026):** corrected to the authoritative D-016. Revision 1 treated Neon as an open-ended replacement for Azure. D-016 uses Neon for the MVP and pilot only, with a move to Azure at launch or at set triggers. Revision 1 is kept in git history, and the file name is unchanged so links keep working.
 
-**Status:** Revision 1 Accepted (6 Nov 2026, god); revision 2 approved by Osaretin, awaits god's acceptance · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
+**Status:** Accepted, revision 2 (6 Nov 2026, god). The open question on the pilot's data stays open until Enahoro answers · **Date:** 6 Nov 2026 · **Author:** Adaeze Okonkwo · **Decided by:** Enahoro Asikhia (D-016) · **Reviewed:** Segun (approved), Osaretin (revision 1 approved with conditions, DPIA section 5b; revision 2 approved on option (a), DPIA section 5c)
 
 **Supersedes:** for the MVP and pilot only, the database part of D-009. From launch the database is Azure PostgreSQL Flexible Server, UK South. Everything else in D-009 stands: compute, storage, secrets and monitoring stay on Azure UK South.
 
